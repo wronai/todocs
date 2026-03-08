@@ -139,46 +139,9 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ## Architecture
 
-todocs is organized into modular components:
-
-- **CLI** — Command-line interface with Click
-- **Core** — Project scanning and profile generation
-- **Analyzers** — Code analysis (structure, metrics, imports, API surface, maturity)
-- **Extractors** — Parse config files (Makefile, Docker, README, CHANGELOG, TOON)
-- **Generators** — Article and documentation generators
-- **Utils** — Gitignore parsing and scanning utilities
-
-### Directory Structure
-
 ```
 todocs/
-├── todocs/
-│   ├── cli.py              # CLI entry points
-│   ├── core.py             # Project/organization scanning
-│   ├── analyzers/          # Analysis modules
-│   │   ├── api_surface.py
-│   │   ├── code_metrics.py
-│   │   ├── dependencies.py
-│   │   ├── import_graph.py
-│   │   ├── maturity.py
-│   │   └── structure.py
-│   ├── extractors/         # File parsers
-│   │   ├── changelog_parser.py
-│   │   ├── docker_parser.py
-│   │   ├── makefile_parser.py
-│   │   ├── metadata.py
-│   │   ├── readme_parser.py
-│   │   └── toon_parser.py
-│   ├── generators/         # Documentation generators
-│   │   ├── article.py
-│   │   ├── article_sections.py
-│   │   └── comparison.py
-│   └── utils/              # Utilities
-│       └── __init__.py
-├── tests/                  # Test suite
-├── examples/               # Usage examples
-└── docs/                   # Generated documentation
-```
+├── todocs/├── cli    ├── makefile_parser├── extractors/    ├── toon_parser    ├── docker_parser    ├── readme_parser    ├── quickstart    ├── advanced_usage├── generators/    ├── changelog_parser    ├── article    ├── article_sections    ├── comparison├── utils/├── analyzers/    ├── dependencies    ├── structure    ├── maturity    ├── import_graph    ├── code_metrics    ├── api_surface├── core    ├── metadata```
 
 ## API Overview
 
@@ -186,15 +149,15 @@ todocs/
 
 - **`MakefileParser`** — Extract targets and structure from Makefile or Taskfile.yml.
 - **`ToonParser`** — Parse .toon files into structured data.
+- **`DockerParser`** — Extract Docker infrastructure from Dockerfile and docker-compose.yml.
 - **`ReadmeParser`** — Extract structured sections from a README.md file.
 - **`ChangelogParser`** — Extract structured entries from CHANGELOG.md.
-- **`DockerParser`** — Extract Docker infrastructure from Dockerfile and docker-compose.yml.
 - **`ArticleGenerator`** — Generate markdown articles for WordPress from analyzed project profiles.
-- **`GitignoreParser`** — Parse and match .gitignore patterns.
 - **`ComparisonGenerator`** — Generate comparative analysis articles across projects.
+- **`GitignoreParser`** — Parse and match .gitignore patterns.
+- **`DependencyAnalyzer`** — Extract project dependencies without executing anything.
 - **`StructureAnalyzer`** — Analyze project directory structure.
 - **`MaturityScorer`** — Compute a maturity score (0-100) for a project.
-- **`DependencyAnalyzer`** — Extract project dependencies without executing anything.
 - **`ImportGraphAnalyzer`** — Analyze import relationships between project modules.
 - **`CodeMetricsAnalyzer`** — Analyze code metrics: lines, complexity, maintainability.
 - **`APISurfaceAnalyzer`** — Detect public API surface of a project.

@@ -474,14 +474,6 @@ Key functions that process and transform data:
 > Split markdown by headings into sections.
 - **Output to**: self._extract_description, sections.update, self._extract_heading_sections
 
-### todocs.extractors.changelog_parser.ChangelogParser.parse
-> Return list of {version, date, content} dicts for recent releases.
-- **Output to**: self._find_changelog, self._parse_entries, cl_path.read_text
-
-### todocs.extractors.changelog_parser.ChangelogParser._parse_entries
-> Parse Keep-a-Changelog or similar format.
-- **Output to**: re.compile, list, enumerate, heading_re.finditer, m.group
-
 ### todocs.extractors.docker_parser.DockerParser.parse
 > Parse all Docker-related files.
 - **Output to**: self._find_dockerfiles, self._find_compose_files, list, list, self._parse_dockerfile
@@ -493,6 +485,14 @@ Key functions that process and transform data:
 ### todocs.extractors.docker_parser.DockerParser._parse_compose
 > Extract services, ports, volumes from docker-compose.yml.
 - **Output to**: data.get, raw_services.items, list, yaml.safe_load, isinstance
+
+### todocs.extractors.changelog_parser.ChangelogParser.parse
+> Return list of {version, date, content} dicts for recent releases.
+- **Output to**: self._find_changelog, self._parse_entries, cl_path.read_text
+
+### todocs.extractors.changelog_parser.ChangelogParser._parse_entries
+> Parse Keep-a-Changelog or similar format.
+- **Output to**: re.compile, list, enumerate, heading_re.finditer, m.group
 
 ## Public API Surface
 

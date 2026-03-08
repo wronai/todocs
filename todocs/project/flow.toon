@@ -351,22 +351,22 @@ DATA_TYPES (by cross-function usage) [157 annotated, 0 inferred / 165 functions]
   Path                 consumed:48  produced:8    !! HUB-TYPE → split interface
   ProjectProfile       consumed:34  produced:2    !! HUB-TYPE → split interface
   str, Any             consumed:0   produced:20   output-heavy
-  list                 consumed:9   produced:6  
   int                  consumed:13  produced:2    !! HUB-TYPE → split interface
+  list                 consumed:9   produced:6  
   bool                 consumed:7   produced:7  
   tuple                consumed:7   produced:4  
   str, str             consumed:0   produced:10   output-heavy
   set                  consumed:8   produced:2  
-  Dict[str, Any] | None consumed:0   produced:6    output-heavy
   Dict                 consumed:1   produced:5    output-heavy
+  Dict[str, Any] | None consumed:0   produced:6    output-heavy
   AnalysisResult       consumed:0   produced:3    narrow scope
   ast.AST              consumed:2   produced:0    narrow scope
-  Counter              consumed:0   produced:1    narrow scope
-  MaturityProfile      consumed:0   produced:1    narrow scope
-  str, Path            consumed:0   produced:1    narrow scope
   List[str]            consumed:0   produced:1    narrow scope
-  ast.FunctionDef | ast.AsyncFunctionDef consumed:1   produced:0    narrow scope
+  Counter              consumed:0   produced:1    narrow scope
+  ast.Call             consumed:1   produced:0    narrow scope
   dict                 consumed:0   produced:1    narrow scope
+  Tuple[str, str], int consumed:1   produced:0    narrow scope
+  ast.FunctionDef | ast.AsyncFunctionDef consumed:1   produced:0    narrow scope
 
   HUB TYPES (consumed ≥10):
     str → 67 consumers → split into:

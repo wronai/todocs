@@ -26,14 +26,14 @@ PIPELINES[12] (Analysis:3, Core:6, Export:1, IO:2):
               PURITY: 2/5 pure  BOTTLENECK: _extract_post_h1(CC=8)
 
   Todocs [Core]: ? → str
-              → main()                                  CC=9    IO ▶
+              → main()                                  CC=4    IO ▶
               → scan_organization(root_path:Path, exclude:Optional[List[str]], max_depth:int, progress_callback) → List[ProjectProfile] CC=11   IO
               → scan_project(project_path:Path, max_depth:int) → ProjectProfile CC=3    pure
               → _generate_summary(profile:ProjectProfile) → str CC=8    mutation ■
               PURITY: 1/4 pure  BOTTLENECK: scan_organization(CC=11)
 
   Todocs [Core]: ? → str
-              → main()                                  CC=4    IO ▶
+              → main()                                  CC=9    IO ▶
               → scan_organization(root_path:Path, exclude:Optional[List[str]], max_depth:int, progress_callback) → List[ProjectProfile] CC=11   IO
               → scan_project(project_path:Path, max_depth:int) → ProjectProfile CC=3    pure
               → _generate_summary(profile:ProjectProfile) → str CC=8    mutation ■
@@ -370,10 +370,10 @@ DATA_TYPES (by cross-function usage) [175 annotated, 0 inferred / 189 functions]
   dict                 consumed:0   produced:4    narrow scope
   AnalysisResult       consumed:0   produced:3    narrow scope
   ast.AST              consumed:2   produced:0    narrow scope
-  ast.FunctionDef | ast.AsyncFunctionDef consumed:1   produced:0    narrow scope
   str, Path            consumed:0   produced:1    narrow scope
-  Tuple[str, str], int consumed:1   produced:0    narrow scope
-  MaturityProfile      consumed:0   produced:1    narrow scope
+  ast.Call             consumed:1   produced:0    narrow scope
+  List[str]            consumed:0   produced:1    narrow scope
+  ast.FunctionDef | ast.AsyncFunctionDef consumed:1   produced:0    narrow scope
 
   HUB TYPES (consumed ≥10):
     str → 70 consumers → split into:
@@ -388,7 +388,7 @@ DATA_TYPES (by cross-function usage) [175 annotated, 0 inferred / 189 functions]
       - (analyze consumers to suggest sub-interfaces)
 
 SIDE_EFFECTS:
-  IO:        main, main, _print_section_header, _analyze_import_graph, _analyze_api_surface, _analyze_toon_files, _analyze_makefile, _analyze_docker, _analyze_code_metrics, main
+  IO:        main, print_health_summary, main, main, _print_section_header, _analyze_import_graph, _analyze_api_surface, _analyze_toon_files, _analyze_makefile, _analyze_docker
   Mutation:  analyze_maturity_distribution, analyze_tech_stacks, find_critical_projects, _discover_and_show_progress, _scan_with_progress, _generate_articles_with_progress, MakefileParser.__init__, MakefileParser._collect_phony_targets, MakefileParser._collect_commands, ToonParser.__init__
   Pure:      analyze_code_metrics, main, compare, health, readme, MakefileParser.parse, MakefileParser._parse_target_line, MakefileParser._extract_help_text, MakefileParser.get_target_names, ToonParser.parse_all
 

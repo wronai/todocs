@@ -7,7 +7,7 @@ stats:
   nodes_created: 1295
   edges_created: 1601
   patterns_detected: 0
-  analysis_time_seconds: 0.86
+  analysis_time_seconds: 0.85
   cache_hits: 0
 nodes:
   extractors.makefile_parser.MakefileParser.__init___entry:
@@ -15221,7 +15221,7 @@ functions:
     complexity:
       cyclomatic_complexity: 6
       cc_rank: B
-    centrality: 0.0
+    centrality: 3.650700934579439e-05
     reachability: unknown
   generators.article_sections.render_header:
     name: render_header
@@ -15262,7 +15262,7 @@ functions:
     complexity:
       cyclomatic_complexity: 7
       cc_rank: B
-    centrality: 0.0
+    centrality: 1.3275276125743414e-05
     reachability: unknown
   generators.article_sections.render_overview:
     name: render_overview
@@ -15303,7 +15303,7 @@ functions:
     complexity:
       cyclomatic_complexity: 6
       cc_rank: B
-    centrality: 0.0
+    centrality: 7.190774568111017e-06
     reachability: unknown
   generators.article_sections.render_tech_stack:
     name: render_tech_stack
@@ -15360,7 +15360,7 @@ functions:
     complexity:
       cyclomatic_complexity: 8
       cc_rank: B
-    centrality: 0.0
+    centrality: 3.761328235627301e-05
     reachability: unknown
   generators.article_sections.render_architecture:
     name: render_architecture
@@ -15422,7 +15422,7 @@ functions:
     complexity:
       cyclomatic_complexity: 8
       cc_rank: B
-    centrality: 0.0
+    centrality: 7.209212451618993e-05
     reachability: unknown
   generators.article_sections.render_metrics:
     name: render_metrics
@@ -15474,7 +15474,7 @@ functions:
     complexity:
       cyclomatic_complexity: 4
       cc_rank: A
-    centrality: 0.0
+    centrality: 1.3275276125743414e-05
     reachability: unknown
   generators.article_sections.render_maturity:
     name: render_maturity
@@ -15509,7 +15509,7 @@ functions:
     complexity:
       cyclomatic_complexity: 3
       cc_rank: A
-    centrality: 0.0
+    centrality: 1.106273010478618e-06
     reachability: unknown
   generators.article_sections.render_dependencies:
     name: render_dependencies
@@ -15558,7 +15558,7 @@ functions:
     complexity:
       cyclomatic_complexity: 8
       cc_rank: B
-    centrality: 0.0
+    centrality: 5.16260738223355e-06
     reachability: unknown
   generators.article_sections.render_api_surface:
     name: render_api_surface
@@ -15631,7 +15631,7 @@ functions:
     complexity:
       cyclomatic_complexity: 17
       cc_rank: C
-    centrality: 0.0
+    centrality: 4.7754118285660344e-05
     reachability: unknown
   generators.article_sections.render_build_targets:
     name: render_build_targets
@@ -15675,7 +15675,7 @@ functions:
     complexity:
       cyclomatic_complexity: 6
       cc_rank: B
-    centrality: 0.0
+    centrality: 1.3275276125743414e-05
     reachability: unknown
   generators.article_sections.render_docker:
     name: render_docker
@@ -15736,7 +15736,7 @@ functions:
     complexity:
       cyclomatic_complexity: 12
       cc_rank: C
-    centrality: 0.0
+    centrality: 2.544427924100821e-05
     reachability: unknown
   generators.article_sections.render_changelog:
     name: render_changelog
@@ -15780,7 +15780,7 @@ functions:
     complexity:
       cyclomatic_complexity: 5
       cc_rank: A
-    centrality: 0.0
+    centrality: 1.3275276125743414e-05
     reachability: unknown
   generators.article_sections.render_usage:
     name: render_usage
@@ -15842,7 +15842,7 @@ functions:
     complexity:
       cyclomatic_complexity: 11
       cc_rank: C
-    centrality: 0.0
+    centrality: 3.0662055093580596e-05
     reachability: unknown
   generators.article_sections.render_footer:
     name: render_footer
@@ -16102,7 +16102,7 @@ functions:
     complexity:
       cyclomatic_complexity: 2
       cc_rank: A
-    centrality: 0.00014602803738317756
+    centrality: 0.00010343652647975078
     reachability: unknown
   generators.comparison.ComparisonGenerator.__init__:
     name: __init__
@@ -18850,7 +18850,7 @@ functions:
     complexity:
       cyclomatic_complexity: 3
       cc_rank: A
-    centrality: 0.0010952102803738317
+    centrality: 0.0005841121495327102
     reachability: unknown
   core._discover_projects:
     name: _discover_projects
@@ -18903,7 +18903,7 @@ functions:
     complexity:
       cyclomatic_complexity: 8
       cc_rank: B
-    centrality: 0.00012169003115264798
+    centrality: 0.00012264822037432238
     reachability: unknown
   core.scan_organization:
     name: scan_organization
@@ -18970,7 +18970,7 @@ functions:
     complexity:
       cyclomatic_complexity: 11
       cc_rank: C
-    centrality: 0.000723624500208502
+    centrality: 0.0
     reachability: unknown
   core.generate_articles:
     name: generate_articles
@@ -19074,7 +19074,7 @@ functions:
     complexity:
       cyclomatic_complexity: 9
       cc_rank: B
-    centrality: 8.518302180685358e-05
+    centrality: 4.867601246105919e-05
     reachability: unknown
   core._generate_summary:
     name: _generate_summary
@@ -19115,7 +19115,7 @@ functions:
     complexity:
       cyclomatic_complexity: 8
       cc_rank: B
-    centrality: 6.084501557632399e-05
+    centrality: 3.0422507788161994e-05
     reachability: unknown
   extractors.metadata.MetadataExtractor.__init__:
     name: __init__
@@ -19656,8 +19656,8 @@ data_flows:
   extractors.makefile_parser.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
   Path.arg0:
     variable: Path.arg0
     dependencies:
@@ -19673,8 +19673,8 @@ data_flows:
   extractors.makefile_parser.parse.result:
     variable: result
     dependencies:
-    - makefile
     - taskfile
+    - makefile
     - self
   self._parse_makefile.arg0:
     variable: self._parse_makefile.arg0
@@ -19693,8 +19693,8 @@ data_flows:
   extractors.makefile_parser._parse_makefile.phony_targets:
     variable: phony_targets
     dependencies:
-    - text
     - self
+    - text
   self._collect_phony_targets.arg0:
     variable: self._collect_phony_targets.arg0
     dependencies:
@@ -19711,10 +19711,10 @@ data_flows:
     variable: target
     dependencies:
     - i
+    - phony_targets
+    - line
     - self
     - lines
-    - line
-    - phony_targets
   self._parse_target_line.arg0:
     variable: self._parse_target_line.arg0
     dependencies:
@@ -19734,11 +19734,11 @@ data_flows:
   targets.append.arg0:
     variable: targets.append.arg0
     dependencies:
-    - str
+    - name
     - cmd_strs
     - desc
     - target
-    - name
+    - str
   extractors.makefile_parser._collect_phony_targets.phony_targets:
     variable: phony_targets
     dependencies:
@@ -19750,8 +19750,8 @@ data_flows:
   extractors.makefile_parser._collect_phony_targets.phony_m:
     variable: phony_m
     dependencies:
-    - line
     - re
+    - line
   re.match.arg1:
     variable: re.match.arg1
     dependencies:
@@ -19763,8 +19763,8 @@ data_flows:
   extractors.makefile_parser._parse_target_line.target_m:
     variable: target_m
     dependencies:
-    - line
     - re
+    - line
   extractors.makefile_parser._parse_target_line.name:
     variable: name
     dependencies:
@@ -19774,8 +19774,8 @@ data_flows:
     dependencies:
     - line
     - index
-    - self
     - lines
+    - self
   self._extract_help_text.arg0:
     variable: self._extract_help_text.arg0
     dependencies:
@@ -19792,8 +19792,8 @@ data_flows:
     variable: commands
     dependencies:
     - index
-    - self
     - lines
+    - self
   self._collect_commands.arg0:
     variable: self._collect_commands.arg0
     dependencies:
@@ -19805,13 +19805,13 @@ data_flows:
   extractors.makefile_parser._extract_help_text.help_m:
     variable: help_m
     dependencies:
-    - line
     - re
+    - line
   re.search.arg1:
     variable: re.search.arg1
     dependencies:
-    - line
     - text
+    - line
   extractors.makefile_parser._extract_help_text.prev:
     variable: prev
     dependencies:
@@ -19823,9 +19823,9 @@ data_flows:
     variable: j
     dependencies:
     - min
-    - range
     - lines
     - index
+    - range
     - len
   range.arg0:
     variable: range.arg0
@@ -19834,9 +19834,9 @@ data_flows:
   range.arg1:
     variable: range.arg1
     dependencies:
-    - min
-    - lines
     - index
+    - lines
+    - min
     - len
   min.arg0:
     variable: min.arg0
@@ -19845,8 +19845,8 @@ data_flows:
   min.arg1:
     variable: min.arg1
     dependencies:
-    - len
     - lines
+    - len
   len.arg0:
     variable: len.arg0
     dependencies:
@@ -19859,14 +19859,14 @@ data_flows:
   extractors.makefile_parser._collect_commands.cmd:
     variable: cmd
     dependencies:
-    - cmd
     - cmd_line
+    - cmd
   commands.append.arg0:
     variable: commands.append.arg0
     dependencies:
     - node
-    - dec_name
     - doc
+    - dec_name
     - rel
   extractors.makefile_parser._parse_taskfile.data:
     variable: data
@@ -19880,22 +19880,22 @@ data_flows:
   isinstance.arg0:
     variable: isinstance.arg0
     dependencies:
+    - kw
+    - node
     - a
+    - repo
+    - author
+    - lic_val
+    - scripts
     - func
     - current
-    - author
-    - node
-    - lic_val
-    - repo
-    - kw
-    - scripts
   isinstance.arg1:
     variable: isinstance.arg1
     dependencies:
-    - list
-    - ast
     - str
     - dict
+    - list
+    - ast
   extractors.makefile_parser._parse_taskfile.targets:
     variable: targets
   extractors.makefile_parser._parse_taskfile.tasks:
@@ -19927,8 +19927,8 @@ data_flows:
   str.arg0:
     variable: str.arg0
     dependencies:
-    - fp
     - val
+    - fp
   extractors.makefile_parser.get_target_names.data:
     variable: data
     dependencies:
@@ -19952,20 +19952,20 @@ data_flows:
   console.print.arg0:
     variable: console.print.arg0
     dependencies:
-    - table
-    - profiles
-    - out
     - root
+    - out
     - paths
+    - table
     - json_report
+    - profiles
     - len
   cli.generate.project_dirs:
     variable: project_dirs
     dependencies:
-    - exclude
+    - console
     - root
     - _discover_and_show_progress
-    - console
+    - exclude
   _discover_and_show_progress.arg0:
     variable: _discover_and_show_progress.arg0
     dependencies:
@@ -19981,14 +19981,14 @@ data_flows:
   cli.generate.profiles:
     variable: profiles
     dependencies:
+    - root
+    - out
+    - org_name
+    - project_dirs
     - _generate_without_rich
     - exclude
-    - out
-    - _scan_with_progress
-    - root
-    - project_dirs
     - console
-    - org_name
+    - _scan_with_progress
     - org_url
   _scan_with_progress.arg0:
     variable: _scan_with_progress.arg0
@@ -20017,11 +20017,11 @@ data_flows:
   cli.generate.paths:
     variable: paths
     dependencies:
-    - profiles
     - out
-    - _generate_articles_with_progress
-    - console
     - org_name
+    - _generate_articles_with_progress
+    - profiles
+    - console
     - org_url
   _generate_articles_with_progress.arg0:
     variable: _generate_articles_with_progress.arg0
@@ -20074,8 +20074,8 @@ data_flows:
   _write_json_report.arg2:
     variable: _write_json_report.arg2
     dependencies:
-    - HAS_RICH
     - console
+    - HAS_RICH
   _write_json_report.arg3:
     variable: _write_json_report.arg3
     dependencies:
@@ -20095,9 +20095,9 @@ data_flows:
   cli._discover_and_show_progress.project_dirs:
     variable: project_dirs
     dependencies:
+    - root
     - _discover_projects
     - list
-    - root
     - exclude
   _discover_projects.arg0:
     variable: _discover_projects.arg0
@@ -20107,8 +20107,8 @@ data_flows:
     variable: list.arg0
     dependencies:
     - modules
-    - pyf
     - self
+    - pyf
     - rel
   progress.update.arg0:
     variable: progress.update.arg0
@@ -20117,17 +20117,17 @@ data_flows:
   cli._scan_with_progress.task:
     variable: task
     dependencies:
-    - len
     - progress
+    - len
     - project_dirs
   cli._scan_with_progress.profiles:
     variable: profiles
     dependencies:
-    - list
-    - exclude
-    - scan_organization
     - root
     - on_project_scanned
+    - scan_organization
+    - exclude
+    - list
   scan_organization.arg0:
     variable: scan_organization.arg0
     dependencies:
@@ -20139,9 +20139,9 @@ data_flows:
   cli._print_project_summary.p:
     variable: p
     dependencies:
-    - sorted
-    - profiles
     - x
+    - profiles
+    - sorted
   sorted.arg0:
     variable: sorted.arg0
     dependencies:
@@ -20182,11 +20182,11 @@ data_flows:
   cli._generate_articles_with_progress.paths:
     variable: paths
     dependencies:
-    - generate_articles
-    - profiles
     - out
     - org_name
+    - profiles
     - org_url
+    - generate_articles
   generate_articles.arg0:
     variable: generate_articles.arg0
     dependencies:
@@ -20198,14 +20198,14 @@ data_flows:
   print.arg0:
     variable: print.arg0
     dependencies:
-    - child
     - e
+    - child
   cli._generate_without_rich.project_dirs:
     variable: project_dirs
     dependencies:
+    - root
     - _discover_projects
     - list
-    - root
     - exclude
   cli._generate_without_rich.profiles:
     variable: profiles
@@ -20225,17 +20225,17 @@ data_flows:
   cli._generate_without_rich.p:
     variable: p
     dependencies:
-    - sorted
-    - profiles
     - x
+    - profiles
+    - sorted
   cli._generate_without_rich.paths:
     variable: paths
     dependencies:
-    - generate_articles
-    - profiles
     - out
     - org_name
+    - profiles
     - org_url
+    - generate_articles
   cli._write_json_report.report_data:
     variable: report_data
     dependencies:
@@ -20244,9 +20244,9 @@ data_flows:
   Path(json_report).write_text.arg0:
     variable: Path(json_report).write_text.arg0
     dependencies:
-    - report_data
     - str
     - json
+    - report_data
   json.dumps.arg0:
     variable: json.dumps.arg0
     dependencies:
@@ -20259,8 +20259,8 @@ data_flows:
   cli.inspect.profile:
     variable: profile
     dependencies:
-    - scan_project
     - path
+    - scan_project
   cli.inspect.text:
     variable: text
     dependencies:
@@ -20286,10 +20286,10 @@ data_flows:
   cli.compare.profiles:
     variable: profiles
     dependencies:
+    - root
     - list
     - scan_organization
     - exclude
-    - root
   cli.compare.gen:
     variable: gen
     dependencies:
@@ -20302,14 +20302,14 @@ data_flows:
   gen.generate_comparison.arg1:
     variable: gen.generate_comparison.arg1
     dependencies:
-    - output_path
     - Path
+    - output_path
   click.echo.arg0:
     variable: click.echo.arg0
     dependencies:
-    - len
-    - profiles
     - output_path
+    - profiles
+    - len
   cli.health.root:
     variable: root
     dependencies:
@@ -20318,10 +20318,10 @@ data_flows:
   cli.health.profiles:
     variable: profiles
     dependencies:
+    - root
     - list
     - scan_organization
     - exclude
-    - root
   cli.health.gen:
     variable: gen
     dependencies:
@@ -20334,8 +20334,8 @@ data_flows:
   gen.generate_health_report.arg1:
     variable: gen.generate_health_report.arg1
     dependencies:
-    - output_path
     - Path
+    - output_path
   cli.readme.root:
     variable: root
     dependencies:
@@ -20344,10 +20344,10 @@ data_flows:
   cli.readme.profiles:
     variable: profiles
     dependencies:
+    - root
     - list
     - scan_organization
     - exclude
-    - root
   cli.readme.gen:
     variable: gen
     dependencies:
@@ -20360,13 +20360,13 @@ data_flows:
   gen.generate_readme_list.arg1:
     variable: gen.generate_readme_list.arg1
     dependencies:
-    - output_path
     - Path
+    - output_path
   extractors.toon_parser.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
   extractors.toon_parser.find_toon_files.p:
     variable: p
     dependencies:
@@ -20411,8 +20411,8 @@ data_flows:
   extractors.toon_parser.parse_map.text:
     variable: text
     dependencies:
-    - self
     - path
+    - self
   self._read.arg0:
     variable: self._read.arg0
     dependencies:
@@ -20420,8 +20420,8 @@ data_flows:
   result.update.arg0:
     variable: result.update.arg0
     dependencies:
-    - text
     - self
+    - text
   self._parse_map_header.arg0:
     variable: self._parse_map_header.arg0
     dependencies:
@@ -20430,9 +20430,9 @@ data_flows:
     variable: result
     dependencies:
     - functions
+    - self
     - text
     - classes
-    - self
   self._parse_modules_section.arg0:
     variable: self._parse_modules_section.arg0
     dependencies:
@@ -20440,13 +20440,13 @@ data_flows:
   extractors.toon_parser.parse_map.classes:
     variable: classes
     dependencies:
-    - text
     - self
+    - text
   extractors.toon_parser.parse_map.functions:
     variable: functions
     dependencies:
-    - text
     - self
+    - text
   self._parse_details_section.arg0:
     variable: self._parse_details_section.arg0
     dependencies:
@@ -20465,11 +20465,11 @@ data_flows:
     variable: int.arg0
     dependencies:
     - crit_m
-    - dups_m
-    - step_m
     - cycles_m
-    - header_m
+    - step_m
+    - dups_m
     - lm
+    - header_m
     - m
     - hm
   extractors.toon_parser._parse_modules_section.modules:
@@ -20483,8 +20483,8 @@ data_flows:
   extractors.toon_parser._parse_modules_section.m:
     variable: m
     dependencies:
-    - line
     - re
+    - line
   modules.append.arg0:
     variable: modules.append.arg0
     dependencies:
@@ -20506,13 +20506,13 @@ data_flows:
   extractors.toon_parser._parse_details_section.file_m:
     variable: file_m
     dependencies:
-    - line
     - re
+    - line
   extractors.toon_parser._parse_details_section.cls:
     variable: cls
     dependencies:
-    - line
     - self
+    - line
     - current_file
   self._parse_class_line.arg0:
     variable: self._parse_class_line.arg0
@@ -20529,8 +20529,8 @@ data_flows:
   extractors.toon_parser._parse_details_section.func:
     variable: func
     dependencies:
-    - line
     - self
+    - line
     - current_file
   self._parse_function_line.arg0:
     variable: self._parse_function_line.arg0
@@ -20547,8 +20547,8 @@ data_flows:
   extractors.toon_parser._parse_class_line.cls_m:
     variable: cls_m
     dependencies:
-    - line
     - re
+    - line
   extractors.toon_parser._parse_class_line.name:
     variable: name
     dependencies:
@@ -20568,8 +20568,8 @@ data_flows:
   extractors.toon_parser._parse_function_line.func_m:
     variable: func_m
     dependencies:
-    - line
     - re
+    - line
   extractors.toon_parser._parse_function_line.fname:
     variable: fname
     dependencies:
@@ -20577,8 +20577,8 @@ data_flows:
   extractors.toon_parser.parse_analysis.text:
     variable: text
     dependencies:
-    - self
     - path
+    - self
   self._parse_analysis_header.arg0:
     variable: self._parse_analysis_header.arg0
     dependencies:
@@ -20586,8 +20586,8 @@ data_flows:
   extractors.toon_parser.parse_analysis.result:
     variable: result
     dependencies:
-    - text
     - self
+    - text
   self._parse_health_section.arg0:
     variable: self._parse_health_section.arg0
     dependencies:
@@ -20609,16 +20609,16 @@ data_flows:
     variable: result
     dependencies:
     - crit_m
-    - float
-    - dups_m
     - cycles_m
+    - dups_m
     - int
+    - float
     - header2
   float.arg0:
     variable: float.arg0
     dependencies:
-    - header2
     - lm
+    - header2
   extractors.toon_parser._parse_analysis_header.crit_m:
     variable: crit_m
     dependencies:
@@ -20645,13 +20645,13 @@ data_flows:
   extractors.toon_parser._parse_health_section.hm:
     variable: hm
     dependencies:
-    - line
     - re
+    - line
   health_items.append.arg0:
     variable: health_items.append.arg0
     dependencies:
-    - hm
     - int
+    - hm
   extractors.toon_parser._parse_refactor_section.refactor_items:
     variable: refactor_items
   extractors.toon_parser._parse_refactor_section.in_refactor:
@@ -20663,8 +20663,8 @@ data_flows:
   extractors.toon_parser._parse_refactor_section.rm:
     variable: rm
     dependencies:
-    - line
     - re
+    - line
   refactor_items.append.arg0:
     variable: refactor_items.append.arg0
     dependencies:
@@ -20680,19 +20680,19 @@ data_flows:
   extractors.toon_parser._parse_layers_section.lm:
     variable: lm
     dependencies:
-    - line
     - re
+    - line
   layers.append.arg0:
     variable: layers.append.arg0
     dependencies:
-    - float
     - lm
+    - float
     - int
   extractors.toon_parser.parse_flow.text:
     variable: text
     dependencies:
-    - self
     - path
+    - self
   extractors.toon_parser.parse_flow.hm:
     variable: hm
     dependencies:
@@ -20701,9 +20701,9 @@ data_flows:
   extractors.toon_parser.parse_flow.result:
     variable: result
     dependencies:
-    - hm
-    - pipelines
     - int
+    - pipelines
+    - hm
   extractors.toon_parser.parse_flow.pipelines:
     variable: pipelines
   extractors.toon_parser.parse_flow.line:
@@ -20713,8 +20713,8 @@ data_flows:
   extractors.toon_parser.parse_flow.pipe_m:
     variable: pipe_m
     dependencies:
-    - line
     - re
+    - line
   pipelines.append.arg0:
     variable: pipelines.append.arg0
     dependencies:
@@ -20722,14 +20722,14 @@ data_flows:
   extractors.toon_parser.parse_flow.current_pipe:
     variable: current_pipe
     dependencies:
-    - pipe_m
     - pur_m
     - bn_m
+    - pipe_m
   extractors.toon_parser.parse_flow.step_m:
     variable: step_m
     dependencies:
-    - line
     - re
+    - line
   current_pipe['steps'].append.arg0:
     variable: current_pipe['steps'].append.arg0
     dependencies:
@@ -20738,18 +20738,18 @@ data_flows:
   extractors.toon_parser.parse_flow.bn_m:
     variable: bn_m
     dependencies:
-    - line
     - re
+    - line
   extractors.toon_parser.parse_flow.pur_m:
     variable: pur_m
     dependencies:
-    - line
     - re
+    - line
   extractors.toon_parser.parse_functions.text:
     variable: text
     dependencies:
-    - self
     - path
+    - self
   extractors.toon_parser.parse_functions.functions:
     variable: functions
   extractors.toon_parser.parse_functions.line:
@@ -20759,8 +20759,8 @@ data_flows:
   extractors.toon_parser.parse_functions.fm:
     variable: fm
     dependencies:
-    - line
     - re
+    - line
   extractors.toon_parser.parse_functions.name:
     variable: name
     dependencies:
@@ -20774,8 +20774,8 @@ data_flows:
   extractors.readme_parser.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
   extractors.readme_parser.parse.readme_path:
     variable: readme_path
     dependencies:
@@ -20793,13 +20793,13 @@ data_flows:
   extractors.readme_parser._find_readme.fp:
     variable: fp
     dependencies:
-    - self
     - name
+    - self
   extractors.readme_parser._parse_sections.desc_text:
     variable: desc_text
     dependencies:
-    - text
     - self
+    - text
   self._extract_description.arg0:
     variable: self._extract_description.arg0
     dependencies:
@@ -20811,8 +20811,8 @@ data_flows:
   sections.update.arg0:
     variable: sections.update.arg0
     dependencies:
-    - text
     - self
+    - text
   self._extract_heading_sections.arg0:
     variable: self._extract_heading_sections.arg0
     dependencies:
@@ -20842,15 +20842,15 @@ data_flows:
   extractors.readme_parser._extract_description.desc_lines:
     variable: desc_lines
     dependencies:
-    - len
-    - post_h1
     - preamble
+    - post_h1
+    - len
   extractors.readme_parser._extract_description.desc_text:
     variable: desc_text
     dependencies:
-    - desc_lines
-    - re
     - desc_text
+    - re
+    - desc_lines
   '''\n''.join.arg0':
     variable: '''\n''.join.arg0'
     dependencies:
@@ -20892,9 +20892,9 @@ data_flows:
   extractors.readme_parser._extract_heading_sections.matches:
     variable: matches
     dependencies:
+    - text
     - list
     - heading_pattern
-    - text
   heading_pattern.finditer.arg0:
     variable: heading_pattern.finditer.arg0
     dependencies:
@@ -20906,14 +20906,14 @@ data_flows:
   extractors.readme_parser._extract_heading_sections.title_lower:
     variable: title_lower
     dependencies:
-    - re
     - title
+    - re
   extractors.readme_parser._extract_heading_sections.canonical:
     variable: canonical
     dependencies:
-    - content
-    - title_lower
     - _SECTION_ALIASES
+    - title_lower
+    - content
   _SECTION_ALIASES.get.arg0:
     variable: _SECTION_ALIASES.get.arg0
     dependencies:
@@ -20930,16 +20930,16 @@ data_flows:
     variable: end
     dependencies:
     - i
-    - len
     - text
+    - len
     - matches
   extractors.readme_parser._extract_heading_sections.content:
     variable: content
     dependencies:
-    - content
-    - text
     - end
+    - text
     - start
+    - content
   extractors.readme_parser._extract_heading_sections.sections:
     variable: sections
     dependencies:
@@ -20961,8 +20961,8 @@ data_flows:
   extractors.docker_parser.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
   extractors.docker_parser.parse.df:
     variable: df
     dependencies:
@@ -20970,9 +20970,9 @@ data_flows:
   extractors.docker_parser.parse.result:
     variable: result
     dependencies:
-    - result
-    - list
     - dict
+    - list
+    - result
   extractors.docker_parser.parse.df_data:
     variable: df_data
     dependencies:
@@ -20997,8 +20997,8 @@ data_flows:
   extractors.docker_parser.parse.compose_data:
     variable: compose_data
     dependencies:
-    - self
     - cf
+    - self
   self._parse_compose.arg0:
     variable: self._parse_compose.arg0
     dependencies:
@@ -21020,8 +21020,8 @@ data_flows:
   extractors.docker_parser._find_dockerfiles.p:
     variable: p
     dependencies:
-    - self
     - docker_dir
+    - self
   found.append.arg0:
     variable: found.append.arg0
     dependencies:
@@ -21051,13 +21051,13 @@ data_flows:
   extractors.docker_parser._parse_dockerfile.line:
     variable: line
     dependencies:
-    - line
     - text
+    - line
   extractors.docker_parser._parse_dockerfile.from_m:
     variable: from_m
     dependencies:
-    - line
     - re
+    - line
   re.match.arg2:
     variable: re.match.arg2
     dependencies:
@@ -21075,8 +21075,8 @@ data_flows:
   extractors.docker_parser._parse_dockerfile.expose_m:
     variable: expose_m
     dependencies:
-    - line
     - re
+    - line
   extractors.docker_parser._parse_dockerfile.port:
     variable: port
     dependencies:
@@ -21088,13 +21088,13 @@ data_flows:
   extractors.docker_parser._parse_dockerfile.entry_m:
     variable: entry_m
     dependencies:
-    - line
     - re
+    - line
   extractors.docker_parser._parse_dockerfile.cmd_m:
     variable: cmd_m
     dependencies:
-    - line
     - re
+    - line
   extractors.docker_parser._parse_compose.data:
     variable: data
     dependencies:
@@ -21109,16 +21109,16 @@ data_flows:
   extractors.docker_parser._parse_compose.svc_info:
     variable: svc_info
     dependencies:
-    - list
-    - deps
-    - str
     - svc
-    - bool
     - v
     - ports_raw
-    - len
-    - p
     - env
+    - p
+    - deps
+    - list
+    - str
+    - bool
+    - len
   bool.arg0:
     variable: bool.arg0
     dependencies:
@@ -21147,8 +21147,8 @@ data_flows:
   extractors.changelog_parser.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
   extractors.changelog_parser.parse.cl_path:
     variable: cl_path
     dependencies:
@@ -21170,8 +21170,8 @@ data_flows:
   extractors.changelog_parser._find_changelog.fp:
     variable: fp
     dependencies:
-    - self
     - name
+    - self
   extractors.changelog_parser._parse_entries.entries:
     variable: entries
   extractors.changelog_parser._parse_entries.heading_re:
@@ -21181,9 +21181,9 @@ data_flows:
   extractors.changelog_parser._parse_entries.matches:
     variable: matches
     dependencies:
-    - list
-    - text
     - heading_re
+    - text
+    - list
   heading_re.finditer.arg0:
     variable: heading_re.finditer.arg0
     dependencies:
@@ -21204,20 +21204,20 @@ data_flows:
     variable: end
     dependencies:
     - i
-    - len
     - text
+    - len
     - matches
   extractors.changelog_parser._parse_entries.content:
     variable: content
     dependencies:
-    - text
     - end
+    - text
     - start
   extractors.changelog_parser._parse_entries.summary:
     variable: summary
     dependencies:
-    - content
     - self
+    - content
   self._summarize_entry.arg0:
     variable: self._summarize_entry.arg0
     dependencies:
@@ -21225,9 +21225,9 @@ data_flows:
   entries.append.arg0:
     variable: entries.append.arg0
     dependencies:
+    - date
     - summary
     - version
-    - date
   extractors.changelog_parser._summarize_entry.lines:
     variable: lines
     dependencies:
@@ -21246,14 +21246,14 @@ data_flows:
   extractors.changelog_parser._summarize_entry.cat_match:
     variable: cat_match
     dependencies:
-    - line
     - re
+    - line
   extractors.changelog_parser._summarize_entry.item_text:
     variable: item_text
     dependencies:
-    - line
-    - re
     - item_text
+    - re
+    - line
   extractors.changelog_parser._summarize_entry.prefix:
     variable: prefix
     dependencies:
@@ -21261,8 +21261,8 @@ data_flows:
   items.append.arg0:
     variable: items.append.arg0
     dependencies:
-    - prefix
     - item_text
+    - prefix
   '''; ''.join.arg0':
     variable: '''; ''.join.arg0'
     dependencies:
@@ -21270,14 +21270,14 @@ data_flows:
   generators.article.__init__.self:
     variable: self
     dependencies:
+    - org_url
     - datetime
     - org_name
-    - org_url
   generators.article.generate.md:
     variable: md
     dependencies:
-    - self
     - profile
+    - self
   self._render_article.arg0:
     variable: self._render_article.arg0
     dependencies:
@@ -21289,8 +21289,8 @@ data_flows:
   generators.article.generate_index.md:
     variable: md
     dependencies:
-    - profiles
     - self
+    - profiles
   self._render_index.arg0:
     variable: self._render_index.arg0
     dependencies:
@@ -21298,22 +21298,22 @@ data_flows:
   generators.article._render_article.sections:
     variable: sections
     dependencies:
+    - render_changelog
+    - render_usage
+    - render_header
+    - p
+    - render_api_surface
+    - render_architecture
+    - render_build_targets
+    - render_overview
     - render_docker
-    - render_maturity
+    - render_footer
+    - self
+    - render_metrics
     - render_tech_stack
     - render_dependencies
     - render_frontmatter
-    - render_api_surface
-    - render_changelog
-    - self
-    - render_metrics
-    - render_header
-    - render_overview
-    - render_architecture
-    - render_footer
-    - p
-    - render_usage
-    - render_build_targets
+    - render_maturity
   render_frontmatter.arg0:
     variable: render_frontmatter.arg0
     dependencies:
@@ -21389,74 +21389,74 @@ data_flows:
   '''\n\n''.join.arg0':
     variable: '''\n\n''.join.arg0'
     dependencies:
-    - s
     - sections
+    - s
   generators.article._render_index.sections:
     variable: sections
   sections.append.arg0:
     variable: sections.append.arg0
     dependencies:
-    - category
-    - title
-    - tested
-    - total_sloc
-    - avg_score
-    - grade_lines
-    - lines
-    - desc
     - deps_str
-    - top_lines
+    - lang
     - p
     - version
-    - self
-    - total_projects
+    - with_ci
     - ci
+    - grade_lines
+    - desc
+    - tests
     - profiles
+    - tested
+    - total_projects
+    - title
+    - sum
+    - len
+    - avg_score
     - attn_lines
     - features
+    - top_lines
+    - category
+    - lines
+    - total_sloc
     - avg_maturity
-    - with_ci
-    - sum
-    - tests
-    - len
-    - lang
+    - self
   generators.article._render_index.total_lines:
     variable: total_lines
     dependencies:
     - p
-    - profiles
     - sum
+    - profiles
   sum.arg0:
     variable: sum.arg0
     dependencies:
-    - set
-    - complexities
+    - mi_scores
     - f
     - self
-    - mi_scores
+    - complexities
     - path
+    - set
   generators.article._render_index.total_files:
     variable: total_files
     dependencies:
     - p
-    - profiles
     - sum
+    - profiles
   generators.article._render_index.avg_maturity:
     variable: avg_maturity
     dependencies:
-    - len
-    - profiles
     - p
     - sum
+    - profiles
+    - len
   generators.article._render_index.p:
     variable: p
     dependencies:
-    - sorted
-    - grades
-    - profiles
-    - x
     - p
+    - sorted
     - projs
+    - profiles
+    - grades
+    - x
   categories.setdefault(p.category, []).append.arg0:
     variable: categories.setdefault(p.category, []).append.arg0
     dependencies:
@@ -21496,26 +21496,26 @@ data_flows:
   lines.append.arg0:
     variable: lines.append.arg0
     dependencies:
-    - pct
-    - bar
-    - i
+    - total_sloc
     - s
+    - count
+    - i
+    - lang
+    - p
     - desc
     - tool
-    - count
-    - fw
-    - total_sloc
     - dep
-    - len
-    - p
-    - lang
-    - m
+    - bar
+    - pct
+    - fw
     - total_files
+    - m
+    - len
   generators.article._render_index.grades:
     variable: grades
     dependencies:
-    - p
     - grades
+    - p
   grades.get.arg0:
     variable: grades.get.arg0
     dependencies:
@@ -21528,8 +21528,8 @@ data_flows:
   generators.article._render_index.count:
     variable: count
     dependencies:
-    - g
     - grades
+    - g
   generators.article._render_index.bar:
     variable: bar
     dependencies:
@@ -21537,8 +21537,8 @@ data_flows:
   grade_lines.append.arg0:
     variable: grade_lines.append.arg0
     dependencies:
-    - g
     - count
+    - g
     - bar
   generators.article_sections.render_frontmatter.meta:
     variable: meta
@@ -21547,12 +21547,12 @@ data_flows:
   generators.article_sections.render_frontmatter.tags:
     variable: tags
     dependencies:
-    - list
-    - set
-    - t
-    - tags
     - meta
     - p
+    - t
+    - tags
+    - list
+    - set
   set.arg0:
     variable: set.arg0
     dependencies:
@@ -21640,13 +21640,13 @@ data_flows:
   generators.article_sections.render_architecture.n_classes:
     variable: n_classes
     dependencies:
-    - len
     - mod
+    - len
   generators.article_sections.render_architecture.n_funcs:
     variable: n_funcs
     dependencies:
-    - len
     - mod
+    - len
   generators.article_sections.render_architecture.doc:
     variable: doc
     dependencies:
@@ -21657,14 +21657,14 @@ data_flows:
   generators.article_sections.render_architecture.cls:
     variable: cls
     dependencies:
-    - mod
     - all_classes
+    - mod
   all_classes.append.arg0:
     variable: all_classes.append.arg0
     dependencies:
     - len
-    - cls
     - mod
+    - cls
   generators.article_sections.render_metrics.stats:
     variable: stats
     dependencies:
@@ -21726,8 +21726,8 @@ data_flows:
   generators.article_sections.render_api_surface.desc:
     variable: desc
     dependencies:
-    - cmd
     - cls
+    - cmd
   generators.article_sections.render_api_surface.ep:
     variable: ep
     dependencies:
@@ -21770,8 +21770,8 @@ data_flows:
   generators.article_sections.render_build_targets.entry:
     variable: entry
     dependencies:
-    - entry
     - name
+    - entry
     - desc
   generators.article_sections.render_build_targets.cmd:
     variable: cmd
@@ -21824,9 +21824,9 @@ data_flows:
   generators.article_sections.render_changelog.header:
     variable: header
     dependencies:
+    - date
     - header
     - ver
-    - date
   generators.article_sections.render_usage.parts:
     variable: parts
   generators.article_sections.render_usage.install:
@@ -21872,8 +21872,8 @@ data_flows:
   utils._load_gitignore.self:
     variable: self
     dependencies:
-    - content
     - self
+    - content
   self._parse_patterns.arg0:
     variable: self._parse_patterns.arg0
     dependencies:
@@ -21883,8 +21883,8 @@ data_flows:
   utils._parse_patterns.line:
     variable: line
     dependencies:
-    - content
     - line
+    - content
   utils._parse_patterns.is_negation:
     variable: is_negation
     dependencies:
@@ -21896,9 +21896,9 @@ data_flows:
   patterns.append.arg0:
     variable: patterns.append.arg0
     dependencies:
-    - line
     - is_dir_only
     - is_negation
+    - line
   utils._match_pattern.pattern:
     variable: pattern
     dependencies:
@@ -21906,8 +21906,8 @@ data_flows:
   fnmatch.arg0:
     variable: fnmatch.arg0
     dependencies:
-    - part
     - path
+    - part
   fnmatch.arg1:
     variable: fnmatch.arg1
     dependencies:
@@ -21928,17 +21928,17 @@ data_flows:
   utils.is_ignored.depth:
     variable: depth
     dependencies:
-    - len
     - relative_path
+    - len
   utils.is_ignored.ignored:
     variable: ignored
   utils.is_ignored.matches:
     variable: matches
     dependencies:
-    - is_dir
+    - pattern
     - self
     - path_str
-    - pattern
+    - is_dir
   self._match_pattern.arg0:
     variable: self._match_pattern.arg0
     dependencies:
@@ -21954,9 +21954,9 @@ data_flows:
   utils.create_scan_filter.gitignore:
     variable: gitignore
     dependencies:
-    - GitignoreParser
     - project_path
     - max_depth
+    - GitignoreParser
   GitignoreParser.arg0:
     variable: GitignoreParser.arg0
     dependencies:
@@ -21979,8 +21979,8 @@ data_flows:
   utils.should_scan.rel_path:
     variable: rel_path
     dependencies:
-    - project_path
     - path
+    - project_path
   path.relative_to.arg0:
     variable: path.relative_to.arg0
     dependencies:
@@ -21988,10 +21988,10 @@ data_flows:
   any.arg0:
     variable: any.arg0
     dependencies:
-    - child
-    - markers
-    - k
     - all_deps
+    - k
+    - markers
+    - child
     - m
   utils.should_scan.is_dir:
     variable: is_dir
@@ -22008,15 +22008,15 @@ data_flows:
   generators.comparison.__init__.self:
     variable: self
     dependencies:
+    - org_url
     - datetime
     - org_name
-    - org_url
   generators.comparison.generate_comparison.md:
     variable: md
     dependencies:
-    - profiles
-    - self
     - title
+    - self
+    - profiles
   self._render_comparison.arg0:
     variable: self._render_comparison.arg0
     dependencies:
@@ -22043,9 +22043,9 @@ data_flows:
   generators.comparison.generate_category_articles.md:
     variable: md
     dependencies:
-    - cat
-    - self
     - projs
+    - self
+    - cat
   self._render_category.arg0:
     variable: self._render_category.arg0
     dependencies:
@@ -22061,14 +22061,14 @@ data_flows:
   paths.append.arg0:
     variable: paths.append.arg0
     dependencies:
-    - comp_path
     - article_path
     - health_path
+    - comp_path
   generators.comparison.generate_health_report.md:
     variable: md
     dependencies:
-    - profiles
     - self
+    - profiles
   self._render_health_report.arg0:
     variable: self._render_health_report.arg0
     dependencies:
@@ -22098,29 +22098,29 @@ data_flows:
   generators.comparison._size_comparison.sorted_p:
     variable: sorted_p
     dependencies:
-    - sorted
-    - profiles
     - p
+    - profiles
+    - sorted
   generators.comparison._size_comparison.lines:
     variable: lines
   generators.comparison._size_comparison.total_sloc:
     variable: total_sloc
     dependencies:
     - p
-    - profiles
     - sum
+    - profiles
   generators.comparison._size_comparison.total_files:
     variable: total_files
     dependencies:
     - p
-    - profiles
     - sum
+    - profiles
   generators.comparison._maturity_leaderboard.sorted_p:
     variable: sorted_p
     dependencies:
-    - sorted
-    - profiles
     - p
+    - profiles
+    - sorted
   generators.comparison._maturity_leaderboard.lines:
     variable: lines
   generators.comparison._maturity_leaderboard.m:
@@ -22135,9 +22135,9 @@ data_flows:
   generators.comparison._complexity_comparison.sorted_p:
     variable: sorted_p
     dependencies:
-    - sorted
     - p
     - with_cc
+    - sorted
   generators.comparison._complexity_comparison.lines:
     variable: lines
   generators.comparison._complexity_comparison.p:
@@ -22206,8 +22206,8 @@ data_flows:
     variable: dep
     dependencies:
     - p
-    - set
     - d
+    - set
   generators.comparison._dependency_overlap.dep_usage[dep]:
     variable: dep_usage[dep]
     dependencies:
@@ -22215,17 +22215,17 @@ data_flows:
   generators.comparison._dependency_overlap.shared:
     variable: shared
     dependencies:
-    - dep_usage
     - count
+    - dep_usage
     - dep
   generators.comparison._dependency_overlap.lines:
     variable: lines
   generators.comparison._dependency_overlap.pct:
     variable: pct
     dependencies:
-    - len
     - count
     - profiles
+    - len
   generators.comparison._render_category.sections:
     variable: sections
   generators.comparison._render_category.lines:
@@ -22233,72 +22233,72 @@ data_flows:
   generators.comparison._render_category.p:
     variable: p
     dependencies:
-    - sorted
-    - profiles
     - x
+    - profiles
+    - sorted
   generators.comparison._render_category.desc:
     variable: desc
     dependencies:
-    - p
     - desc
+    - p
   generators.comparison._render_category.total_sloc:
     variable: total_sloc
     dependencies:
     - p
-    - profiles
     - sum
+    - profiles
   generators.comparison._render_category.avg_maturity:
     variable: avg_maturity
     dependencies:
-    - len
-    - profiles
     - p
     - sum
+    - profiles
+    - len
   generators.comparison._render_health_report.sections:
     variable: sections
   generators.comparison._render_health_report.total_projects:
     variable: total_projects
     dependencies:
-    - len
     - profiles
+    - len
   generators.comparison._render_health_report.total_sloc:
     variable: total_sloc
     dependencies:
     - p
-    - profiles
     - sum
+    - profiles
   generators.comparison._render_health_report.avg_score:
     variable: avg_score
     dependencies:
-    - p
-    - profiles
-    - sum
     - total_projects
+    - sum
+    - profiles
+    - p
   generators.comparison._render_health_report.tested:
     variable: tested
     dependencies:
     - p
-    - profiles
     - sum
+    - profiles
   generators.comparison._render_health_report.with_ci:
     variable: with_ci
     dependencies:
     - p
-    - profiles
     - sum
+    - profiles
   generators.comparison._render_health_report.p:
     variable: p
     dependencies:
-    - grades
-    - top
-    - profiles
     - p
     - low
+    - top
+    - profiles
+    - grades
   generators.comparison._render_health_report.grades:
     variable: grades
     dependencies:
-    - p
     - grades
+    - p
   generators.comparison._render_health_report.grade_lines:
     variable: grade_lines
   generators.comparison._render_health_report.g:
@@ -22306,14 +22306,14 @@ data_flows:
   generators.comparison._render_health_report.count:
     variable: count
     dependencies:
-    - g
     - grades
+    - g
   generators.comparison._render_health_report.bar:
     variable: bar
     dependencies:
-    - max
     - count
     - grades
+    - max
   max.arg0:
     variable: max.arg0
     dependencies:
@@ -22321,9 +22321,9 @@ data_flows:
   generators.comparison._render_health_report.low:
     variable: low
     dependencies:
-    - sorted
-    - profiles
     - p
+    - profiles
+    - sorted
   generators.comparison._render_health_report.attn_lines:
     variable: attn_lines
   generators.comparison._render_health_report.m:
@@ -22336,14 +22336,14 @@ data_flows:
     variable: attn_lines.append.arg0
     dependencies:
     - p
-    - missing
     - m
+    - missing
   generators.comparison._render_health_report.top:
     variable: top
     dependencies:
-    - sorted
-    - profiles
     - p
+    - profiles
+    - sorted
   generators.comparison._render_health_report.top_lines:
     variable: top_lines
   top_lines.append.arg0:
@@ -22353,9 +22353,9 @@ data_flows:
   generators.comparison.generate_readme_list.md:
     variable: md
     dependencies:
-    - profiles
-    - self
     - title
+    - self
+    - profiles
   self._render_readme_list.arg0:
     variable: self._render_readme_list.arg0
     dependencies:
@@ -22369,9 +22369,9 @@ data_flows:
   generators.comparison._render_readme_list.p:
     variable: p
     dependencies:
-    - sorted
     - profiles
     - x
+    - sorted
   generators.comparison._render_readme_list.tests:
     variable: tests
     dependencies:
@@ -22391,8 +22391,8 @@ data_flows:
   generators.comparison._render_readme_list.desc:
     variable: desc
     dependencies:
-    - p
     - desc
+    - p
   generators.comparison._render_readme_list.features:
     variable: features
   features.append.arg0:
@@ -22406,9 +22406,9 @@ data_flows:
   generators.comparison._render_readme_list.deps_str:
     variable: deps_str
     dependencies:
-    - deps_str
-    - len
     - p
+    - len
+    - deps_str
     - deps
   analyzers.structure._LANG_EXTENSIONS:
     variable: _LANG_EXTENSIONS
@@ -22427,8 +22427,8 @@ data_flows:
   analyzers.structure.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
     - filter_func
   analyzers.structure._should_skip.part:
     variable: part
@@ -22450,8 +22450,8 @@ data_flows:
   self._should_skip.arg0:
     variable: self._should_skip.arg0
     dependencies:
-    - pyf
     - self
+    - pyf
   self._filter.arg0:
     variable: self._filter.arg0
     dependencies:
@@ -22488,15 +22488,15 @@ data_flows:
   analyzers.structure.analyze.top_dirs:
     variable: top_dirs
     dependencies:
-    - sorted
     - dirs
+    - sorted
   analyzers.structure.analyze.has_src:
     variable: has_src
     dependencies:
     - any
     - self
-    - top_dirs
     - d
+    - top_dirs
   analyzers.structure.analyze.has_tests:
     variable: has_tests
     dependencies:
@@ -22512,11 +22512,11 @@ data_flows:
   dict.arg0:
     variable: dict.arg0
     dependencies:
-    - fan_in
     - external_counts
     - fan_out
-    - x
+    - fan_in
     - sorted
+    - x
   analyzers.structure.detect_tech_stack.lang_counts:
     variable: lang_counts
     dependencies:
@@ -22607,13 +22607,13 @@ data_flows:
   analyzers.dependencies.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
   analyzers.dependencies._load_pyproject.self:
     variable: self
     dependencies:
-    - fp
     - tomli
+    - fp
   analyzers.dependencies._load_pyproject.fp:
     variable: fp
     dependencies:
@@ -22643,13 +22643,13 @@ data_flows:
     variable: deps.extend.arg0
     dependencies:
     - proj_deps
-    - self
     - d
+    - self
   self._parse_dep_name.arg0:
     variable: self._parse_dep_name.arg0
     dependencies:
-    - line
     - d
+    - line
   analyzers.dependencies.get_runtime_deps.poetry_deps:
     variable: poetry_deps
     dependencies:
@@ -22657,15 +22657,15 @@ data_flows:
   analyzers.dependencies.get_runtime_deps.name:
     variable: name
     dependencies:
-    - line
-    - self
     - poetry_deps
     - data
+    - self
+    - line
   deps.append.arg0:
     variable: deps.append.arg0
     dependencies:
-    - self
     - name
+    - self
     - d
   analyzers.dependencies.get_runtime_deps.req_file:
     variable: req_file
@@ -22724,9 +22724,9 @@ data_flows:
   analyzers.dependencies.get_dev_deps.d:
     variable: d
     dependencies:
-    - opt
-    - deps
     - group
+    - deps
+    - opt
   opt.get.arg0:
     variable: opt.get.arg0
     dependencies:
@@ -22738,11 +22738,11 @@ data_flows:
   analyzers.dependencies.get_dev_deps.name:
     variable: name
     dependencies:
+    - data
     - dev_group
     - poetry_dev
-    - self
     - line
-    - data
+    - self
   analyzers.dependencies.get_dev_deps.groups:
     variable: groups
     dependencies:
@@ -22761,8 +22761,8 @@ data_flows:
   analyzers.dependencies.get_dev_deps.line:
     variable: line
     dependencies:
-    - fp
     - line
+    - fp
   analyzers.dependencies.get_dev_deps.pkg_json:
     variable: pkg_json
     dependencies:
@@ -22787,8 +22787,8 @@ data_flows:
   analyzers.maturity.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
     - profile
   analyzers.maturity.score.p:
     variable: p
@@ -22849,13 +22849,13 @@ data_flows:
   analyzers.maturity.score.src_lines:
     variable: src_lines
     dependencies:
-    - max
     - p
+    - max
   analyzers.maturity.score.test_ratio:
     variable: test_ratio
     dependencies:
-    - src_lines
     - p
+    - src_lines
   analyzers.maturity.score.readme_keys:
     variable: readme_keys
     dependencies:
@@ -22867,47 +22867,47 @@ data_flows:
     variable: found
     dependencies:
     - readme_keys
-    - len
     - expected_sections
+    - len
   analyzers.maturity.score.doc_completeness:
     variable: doc_completeness
     dependencies:
     - len
-    - found
     - expected_sections
+    - found
   analyzers.maturity.score.points:
     variable: points
     dependencies:
-    - weight
     - points
+    - weight
   analyzers.maturity.score.max_points:
     variable: max_points
     dependencies:
-    - max_points
     - weight
+    - max_points
   analyzers.maturity.score.checks:
     variable: checks
     dependencies:
+    - has_docs
+    - has_license
+    - doc_completeness
+    - has_makefile
+    - has_changelog
+    - has_examples
+    - has_ci
     - has_docker
+    - test_ratio
+    - has_readme
+    - p
+    - has_gitignore
+    - has_tests
     - has_pyproject
     - has_version
-    - has_makefile
-    - has_ci
-    - has_docs
-    - has_tests
-    - doc_completeness
-    - has_license
-    - has_examples
-    - has_gitignore
-    - p
-    - has_changelog
-    - has_readme
-    - test_ratio
   analyzers.maturity.score.raw_score:
     variable: raw_score
     dependencies:
-    - max_points
     - points
+    - max_points
   analyzers.maturity.score.grade:
     variable: grade
     dependencies:
@@ -22915,15 +22915,15 @@ data_flows:
   round.arg0:
     variable: round.arg0
     dependencies:
-    - avg_cc
     - avg_mi
+    - avg_cc
   analyzers.import_graph._SKIP_DIRS:
     variable: _SKIP_DIRS
   analyzers.import_graph.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
     - filter_func
   analyzers.import_graph._should_skip.part:
     variable: part
@@ -22936,8 +22936,8 @@ data_flows:
   analyzers.import_graph._module_name.rel:
     variable: rel
     dependencies:
-    - self
     - path
+    - self
   analyzers.import_graph._module_name.parts:
     variable: parts
     dependencies:
@@ -22956,8 +22956,8 @@ data_flows:
   defaultdict.arg0:
     variable: defaultdict.arg0
     dependencies:
-    - set
     - int
+    - set
   analyzers.import_graph.build_graph.pyf:
     variable: pyf
     dependencies:
@@ -22965,12 +22965,12 @@ data_flows:
   analyzers.import_graph.build_graph.mod_name:
     variable: mod_name
     dependencies:
+    - pyf
+    - mod_name
+    - self
     - is_test
     - rel_str
-    - pyf
-    - self
     - lines
-    - mod_name
   self._module_name.arg0:
     variable: self._module_name.arg0
     dependencies:
@@ -22978,8 +22978,8 @@ data_flows:
   analyzers.import_graph.build_graph.rel_str:
     variable: rel_str
     dependencies:
-    - pyf
     - str
+    - pyf
     - self
   pyf.relative_to.arg0:
     variable: pyf.relative_to.arg0
@@ -23000,15 +23000,15 @@ data_flows:
   analyzers.import_graph.build_graph.modules:
     variable: modules
     dependencies:
-    - is_test
-    - lines
-    - rel_str
     - mod_name
+    - is_test
+    - rel_str
+    - lines
   analyzers.import_graph.build_graph.tree:
     variable: tree
     dependencies:
-    - ast
     - code
+    - ast
   ast.parse.arg0:
     variable: ast.parse.arg0
     dependencies:
@@ -23031,21 +23031,21 @@ data_flows:
   imported_modules.append.arg0:
     variable: imported_modules.append.arg0
     dependencies:
-    - alias
-    - node
     - base
+    - node
+    - alias
   analyzers.import_graph.build_graph.parts:
     variable: parts
     dependencies:
+    - self
     - pyf
     - list
-    - self
   analyzers.import_graph.build_graph.base:
     variable: base
     dependencies:
+    - node
     - len
     - parts
-    - node
   analyzers.import_graph.build_graph.imp:
     variable: imp
     dependencies:
@@ -23076,8 +23076,8 @@ data_flows:
     variable: edge_list.append.arg0
     dependencies:
     - count
-    - dst
     - src
+    - dst
   analyzers.import_graph.build_graph.cycles:
     variable: cycles
     dependencies:
@@ -23094,8 +23094,8 @@ data_flows:
   analyzers.import_graph._detect_internal_packages.child:
     variable: child
     dependencies:
-    - src
     - self
+    - src
   pkgs.add.arg0:
     variable: pkgs.add.arg0
     dependencies:
@@ -23126,16 +23126,16 @@ data_flows:
   analyzers.import_graph._detect_cycles.cycle:
     variable: cycle
     dependencies:
-    - tuple
-    - sorted
-    - a
     - b
+    - tuple
+    - a
+    - sorted
   tuple.arg0:
     variable: tuple.arg0
     dependencies:
     - b
-    - sorted
     - a
+    - sorted
   cycles.append.arg0:
     variable: cycles.append.arg0
     dependencies:
@@ -23157,8 +23157,8 @@ data_flows:
     variable: all_modules
     dependencies:
     - fan_in
-    - set
     - fan_out
+    - set
   analyzers.import_graph.get_hub_modules.scored:
     variable: scored
   analyzers.import_graph.get_hub_modules.mod:
@@ -23177,8 +23177,8 @@ data_flows:
   analyzers.import_graph.get_hub_modules.fo:
     variable: fo
     dependencies:
-    - fan_out
     - mod
+    - fan_out
   fan_out.get.arg0:
     variable: fan_out.get.arg0
     dependencies:
@@ -23187,8 +23187,8 @@ data_flows:
     variable: scored.append.arg0
     dependencies:
     - fi
-    - fo
     - mod
+    - fo
   analyzers.code_metrics.HAS_RADON:
     variable: HAS_RADON
   analyzers.code_metrics._SKIP_DIRS:
@@ -23200,8 +23200,8 @@ data_flows:
   analyzers.code_metrics.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
     - filter_func
   analyzers.code_metrics._should_skip.part:
     variable: part
@@ -23210,9 +23210,9 @@ data_flows:
   analyzers.code_metrics._is_test.rel:
     variable: rel
     dependencies:
+    - path
     - str
     - self
-    - path
   analyzers.code_metrics._scan.p:
     variable: p
     dependencies:
@@ -23228,8 +23228,8 @@ data_flows:
   self._is_test.arg0:
     variable: self._is_test.arg0
     dependencies:
-    - pyf
     - p
+    - pyf
   self._test_files.append.arg0:
     variable: self._test_files.append.arg0
     dependencies:
@@ -23243,13 +23243,13 @@ data_flows:
   analyzers.code_metrics.analyze.total_files:
     variable: total_files
     dependencies:
-    - len
     - self
+    - len
   analyzers.code_metrics.analyze.test_files:
     variable: test_files
     dependencies:
-    - len
     - self
+    - len
   analyzers.code_metrics.analyze.source_files:
     variable: source_files
     dependencies:
@@ -23259,9 +23259,9 @@ data_flows:
     variable: source_lines
     dependencies:
     - f
-    - set
-    - self
     - sum
+    - self
+    - set
   self._count_lines.arg0:
     variable: self._count_lines.arg0
     dependencies:
@@ -23270,8 +23270,8 @@ data_flows:
     variable: test_lines
     dependencies:
     - f
-    - self
     - sum
+    - self
   analyzers.code_metrics.analyze.total_lines:
     variable: total_lines
     dependencies:
@@ -23312,11 +23312,11 @@ data_flows:
   hotspots.append.arg0:
     variable: hotspots.append.arg0
     dependencies:
-    - block
-    - cc_rank
     - pyf
-    - str
+    - block
     - self
+    - str
+    - cc_rank
   cc_rank.arg0:
     variable: cc_rank.arg0
     dependencies:
@@ -23337,8 +23337,8 @@ data_flows:
   analyzers.code_metrics.analyze.tree:
     variable: tree
     dependencies:
-    - ast
     - code
+    - ast
   analyzers.code_metrics.analyze.cc:
     variable: cc
     dependencies:
@@ -23351,26 +23351,26 @@ data_flows:
   analyzers.code_metrics.analyze.avg_cc:
     variable: avg_cc
     dependencies:
-    - len
     - sum
     - complexities
+    - len
   analyzers.code_metrics.analyze.max_cc:
     variable: max_cc
     dependencies:
-    - max
     - complexities
+    - max
   analyzers.code_metrics.analyze.avg_mi:
     variable: avg_mi
     dependencies:
-    - len
-    - sum
     - mi_scores
+    - sum
+    - len
   analyzers.code_metrics._ast_complexity.cc:
     variable: cc
     dependencies:
-    - cc
-    - len
     - node
+    - len
+    - cc
   analyzers.code_metrics._ast_complexity.node:
     variable: node
     dependencies:
@@ -23386,13 +23386,13 @@ data_flows:
     variable: docstring
     dependencies:
     - str
-    - getattr
     - val
+    - getattr
   analyzers.code_metrics._parse_module_ast.tree:
     variable: tree
     dependencies:
-    - ast
     - code
+    - ast
   analyzers.code_metrics._parse_module_ast.val:
     variable: val
     dependencies:
@@ -23409,10 +23409,10 @@ data_flows:
   analyzers.code_metrics._parse_module_ast.methods:
     variable: methods
     dependencies:
+    - n
     - node
     - ast
     - isinstance
-    - n
   hasattr.arg0:
     variable: hasattr.arg0
     dependencies:
@@ -23420,8 +23420,8 @@ data_flows:
   imports.append.arg0:
     variable: imports.append.arg0
     dependencies:
-    - alias
     - node
+    - alias
   analyzers.code_metrics._parse_module_ast.alias:
     variable: alias
     dependencies:
@@ -23437,23 +23437,23 @@ data_flows:
   analyzers.code_metrics._extract_module_info.classes:
     variable: classes
     dependencies:
-    - self
     - code
+    - self
   analyzers.code_metrics._extract_module_info.functions:
     variable: functions
     dependencies:
-    - self
     - code
+    - self
   analyzers.code_metrics._extract_module_info.imports:
     variable: imports
     dependencies:
-    - self
     - code
+    - self
   analyzers.code_metrics._extract_module_info.docstring:
     variable: docstring
     dependencies:
-    - self
     - code
+    - self
   self._parse_module_ast.arg0:
     variable: self._parse_module_ast.arg0
     dependencies:
@@ -23461,8 +23461,8 @@ data_flows:
   analyzers.code_metrics._extract_module_info.rel_path:
     variable: rel_path
     dependencies:
-    - pyf
     - str
+    - pyf
     - self
   analyzers.code_metrics.get_key_modules.modules:
     variable: modules
@@ -23473,8 +23473,8 @@ data_flows:
   analyzers.code_metrics.get_key_modules.module_info:
     variable: module_info
     dependencies:
-    - pyf
     - self
+    - pyf
   self._extract_module_info.arg0:
     variable: self._extract_module_info.arg0
     dependencies:
@@ -23484,8 +23484,8 @@ data_flows:
   analyzers.api_surface.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
     - filter_func
   analyzers.api_surface.analyze.classes:
     variable: classes
@@ -23498,9 +23498,9 @@ data_flows:
   analyzers.api_surface.analyze.result:
     variable: result
     dependencies:
+    - self
     - functions
     - classes
-    - self
   analyzers.api_surface._should_skip.part:
     variable: part
     dependencies:
@@ -23533,13 +23533,13 @@ data_flows:
   analyzers.api_surface._detect_cli_commands.tree:
     variable: tree
     dependencies:
-    - ast
     - code
+    - ast
   analyzers.api_surface._detect_cli_commands.rel:
     variable: rel
     dependencies:
-    - pyf
     - str
+    - pyf
     - self
   analyzers.api_surface._detect_cli_commands.node:
     variable: node
@@ -23553,8 +23553,8 @@ data_flows:
   analyzers.api_surface._detect_cli_commands.dec_name:
     variable: dec_name
     dependencies:
-    - dec
     - self
+    - dec
   self._decorator_name.arg0:
     variable: self._decorator_name.arg0
     dependencies:
@@ -23600,16 +23600,16 @@ data_flows:
     variable: cls
     dependencies:
     - seen_funcs
+    - self
     - pyf
     - seen_classes
-    - self
   analyzers.api_surface._scan_public_symbols.funcs:
     variable: funcs
     dependencies:
     - seen_funcs
+    - self
     - pyf
     - seen_classes
-    - self
   self._extract_from_file.arg0:
     variable: self._extract_from_file.arg0
     dependencies:
@@ -23643,8 +23643,8 @@ data_flows:
   analyzers.api_surface._collect_target_files.rel:
     variable: rel
     dependencies:
-    - pyf
     - self
+    - pyf
   analyzers.api_surface._extract_from_file.code:
     variable: code
     dependencies:
@@ -23652,13 +23652,13 @@ data_flows:
   analyzers.api_surface._extract_from_file.tree:
     variable: tree
     dependencies:
-    - ast
     - code
+    - ast
   analyzers.api_surface._extract_from_file.rel:
     variable: rel
     dependencies:
-    - pyf
     - str
+    - pyf
     - self
   analyzers.api_surface._extract_from_file.all_names:
     variable: all_names
@@ -23681,9 +23681,9 @@ data_flows:
   analyzers.api_surface._extract_from_file.cls:
     variable: cls
     dependencies:
-    - self
-    - all_names
     - node
+    - all_names
+    - self
     - rel
     - seen_classes
   self._extract_class.arg0:
@@ -23705,11 +23705,11 @@ data_flows:
   analyzers.api_surface._extract_from_file.func:
     variable: func
     dependencies:
-    - seen_funcs
-    - self
-    - all_names
     - node
+    - all_names
+    - self
     - rel
+    - seen_funcs
   self._extract_function.arg0:
     variable: self._extract_function.arg0
     dependencies:
@@ -23738,10 +23738,10 @@ data_flows:
   analyzers.api_surface._extract_class.methods:
     variable: methods
     dependencies:
+    - n
     - node
     - ast
     - isinstance
-    - n
   analyzers.api_surface._extract_function.name:
     variable: name
     dependencies:
@@ -23754,8 +23754,8 @@ data_flows:
   analyzers.api_surface._extract_function.args:
     variable: args
     dependencies:
-    - a
     - node
+    - a
   analyzers.api_surface._extract_all.node:
     variable: node
     dependencies:
@@ -23790,8 +23790,8 @@ data_flows:
   analyzers.api_surface._detect_rest_endpoints.m:
     variable: m
     dependencies:
-    - re
     - code
+    - re
     - http_methods
   re.finditer.arg0:
     variable: re.finditer.arg0
@@ -23817,16 +23817,16 @@ data_flows:
     variable: endpoints.append.arg0
     dependencies:
     - pyf
-    - str
+    - method
     - self
     - path
-    - method
+    - str
   core.to_dict.d:
     variable: d
     dependencies:
-    - asdict
-    - str
     - self
+    - str
+    - asdict
   asdict.arg0:
     variable: asdict.arg0
     dependencies:
@@ -23834,23 +23834,23 @@ data_flows:
   core.scan_project.profile:
     variable: profile
     dependencies:
+    - readme_parser
     - api_analyzer
     - _generate_summary
-    - cl_parser
-    - meta_ext
-    - ig
-    - _categorize
     - dep_analyzer
-    - ProjectProfile
-    - struct_analyzer
-    - readme_parser
-    - toon_parser
-    - scorer
     - project_path
+    - _categorize
+    - meta_ext
+    - toon_parser
+    - struct_analyzer
+    - scorer
     - docker_parser
-    - profile
     - metrics_analyzer
+    - cl_parser
+    - profile
+    - ProjectProfile
     - mk_data
+    - ig
   core.scan_project.scan_filter:
     variable: scan_filter
     dependencies:
@@ -23874,8 +23874,8 @@ data_flows:
     variable: struct_analyzer
     dependencies:
     - StructureAnalyzer
-    - project_path
     - scan_filter
+    - project_path
   StructureAnalyzer.arg0:
     variable: StructureAnalyzer.arg0
     dependencies:
@@ -23884,8 +23884,8 @@ data_flows:
     variable: metrics_analyzer
     dependencies:
     - project_path
-    - CodeMetricsAnalyzer
     - scan_filter
+    - CodeMetricsAnalyzer
   CodeMetricsAnalyzer.arg0:
     variable: CodeMetricsAnalyzer.arg0
     dependencies:
@@ -23893,8 +23893,8 @@ data_flows:
   core.scan_project.dep_analyzer:
     variable: dep_analyzer
     dependencies:
-    - project_path
     - DependencyAnalyzer
+    - project_path
   DependencyAnalyzer.arg0:
     variable: DependencyAnalyzer.arg0
     dependencies:
@@ -23920,8 +23920,8 @@ data_flows:
   core.scan_project.toon_parser:
     variable: toon_parser
     dependencies:
-    - ToonParser
     - project_path
+    - ToonParser
   ToonParser.arg0:
     variable: ToonParser.arg0
     dependencies:
@@ -23955,9 +23955,9 @@ data_flows:
   core.scan_project.ig:
     variable: ig
     dependencies:
-    - scan_filter
     - project_path
     - ImportGraphAnalyzer
+    - scan_filter
   ImportGraphAnalyzer.arg0:
     variable: ImportGraphAnalyzer.arg0
     dependencies:
@@ -23966,8 +23966,8 @@ data_flows:
     variable: api_analyzer
     dependencies:
     - project_path
-    - scan_filter
     - APISurfaceAnalyzer
+    - scan_filter
   APISurfaceAnalyzer.arg0:
     variable: APISurfaceAnalyzer.arg0
     dependencies:
@@ -23975,9 +23975,9 @@ data_flows:
   core.scan_project.scorer:
     variable: scorer
     dependencies:
-    - MaturityScorer
     - project_path
     - profile
+    - MaturityScorer
   MaturityScorer.arg0:
     variable: MaturityScorer.arg0
     dependencies:
@@ -23997,8 +23997,8 @@ data_flows:
   core._discover_projects.exclude:
     variable: exclude
     dependencies:
-    - set
     - exclude
+    - set
   core._discover_projects.project_dirs:
     variable: project_dirs
   core._discover_projects.root:
@@ -24009,8 +24009,8 @@ data_flows:
   core._discover_projects.child:
     variable: child
     dependencies:
-    - sorted
     - root
+    - sorted
   core._discover_projects.markers:
     variable: markers
   project_dirs.append.arg0:
@@ -24020,8 +24020,8 @@ data_flows:
   core.scan_organization.exclude:
     variable: exclude
     dependencies:
-    - set
     - exclude
+    - set
   core.scan_organization.profiles:
     variable: profiles
   core.scan_organization.root:
@@ -24034,8 +24034,8 @@ data_flows:
   core.scan_organization.child:
     variable: child
     dependencies:
-    - sorted
     - root
+    - sorted
   core.scan_organization.markers:
     variable: markers
   core.scan_organization.total:
@@ -24059,8 +24059,8 @@ data_flows:
     variable: profile
     dependencies:
     - child
-    - scan_project
     - max_depth
+    - scan_project
   core.generate_articles.output_dir:
     variable: output_dir
     dependencies:
@@ -24069,9 +24069,9 @@ data_flows:
   core.generate_articles.generator:
     variable: generator
     dependencies:
-    - ArticleGenerator
-    - org_name
     - org_url
+    - org_name
+    - ArticleGenerator
   core.generate_articles.paths:
     variable: paths
   core.generate_articles.profile:
@@ -24081,8 +24081,8 @@ data_flows:
   core.generate_articles.article_path:
     variable: article_path
     dependencies:
-    - output_dir
     - profile
+    - output_dir
   generator.generate.arg0:
     variable: generator.generate.arg0
     dependencies:
@@ -24110,9 +24110,9 @@ data_flows:
   core.generate_articles.comp_gen:
     variable: comp_gen
     dependencies:
+    - org_url
     - ComparisonGenerator
     - org_name
-    - org_url
   core.generate_articles.comp_path:
     variable: comp_path
     dependencies:
@@ -24128,9 +24128,9 @@ data_flows:
   core.generate_articles.cat_paths:
     variable: cat_paths
     dependencies:
-    - profiles
-    - output_dir
     - comp_gen
+    - output_dir
+    - profiles
   comp_gen.generate_category_articles.arg0:
     variable: comp_gen.generate_category_articles.arg0
     dependencies:
@@ -24206,8 +24206,8 @@ data_flows:
   core._generate_summary.base:
     variable: base
     dependencies:
-    - lang
     - name
+    - lang
     - desc
   core._generate_summary.parts:
     variable: parts
@@ -24218,15 +24218,15 @@ data_flows:
   extractors.metadata.__init__.self:
     variable: self
     dependencies:
-    - Path
     - project_path
+    - Path
   extractors.metadata.extract.meta:
     variable: meta
     dependencies:
     - meta
-    - ProjectMetadata
     - self
     - vfile
+    - ProjectMetadata
   extractors.metadata.extract.pyp:
     variable: pyp
     dependencies:
@@ -24291,8 +24291,8 @@ data_flows:
   extractors.metadata._from_pyproject.data:
     variable: data
     dependencies:
-    - fp
     - tomli
+    - fp
   extractors.metadata._from_pyproject.proj:
     variable: proj
     dependencies:
@@ -24309,12 +24309,12 @@ data_flows:
   extractors.metadata._from_pyproject.meta:
     variable: meta
     dependencies:
-    - a
     - combined
-    - urls
-    - self
     - authors
+    - a
+    - self
     - scripts
+    - urls
   self._extract_license.arg0:
     variable: self._extract_license.arg0
     dependencies:
@@ -24361,8 +24361,8 @@ data_flows:
   cfg.read.arg0:
     variable: cfg.read.arg0
     dependencies:
-    - fp
     - str
+    - fp
   extractors.metadata._from_setup_py.fp:
     variable: fp
     dependencies:
@@ -24374,8 +24374,8 @@ data_flows:
   extractors.metadata._from_setup_py.tree:
     variable: tree
     dependencies:
-    - ast
     - code
+    - ast
   extractors.metadata._from_setup_py.node:
     variable: node
     dependencies:
@@ -24415,8 +24415,8 @@ data_flows:
   extractors.metadata._from_package_json.data:
     variable: data
     dependencies:
-    - fp
     - json
+    - fp
   extractors.metadata._from_package_json.meta:
     variable: meta
     dependencies:
@@ -25916,297 +25916,297 @@ smells:
     mutations: 0
     complexity: 10
     function: extractors.metadata.MetadataExtractor._from_pyproject
-- name: 'Data Clump: output_path, org_name, exclude, root_dir'
+- name: 'Data Clump: org_name, output_path, root_dir, exclude'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/cli.py
   line: 264
   severity: 0.6
-  description: 'Arguments (output_path, org_name, exclude, root_dir) are used together
+  description: 'Arguments (org_name, output_path, root_dir, exclude) are used together
     in multiple functions: cli.compare, cli.health.'
   context:
     clump:
-    - output_path
     - org_name
-    - exclude
+    - output_path
     - root_dir
+    - exclude
     related_functions:
     - cli.compare
     - cli.health
-- name: 'Data Clump: output_path, org_name, exclude, root_dir'
+- name: 'Data Clump: org_name, output_path, root_dir, exclude'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/cli.py
   line: 290
   severity: 0.6
-  description: 'Arguments (output_path, org_name, exclude, root_dir) are used together
+  description: 'Arguments (org_name, output_path, root_dir, exclude) are used together
     in multiple functions: cli.compare, cli.health.'
   context:
     clump:
-    - output_path
     - org_name
-    - exclude
+    - output_path
     - root_dir
+    - exclude
     related_functions:
     - cli.compare
     - cli.health
-- name: 'Data Clump: line, current_file, self'
+- name: 'Data Clump: self, line, current_file'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/extractors/toon_parser.py
   line: 133
   severity: 0.6
-  description: 'Arguments (line, current_file, self) are used together in multiple
+  description: 'Arguments (self, line, current_file) are used together in multiple
     functions: extractors.toon_parser.ToonParser._parse_class_line, extractors.toon_parser.ToonParser._parse_function_line.'
   context:
     clump:
+    - self
     - line
     - current_file
-    - self
     related_functions:
     - extractors.toon_parser.ToonParser._parse_class_line
     - extractors.toon_parser.ToonParser._parse_function_line
-- name: 'Data Clump: line, current_file, self'
+- name: 'Data Clump: self, line, current_file'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/extractors/toon_parser.py
   line: 152
   severity: 0.6
-  description: 'Arguments (line, current_file, self) are used together in multiple
+  description: 'Arguments (self, line, current_file) are used together in multiple
     functions: extractors.toon_parser.ToonParser._parse_class_line, extractors.toon_parser.ToonParser._parse_function_line.'
   context:
     clump:
+    - self
     - line
     - current_file
-    - self
     related_functions:
     - extractors.toon_parser.ToonParser._parse_class_line
     - extractors.toon_parser.ToonParser._parse_function_line
-- name: 'Data Clump: org_name, self, org_url'
+- name: 'Data Clump: org_url, self, org_name'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/generators/article.py
   line: 33
   severity: 0.6
-  description: 'Arguments (org_name, self, org_url) are used together in multiple
+  description: 'Arguments (org_url, self, org_name) are used together in multiple
     functions: generators.article.ArticleGenerator.__init__, generators.comparison.ComparisonGenerator.__init__.'
   context:
     clump:
-    - org_name
-    - self
     - org_url
+    - self
+    - org_name
     related_functions:
     - generators.article.ArticleGenerator.__init__
     - generators.comparison.ComparisonGenerator.__init__
-- name: 'Data Clump: org_name, self, org_url'
+- name: 'Data Clump: org_url, self, org_name'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/generators/comparison.py
   line: 16
   severity: 0.6
-  description: 'Arguments (org_name, self, org_url) are used together in multiple
+  description: 'Arguments (org_url, self, org_name) are used together in multiple
     functions: generators.article.ArticleGenerator.__init__, generators.comparison.ComparisonGenerator.__init__.'
   context:
     clump:
-    - org_name
-    - self
     - org_url
+    - self
+    - org_name
     related_functions:
     - generators.article.ArticleGenerator.__init__
     - generators.comparison.ComparisonGenerator.__init__
-- name: 'Data Clump: output_path, profiles, self'
+- name: 'Data Clump: self, output_path, profiles'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/generators/article.py
   line: 43
   severity: 0.6
-  description: 'Arguments (output_path, profiles, self) are used together in multiple
+  description: 'Arguments (self, output_path, profiles) are used together in multiple
     functions: generators.article.ArticleGenerator.generate_index, generators.comparison.ComparisonGenerator.generate_health_report.'
   context:
     clump:
+    - self
     - output_path
     - profiles
-    - self
     related_functions:
     - generators.article.ArticleGenerator.generate_index
     - generators.comparison.ComparisonGenerator.generate_health_report
-- name: 'Data Clump: output_path, profiles, self'
+- name: 'Data Clump: self, output_path, profiles'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/generators/comparison.py
   line: 52
   severity: 0.6
-  description: 'Arguments (output_path, profiles, self) are used together in multiple
+  description: 'Arguments (self, output_path, profiles) are used together in multiple
     functions: generators.article.ArticleGenerator.generate_index, generators.comparison.ComparisonGenerator.generate_health_report.'
   context:
     clump:
+    - self
     - output_path
     - profiles
-    - self
     related_functions:
     - generators.article.ArticleGenerator.generate_index
     - generators.comparison.ComparisonGenerator.generate_health_report
-- name: 'Data Clump: output_path, profiles, title, self'
+- name: 'Data Clump: title, self, output_path, profiles'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/generators/comparison.py
   line: 21
   severity: 0.6
-  description: 'Arguments (output_path, profiles, title, self) are used together in
+  description: 'Arguments (title, self, output_path, profiles) are used together in
     multiple functions: generators.comparison.ComparisonGenerator.generate_comparison,
     generators.comparison.ComparisonGenerator.generate_readme_list.'
   context:
     clump:
-    - output_path
-    - profiles
     - title
     - self
+    - output_path
+    - profiles
     related_functions:
     - generators.comparison.ComparisonGenerator.generate_comparison
     - generators.comparison.ComparisonGenerator.generate_readme_list
-- name: 'Data Clump: output_path, profiles, title, self'
+- name: 'Data Clump: title, self, output_path, profiles'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/generators/comparison.py
   line: 375
   severity: 0.6
-  description: 'Arguments (output_path, profiles, title, self) are used together in
+  description: 'Arguments (title, self, output_path, profiles) are used together in
     multiple functions: generators.comparison.ComparisonGenerator.generate_comparison,
     generators.comparison.ComparisonGenerator.generate_readme_list.'
   context:
     clump:
-    - output_path
-    - profiles
     - title
     - self
+    - output_path
+    - profiles
     related_functions:
     - generators.comparison.ComparisonGenerator.generate_comparison
     - generators.comparison.ComparisonGenerator.generate_readme_list
-- name: 'Data Clump: title, profiles, self'
+- name: 'Data Clump: title, self, profiles'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/generators/comparison.py
   line: 64
   severity: 0.6
-  description: 'Arguments (title, profiles, self) are used together in multiple functions:
+  description: 'Arguments (title, self, profiles) are used together in multiple functions:
     generators.comparison.ComparisonGenerator._render_comparison, generators.comparison.ComparisonGenerator._render_readme_list.'
   context:
     clump:
     - title
-    - profiles
     - self
+    - profiles
     related_functions:
     - generators.comparison.ComparisonGenerator._render_comparison
     - generators.comparison.ComparisonGenerator._render_readme_list
-- name: 'Data Clump: title, profiles, self'
+- name: 'Data Clump: title, self, profiles'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/generators/comparison.py
   line: 386
   severity: 0.6
-  description: 'Arguments (title, profiles, self) are used together in multiple functions:
+  description: 'Arguments (title, self, profiles) are used together in multiple functions:
     generators.comparison.ComparisonGenerator._render_comparison, generators.comparison.ComparisonGenerator._render_readme_list.'
   context:
     clump:
     - title
-    - profiles
     - self
+    - profiles
     related_functions:
     - generators.comparison.ComparisonGenerator._render_comparison
     - generators.comparison.ComparisonGenerator._render_readme_list
-- name: 'Data Clump: filter_func, project_path, self'
+- name: 'Data Clump: project_path, filter_func, self'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/analyzers/structure.py
   line: 93
   severity: 0.6
-  description: 'Arguments (filter_func, project_path, self) are used together in multiple
+  description: 'Arguments (project_path, filter_func, self) are used together in multiple
     functions: analyzers.structure.StructureAnalyzer.__init__, analyzers.import_graph.ImportGraphAnalyzer.__init__,
     analyzers.code_metrics.CodeMetricsAnalyzer.__init__, analyzers.api_surface.APISurfaceAnalyzer.__init__.'
   context:
     clump:
-    - filter_func
     - project_path
+    - filter_func
     - self
     related_functions:
     - analyzers.structure.StructureAnalyzer.__init__
     - analyzers.import_graph.ImportGraphAnalyzer.__init__
     - analyzers.code_metrics.CodeMetricsAnalyzer.__init__
     - analyzers.api_surface.APISurfaceAnalyzer.__init__
-- name: 'Data Clump: filter_func, project_path, self'
+- name: 'Data Clump: project_path, filter_func, self'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/analyzers/import_graph.py
   line: 20
   severity: 0.6
-  description: 'Arguments (filter_func, project_path, self) are used together in multiple
+  description: 'Arguments (project_path, filter_func, self) are used together in multiple
     functions: analyzers.structure.StructureAnalyzer.__init__, analyzers.import_graph.ImportGraphAnalyzer.__init__,
     analyzers.code_metrics.CodeMetricsAnalyzer.__init__, analyzers.api_surface.APISurfaceAnalyzer.__init__.'
   context:
     clump:
-    - filter_func
     - project_path
+    - filter_func
     - self
     related_functions:
     - analyzers.structure.StructureAnalyzer.__init__
     - analyzers.import_graph.ImportGraphAnalyzer.__init__
     - analyzers.code_metrics.CodeMetricsAnalyzer.__init__
     - analyzers.api_surface.APISurfaceAnalyzer.__init__
-- name: 'Data Clump: filter_func, project_path, self'
+- name: 'Data Clump: project_path, filter_func, self'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/analyzers/code_metrics.py
   line: 32
   severity: 0.6
-  description: 'Arguments (filter_func, project_path, self) are used together in multiple
+  description: 'Arguments (project_path, filter_func, self) are used together in multiple
     functions: analyzers.structure.StructureAnalyzer.__init__, analyzers.import_graph.ImportGraphAnalyzer.__init__,
     analyzers.code_metrics.CodeMetricsAnalyzer.__init__, analyzers.api_surface.APISurfaceAnalyzer.__init__.'
   context:
     clump:
-    - filter_func
     - project_path
+    - filter_func
     - self
     related_functions:
     - analyzers.structure.StructureAnalyzer.__init__
     - analyzers.import_graph.ImportGraphAnalyzer.__init__
     - analyzers.code_metrics.CodeMetricsAnalyzer.__init__
     - analyzers.api_surface.APISurfaceAnalyzer.__init__
-- name: 'Data Clump: filter_func, project_path, self'
+- name: 'Data Clump: project_path, filter_func, self'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/analyzers/api_surface.py
   line: 19
   severity: 0.6
-  description: 'Arguments (filter_func, project_path, self) are used together in multiple
+  description: 'Arguments (project_path, filter_func, self) are used together in multiple
     functions: analyzers.structure.StructureAnalyzer.__init__, analyzers.import_graph.ImportGraphAnalyzer.__init__,
     analyzers.code_metrics.CodeMetricsAnalyzer.__init__, analyzers.api_surface.APISurfaceAnalyzer.__init__.'
   context:
     clump:
-    - filter_func
     - project_path
+    - filter_func
     - self
     related_functions:
     - analyzers.structure.StructureAnalyzer.__init__
     - analyzers.import_graph.ImportGraphAnalyzer.__init__
     - analyzers.code_metrics.CodeMetricsAnalyzer.__init__
     - analyzers.api_surface.APISurfaceAnalyzer.__init__
-- name: 'Data Clump: seen, self, rel_path, all_names, node'
+- name: 'Data Clump: node, all_names, rel_path, seen, self'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/analyzers/api_surface.py
   line: 197
   severity: 0.6
-  description: 'Arguments (seen, self, rel_path, all_names, node) are used together
+  description: 'Arguments (node, all_names, rel_path, seen, self) are used together
     in multiple functions: analyzers.api_surface.APISurfaceAnalyzer._extract_class,
     analyzers.api_surface.APISurfaceAnalyzer._extract_function.'
   context:
     clump:
+    - node
+    - all_names
+    - rel_path
     - seen
     - self
-    - rel_path
-    - all_names
-    - node
     related_functions:
     - analyzers.api_surface.APISurfaceAnalyzer._extract_class
     - analyzers.api_surface.APISurfaceAnalyzer._extract_function
-- name: 'Data Clump: seen, self, rel_path, all_names, node'
+- name: 'Data Clump: node, all_names, rel_path, seen, self'
   type: data_clump
   file: /home/tom/github/wronai/todocs/todocs/analyzers/api_surface.py
   line: 224
   severity: 0.6
-  description: 'Arguments (seen, self, rel_path, all_names, node) are used together
+  description: 'Arguments (node, all_names, rel_path, seen, self) are used together
     in multiple functions: analyzers.api_surface.APISurfaceAnalyzer._extract_class,
     analyzers.api_surface.APISurfaceAnalyzer._extract_function.'
   context:
     clump:
+    - node
+    - all_names
+    - rel_path
     - seen
     - self
-    - rel_path
-    - all_names
-    - node
     related_functions:
     - analyzers.api_surface.APISurfaceAnalyzer._extract_class
     - analyzers.api_surface.APISurfaceAnalyzer._extract_function
@@ -26221,62 +26221,62 @@ smells:
     variable: desc
     affected_functions:
     - generators.article_sections.render_api_surface
-    - core._generate_summary
-    - extractors.readme_parser.get_first_paragraph
-    - extractors.makefile_parser._parse_taskfile
     - generators.comparison._render_readme_list
-    - generators.comparison._render_category
+    - core._generate_summary
     - generators.article_sections.render_overview
+    - extractors.makefile_parser._parse_taskfile
+    - generators.comparison._render_category
+    - extractors.readme_parser.get_first_paragraph
     - generators.article_sections.render_build_targets
 - name: 'Shotgun Surgery: root'
   type: shotgun_surgery
-  file: /home/tom/github/wronai/todocs/todocs/cli.py
-  line: 290
+  file: /home/tom/github/wronai/todocs/todocs/core.py
+  line: 227
   severity: 0.8
   description: Mutation of variable 'root' spans 7 functions. Changing this logic
     requires work in many places.
   context:
     variable: root
     affected_functions:
-    - cli.health
-    - cli.generate
-    - analyzers.maturity.score
     - core.scan_organization
-    - core._discover_projects
     - cli.readme
     - cli.compare
+    - core._discover_projects
+    - analyzers.maturity.score
+    - cli.generate
+    - cli.health
 - name: 'Shotgun Surgery: project_dirs'
   type: shotgun_surgery
-  file: /home/tom/github/wronai/todocs/todocs/cli.py
-  line: 93
+  file: /home/tom/github/wronai/todocs/todocs/core.py
+  line: 197
   severity: 0.8
   description: Mutation of variable 'project_dirs' spans 5 functions. Changing this
     logic requires work in many places.
   context:
     variable: project_dirs
     affected_functions:
-    - cli._discover_and_show_progress
-    - cli._generate_without_rich
-    - cli.generate
     - core._discover_projects
+    - cli.generate
+    - cli._generate_without_rich
+    - cli._discover_and_show_progress
     - core.scan_organization
 - name: 'Shotgun Surgery: profiles'
   type: shotgun_surgery
-  file: /home/tom/github/wronai/todocs/todocs/cli.py
-  line: 177
+  file: /home/tom/github/wronai/todocs/todocs/core.py
+  line: 227
   severity: 0.8
   description: Mutation of variable 'profiles' spans 7 functions. Changing this logic
     requires work in many places.
   context:
     variable: profiles
     affected_functions:
+    - core.scan_organization
+    - cli.readme
+    - cli._scan_with_progress
+    - cli.compare
+    - cli.generate
     - cli._generate_without_rich
     - cli.health
-    - cli.generate
-    - core.scan_organization
-    - cli._scan_with_progress
-    - cli.readme
-    - cli.compare
 - name: 'Shotgun Surgery: paths'
   type: shotgun_surgery
   file: /home/tom/github/wronai/todocs/todocs/cli.py
@@ -26288,588 +26288,555 @@ smells:
     variable: paths
     affected_functions:
     - cli._generate_articles_with_progress
-    - cli._generate_without_rich
     - generators.comparison.generate_category_articles
     - cli.generate
+    - cli._generate_without_rich
     - core.generate_articles
-- name: 'Shotgun Surgery: deps'
-  type: shotgun_surgery
-  file: /home/tom/github/wronai/todocs/todocs/generators/article_sections.py
-  line: 326
-  severity: 0.8
-  description: Mutation of variable 'deps' spans 5 functions. Changing this logic
-    requires work in many places.
-  context:
-    variable: deps
-    affected_functions:
-    - generators.article_sections.render_docker
-    - analyzers.dependencies.get_dev_deps
-    - extractors.docker_parser._parse_compose
-    - generators.comparison._render_readme_list
-    - analyzers.dependencies.get_runtime_deps
-- name: 'Shotgun Surgery: meta'
-  type: shotgun_surgery
-  file: /home/tom/github/wronai/todocs/todocs/generators/article_sections.py
-  line: 15
-  severity: 0.8
-  description: Mutation of variable 'meta' spans 8 functions. Changing this logic
-    requires work in many places.
-  context:
-    variable: meta
-    affected_functions:
-    - generators.article_sections.render_frontmatter
-    - generators.article_sections.render_usage
-    - extractors.metadata._extract_setup_kwargs
-    - core._generate_summary
-    - extractors.metadata._from_pyproject
-    - extractors.metadata.extract
-    - extractors.metadata._from_package_json
-    - generators.article_sections.render_header
 coupling:
   module_interactions:
     extractors.makefile_parser:
-    - tasks
-    - data
-    - set
-    - target_m
-    - Path
-    - str
-    - cmd_strs
-    - re
-    - prev
-    - path
-    - makefile
-    - cmd
-    - commands
-    - cmd_line
-    - targets
-    - None
-    - self
     - task_def
-    - help_m
-    - enumerate
-    - taskfile
-    - isinstance
-    - name
-    - yaml
-    - min
-    - text
-    - range
-    - phony_targets
-    - len
+    - cmd_line
+    - cmd_strs
     - phony_m
-    cli:
-    - Progress
-    - ArticleGenerator
-    - TextColumn
-    - Console
-    - click
-    - print
-    - list
-    - ComparisonGenerator
-    - Table
-    - json
-    - Path
-    - SystemExit
-    - main
-    - sorted
-    - p
-    - profile
-    - table
-    - progress
-    - None
-    - core
-    - enumerate
-    - SpinnerColumn
-    - profiles
-    - console
-    - gen
+    - tasks
+    - str
+    - name
+    - makefile
+    - min
+    - data
+    - targets
+    - commands
+    - yaml
+    - re
+    - range
     - len
+    - taskfile
+    - phony_targets
+    - target_m
+    - enumerate
+    - help_m
+    - None
+    - cmd
+    - text
+    - isinstance
+    - self
+    - path
+    - prev
+    - Path
+    - set
+    cli:
+    - gen
+    - Progress
+    - p
+    - core
+    - sorted
+    - print
+    - main
+    - profiles
+    - click
+    - console
+    - ArticleGenerator
+    - len
+    - Table
+    - ComparisonGenerator
+    - SystemExit
+    - TextColumn
+    - Path
+    - enumerate
+    - None
+    - table
+    - SpinnerColumn
+    - json
+    - Console
+    - list
+    - progress
+    - profile
     extractors.toon_parser:
+    - refactor_items
     - layers
     - pipelines
-    - functions_list
-    - step_m
-    - pur_m
-    - health_items
-    - bn_m
     - func_m
-    - list
-    - Path
-    - re
-    - classes
-    - path
+    - name
+    - functions_list
     - functions
     - hm
-    - result
-    - None
-    - self
-    - files
-    - cycles_m
-    - rm
-    - header_m
-    - header2
-    - name
-    - cls_m
-    - m
-    - rest
-    - lm
     - crit_m
-    - text
-    - float
-    - dups_m
-    - refactor_items
-    - fm
+    - rm
+    - step_m
     - int
-    - line
+    - re
+    - lm
+    - fm
+    - m
     - modules
-    - file_m
+    - result
+    - float
+    - header_m
+    - None
+    - classes
     - pipe_m
+    - text
+    - cls_m
+    - file_m
+    - line
+    - files
+    - rest
+    - cycles_m
+    - dups_m
+    - self
+    - header2
+    - list
+    - health_items
+    - pur_m
+    - path
+    - Path
+    - bn_m
     - found
     extractors.readme_parser:
-    - title
+    - sections
     - preamble
-    - list
-    - Path
     - desc
     - re
-    - post_h1
-    - None
-    - heading_pattern
-    - self
-    - readme_path
-    - enumerate
+    - title
     - m
-    - sections
-    - fp
-    - text
-    - line
     - len
+    - fp
+    - enumerate
+    - None
+    - text
+    - heading_pattern
+    - readme_path
+    - line
     - _SECTION_ALIASES
-    extractors.docker_parser:
-    - compose_data
-    - bool
-    - images
-    - ports
-    - data
-    - entry_m
+    - self
+    - post_h1
     - list
     - Path
-    - svc
-    - raw_services
-    - str
+    extractors.docker_parser:
     - from_m
-    - re
-    - path
     - p
-    - cmd_m
-    - img
-    - deps
-    - dict
-    - None
-    - self
-    - services
-    - isinstance
-    - docker_dir
-    - yaml
-    - port
-    - text
     - expose_m
-    - line
+    - str
+    - compose_data
+    - data
+    - cmd_m
+    - dict
+    - yaml
+    - raw_services
+    - re
     - len
+    - deps
+    - entry_m
+    - docker_dir
     - df_data
+    - ports
+    - img
+    - services
+    - None
+    - port
+    - svc
+    - text
+    - isinstance
+    - line
+    - self
+    - list
+    - images
+    - path
+    - Path
+    - bool
     - found
     extractors.changelog_parser:
-    - content
-    - cat_match
-    - list
-    - fp
-    - items
-    - Path
-    - None
-    - self
     - entries
-    - re
+    - fp
+    - cat_match
     - line
-    - heading_re
-    - len
+    - None
+    - items
+    - self
+    - re
+    - list
+    - content
     - enumerate
     - cl_path
+    - Path
+    - heading_re
     - m
+    - len
     generators.article:
-    - datetime
-    - sections
-    - grades
-    - grade_lines
     - output_path
-    - None
-    - self
-    - lines
-    - generators
-    - sum
     - len
     - categories
+    - grade_lines
+    - sum
+    - sections
+    - generators
     - sorted
+    - self
+    - None
+    - datetime
+    - grades
+    - lines
     generators.article_sections:
     - hs
-    - parts
-    - ts
-    - list
-    - set
-    - svc
-    - lines
-    - ep
-    - sorted
-    - cls
     - p
     - api
-    - mod
-    - cmd
-    - t
-    - badges
-    - all_classes
-    - None
-    - entry_pts
-    - docker
-    - lang_parts
-    - entry
     - repr
-    - len
-    utils:
-    - content
-    - set
-    - any
-    - gitignore_path
-    - GitignoreParser
-    - Path
-    - None
-    - self
-    - fnmatch
-    - str
-    - pattern
-    - line
-    - skip_dirs
-    - part
-    - patterns
-    - path
-    - len
-    - gitignore
-    generators.comparison:
-    - Counter
-    - category
-    - categories
-    - max
-    - datetime
-    - cat
-    - set
-    - grade_lines
-    - lines
-    - d
-    - top_lines
-    - path
-    - fw_counter
     - sorted
-    - p
-    - dep_usage
-    - output_path
+    - docker
+    - all_classes
+    - badges
+    - len
+    - lang_parts
+    - t
+    - parts
+    - ts
     - None
+    - cmd
+    - lines
+    - svc
+    - entry
+    - mod
+    - cls
+    - entry_pts
+    - list
+    - ep
+    - set
+    utils:
+    - pattern
+    - any
+    - part
+    - line
+    - GitignoreParser
+    - gitignore
+    - None
+    - skip_dirs
     - self
+    - gitignore_path
+    - fnmatch
+    - content
+    - path
+    - patterns
+    - Path
+    - str
+    - len
+    - set
+    generators.comparison:
     - paths
-    - tool_counter
-    - enumerate
+    - Counter
     - sections
-    - grades
-    - attn_lines
-    - lang_counter
-    - features
-    - missing
+    - p
+    - tool_counter
+    - datetime
+    - grade_lines
+    - sorted
     - sum
     - len
-    analyzers.structure:
-    - Counter
-    - _BUILD_TOOL_FILES
-    - _DOCKER_FILES
-    - list
+    - output_path
+    - cat
+    - missing
+    - attn_lines
+    - features
+    - top_lines
+    - fw_counter
+    - enumerate
+    - category
+    - None
+    - grades
+    - d
+    - lines
+    - categories
+    - lang_counter
+    - self
+    - max
+    - path
+    - dep_usage
     - set
-    - any
-    - _CI_FILES
+    analyzers.structure:
     - ci_cd
+    - frameworks
+    - Counter
+    - p
+    - part
+    - _CI_FILES
+    - build_tools
+    - _BUILD_TOOL_FILES
+    - dirs
+    - dict
+    - sorted
+    - len
+    - fp
+    - files_by_type
+    - containers
+    - None
+    - TechStack
+    - test_fws
+    - lang_counts
+    - any
+    - texts
+    - _DOCKER_FILES
+    - _FRAMEWORK_MARKERS
+    - self
+    - list
     - tests_dir
     - Path
-    - frameworks
-    - sorted
-    - p
-    - build_tools
-    - dict
-    - None
-    - self
-    - dirs
-    - texts
-    - lang_counts
-    - TechStack
-    - files_by_type
-    - fp
     - _TEST_FRAMEWORK_FILES
-    - part
-    - test_fws
-    - containers
-    - len
-    - _FRAMEWORK_MARKERS
-    analyzers.dependencies:
-    - data
     - set
-    - seen
-    - json
-    - Path
-    - opt
-    - d
-    - pkg_json
-    - re
+    analyzers.dependencies:
     - pyp
-    - tomli
-    - unique
-    - deps
-    - None
-    - self
-    - dep
-    - name
-    - m
+    - seen
     - groups
+    - name
+    - pkg_json
+    - data
+    - re
+    - m
+    - deps
     - fp
-    - line
+    - unique
+    - tomli
     - req_file
+    - None
+    - d
+    - dep
+    - json
+    - line
+    - opt
+    - self
+    - Path
+    - set
     analyzers.maturity:
     - round
-    - set
-    - None
-    - Path
-    - MaturityProfile
-    - len
-    - max
     - p
-    analyzers.import_graph:
-    - child
-    - fan_in
-    - graph
-    - list
-    - set
-    - seen
-    - edge_list
+    - MaturityProfile
     - Path
+    - max
+    - None
+    - len
+    - set
+    analyzers.import_graph:
+    - pyf
+    - edge_list
+    - fan_out
+    - p
+    - part
+    - seen
+    - pkgs
+    - child
+    - code
     - str
+    - imported_modules
+    - dict
+    - defaultdict
+    - sorted
+    - graph
+    - rel_str
+    - len
+    - modules
+    - imp
     - cycles
     - ast
-    - path
-    - sorted
-    - p
-    - tuple
-    - pkgs
-    - dict
-    - pyf
+    - fan_in
     - None
-    - self
-    - defaultdict
-    - imp
-    - isinstance
+    - tuple
     - edges
-    - src
-    - code
-    - rel_str
     - external_counts
-    - part
-    - modules
-    - imported_modules
-    - fan_out
-    - len
-    - scored
-    analyzers.code_metrics:
-    - cc_visit
-    - mi_scores
-    - max
-    - hasattr
-    - any
-    - set
-    - cc_rank
-    - imports
-    - Path
-    - str
-    - CodeStats
-    - h
-    - ast
-    - classes
-    - path
-    - hotspots
-    - p
-    - functions
-    - pyf
-    - self
-    - mi_visit
     - isinstance
+    - scored
+    - self
+    - list
+    - src
+    - path
+    - Path
+    - set
+    analyzers.code_metrics:
+    - CodeStats
+    - pyf
     - round
-    - code
-    - complexities
-    - getattr
+    - h
+    - hasattr
     - part
-    - modules
+    - p
+    - mi_visit
+    - code
+    - str
+    - cc_visit
+    - functions
+    - hotspots
+    - imports
+    - complexities
     - sum
     - len
-    analyzers.api_surface:
-    - parts
-    - data
-    - set
-    - seen
-    - Path
-    - str
-    - re
+    - modules
     - ast
     - classes
-    - functions
-    - pyp
-    - tomli
-    - commands
-    - target_files
-    - pyf
-    - None
-    - self
-    - names
-    - isinstance
-    - name
-    - m
-    - n
-    - part
-    - endpoints
-    - len
-    - reversed
-    core:
-    - child
-    - MaturityScorer
-    - parts
-    - ArticleGenerator
-    - dep_analyzer
-    - ProjectProfile
-    - generator
-    - scorer
-    - docker_parser
-    - meta_ext
-    - print
-    - api_analyzer
-    - set
-    - exclude
+    - getattr
     - any
-    - output_dir
-    - json
-    - ComparisonGenerator
-    - asdict
-    - str
-    - Path
-    - ImportGraphAnalyzer
-    - readme_parser
-    - progress_callback
-    - CodeMetricsAnalyzer
-    - sorted
-    - DockerParser
-    - profile
-    - MetadataExtractor
-    - mk_parser
-    - cl_parser
-    - MakefileParser
-    - ig
-    - None
-    - root
+    - mi_scores
+    - isinstance
     - self
-    - project_dirs
-    - toon_parser
-    - ToonParser
-    - paths
-    - ChangelogParser
-    - comp_gen
-    - StructureAnalyzer
-    - enumerate
-    - metrics_analyzer
-    - DependencyAnalyzer
-    - ReadmeParser
-    - _CATEGORY_KEYWORDS
-    - profiles
-    - struct_analyzer
+    - max
+    - path
+    - Path
+    - cc_rank
+    - set
+    analyzers.api_surface:
+    - pyf
+    - pyp
+    - part
+    - seen
+    - names
+    - str
+    - name
+    - functions
+    - data
+    - commands
+    - n
+    - re
+    - m
+    - len
+    - target_files
+    - reversed
+    - ast
+    - parts
+    - tomli
+    - None
+    - classes
+    - isinstance
+    - self
+    - Path
+    - endpoints
+    - set
+    core:
+    - readme_parser
+    - api_analyzer
+    - dep_analyzer
     - APISurfaceAnalyzer
+    - paths
+    - CodeMetricsAnalyzer
+    - progress_callback
+    - ChangelogParser
+    - metrics_analyzer
+    - child
+    - comp_gen
+    - str
+    - mk_data
+    - _CATEGORY_KEYWORDS
+    - MakefileParser
+    - ImportGraphAnalyzer
+    - StructureAnalyzer
+    - MetadataExtractor
+    - sorted
+    - print
+    - docker_parser
+    - profiles
+    - DockerParser
+    - ArticleGenerator
+    - ProjectProfile
+    - ToonParser
+    - MaturityScorer
+    - asdict
     - utils
     - len
-    - mk_data
+    - generator
+    - ComparisonGenerator
+    - project_dirs
+    - DependencyAnalyzer
+    - meta_ext
+    - toon_parser
+    - parts
+    - output_dir
+    - cl_parser
+    - enumerate
+    - None
+    - ReadmeParser
+    - ig
+    - root
+    - mk_parser
+    - any
+    - json
+    - struct_analyzer
+    - scorer
+    - exclude
+    - self
+    - Path
+    - profile
+    - set
     extractors.metadata:
+    - authors
+    - hasattr
+    - lic_val
+    - str
+    - configparser
+    - data
+    - author
+    - urls
+    - len
+    - a
+    - fp
+    - ast
+    - setattr
+    - tomli
+    - None
     - source
     - proj
-    - vfile
-    - configparser
-    - repo
-    - hasattr
-    - ProjectMetadata
-    - authors
-    - data
-    - json
-    - Path
-    - str
-    - cfg
-    - ast
-    - tomli
     - combined
-    - None
-    - self
-    - setattr
-    - isinstance
-    - a
-    - urls
-    - fp
-    - author
     - getattr
-    - lic_val
-    - len
+    - repo
+    - isinstance
+    - cfg
+    - ProjectMetadata
+    - json
+    - self
+    - Path
+    - vfile
   shared_state:
   - variable: self
     modules:
-    - utils
-    - generators
-    - extractors
     - analyzers
+    - extractors
+    - generators
+    - utils
   - variable: result
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: text
     modules:
     - extractors
     - cli
   - variable: targets
     modules:
-    - generators
     - extractors
+    - generators
   - variable: lines
     modules:
-    - generators
-    - extractors
     - analyzers
+    - extractors
+    - generators
   - variable: name
     modules:
-    - generators
-    - extractors
     - analyzers
     - core
+    - extractors
+    - generators
   - variable: commands
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: data
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: desc
     modules:
-    - generators
-    - extractors
     - core
+    - extractors
+    - generators
   - variable: cmds
     modules:
-    - generators
     - extractors
+    - generators
   - variable: root
     modules:
     - core
@@ -26885,158 +26852,158 @@ coupling:
     - cli
   - variable: paths
     modules:
-    - generators
     - core
     - cli
+    - generators
   - variable: profile
     modules:
     - core
     - cli
   - variable: path
     modules:
-    - generators
     - analyzers
     - cli
+    - generators
   - variable: found
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: classes
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: functions
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: modules
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: m
     modules:
-    - generators
-    - extractors
     - analyzers
+    - extractors
+    - generators
   - variable: cls
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: func
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: doc
     modules:
-    - generators
-    - extractors
     - analyzers
+    - extractors
+    - generators
   - variable: fp
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: sections
     modules:
-    - generators
     - extractors
+    - generators
   - variable: matches
     modules:
-    - utils
     - extractors
+    - utils
   - variable: content
     modules:
-    - utils
-    - generators
     - extractors
+    - generators
+    - utils
   - variable: names
     modules:
-    - extractors
     - analyzers
+    - extractors
   - variable: ports
     modules:
-    - generators
     - extractors
+    - generators
   - variable: line
     modules:
-    - utils
-    - extractors
     - analyzers
+    - extractors
+    - utils
   - variable: services
     modules:
-    - generators
     - extractors
+    - generators
   - variable: deps
     modules:
-    - generators
-    - extractors
     - analyzers
+    - extractors
+    - generators
   - variable: version
     modules:
-    - generators
     - extractors
+    - generators
   - variable: date
     modules:
-    - generators
     - extractors
+    - generators
   - variable: total_lines
     modules:
-    - generators
     - analyzers
+    - generators
   - variable: total_files
     modules:
-    - generators
     - analyzers
+    - generators
   - variable: grade
     modules:
-    - generators
     - analyzers
+    - generators
   - variable: lang
     modules:
-    - generators
     - core
+    - generators
   - variable: p
     modules:
-    - generators
     - analyzers
+    - generators
   - variable: meta
     modules:
-    - generators
-    - extractors
     - core
+    - extractors
+    - generators
   - variable: repo
     modules:
-    - generators
     - extractors
+    - generators
   - variable: stats
     modules:
-    - generators
     - core
+    - generators
   - variable: mat
     modules:
-    - generators
     - core
+    - generators
   - variable: checks
     modules:
-    - generators
     - analyzers
+    - generators
   - variable: endpoints
     modules:
-    - generators
     - analyzers
+    - generators
   - variable: methods
     modules:
-    - generators
     - analyzers
+    - generators
   - variable: parts
     modules:
-    - utils
-    - generators
-    - analyzers
     - core
+    - analyzers
+    - generators
+    - utils
   - variable: rel_path
     modules:
-    - utils
     - analyzers
+    - utils
   - variable: tomli
     modules:
     - extractors
@@ -27055,8 +27022,8 @@ coupling:
     - analyzers
   - variable: base
     modules:
-    - analyzers
     - core
+    - analyzers
   - variable: val
     modules:
     - extractors
@@ -27067,15 +27034,15 @@ coupling:
     - analyzers
   - variable: combined
     modules:
-    - extractors
     - core
+    - extractors
 mutations:
 - variable: __version__
   file: /home/tom/github/wronai/todocs/todocs/__init__.py
   line: 7
   type: assign
   scope: todocs
-  context: '''0.1.7'''
+  context: '''0.1.8'''
 - variable: __all__
   file: /home/tom/github/wronai/todocs/todocs/__init__.py
   line: 8

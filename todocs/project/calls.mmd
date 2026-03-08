@@ -1,33 +1,33 @@
 flowchart LR
     subgraph cli
-        cli___discover_and_show_progress["_discover_and_show_progress"]
-        cli___generate_without_rich["_generate_without_rich"]
-        cli___scan_with_progress["_scan_with_progress"]
         cli__readme["readme"]
-        cli___generate_articles_with_progress["_generate_articles_with_progre"]
-        cli__inspect["inspect"]
-        cli__health["health"]
+        cli___scan_with_progress["_scan_with_progress"]
         cli__compare["compare"]
+        cli___generate_without_rich["_generate_without_rich"]
+        cli___generate_articles_with_progress["_generate_articles_with_progre"]
+        cli__health["health"]
+        cli__inspect["inspect"]
+        cli___discover_and_show_progress["_discover_and_show_progress"]
     end
     subgraph core
-        core___discover_projects["_discover_projects"]
         core__scan_project["scan_project"]
-        core__scan_organization["scan_organization"]
         core__generate_articles["generate_articles"]
+        core___discover_projects["_discover_projects"]
+        core__scan_organization["scan_organization"]
     end
     subgraph generators_article
         generators___render_article["_render_article"]
     end
     subgraph generators_article_sections
         generators__article_sections__render_api_surface["render_api_surface"]
-        generators__article_sections__render_overview["render_overview"]
-        generators__article_sections__render_metrics["render_metrics"]
-        generators__article_sections__render_maturity["render_maturity"]
         generators__article_sections__render_header["render_header"]
-        generators__article_sections__render_frontmatter["render_frontmatter"]
+        generators__article_sections__render_overview["render_overview"]
         generators__article_sections__render_architecture["render_architecture"]
         generators__article_sections__render_dependencies["render_dependencies"]
         generators__article_sections__render_tech_stack["render_tech_stack"]
+        generators__article_sections__render_maturity["render_maturity"]
+        generators__article_sections__render_metrics["render_metrics"]
+        generators__article_sections__render_frontmatter["render_frontmatter"]
     end
     subgraph utils
         utils__create_scan_filter["create_scan_filter"]

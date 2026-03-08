@@ -59,7 +59,6 @@ class ImportGraphAnalyzer:
                 "fan_out": {"module": N},  # how many modules this imports
             }
         """
-        # Discover internal package names
         internal_pkgs = self._detect_internal_packages()
         modules: Dict[str, Dict[str, Any]] = {}
         edges: Dict[Tuple[str, str], int] = defaultdict(int)
@@ -68,7 +67,6 @@ class ImportGraphAnalyzer:
         for pyf in self._iter_py_files():
             mod_name = self._module_name(pyf)
             rel_str = str(pyf.relative_to(self.root))
-            is_test = "test" in rel_str.lower()
 
             try:
                 code = pyf.read_text(errors="replace")
@@ -80,55 +78,19 @@ class ImportGraphAnalyzer:
             modules[mod_name] = {
                 "name": mod_name,
                 "lines": lines,
-                "is_test": is_test,
+                "is_test": "test" in rel_str.lower(),
                 "path": rel_str,
             }
 
-            # Parse imports
-            try:
-                tree = ast.parse(code)
-            except SyntaxError:
-                continue
+            imported = self._parse_file_imports(pyf, code)
+            for imp in imported:
+                top_pkg = imp.split(".")[0]
+                if top_pkg in internal_pkgs:
+                    edges[(mod_name, imp)] += 1
+                else:
+                    external_counts[top_pkg] += 1
 
-            for node in ast.walk(tree):
-                imported_modules = []
-
-                if isinstance(node, ast.Import):
-                    for alias in node.names:
-                        imported_modules.append(alias.name)
-
-                elif isinstance(node, ast.ImportFrom):
-                    if node.module:
-                        imported_modules.append(node.module)
-                    elif node.level > 0:
-                        # Relative import
-                        parts = list(pyf.relative_to(self.root).parent.parts)
-                        if node.level <= len(parts):
-                            base = ".".join(parts[: len(parts) - node.level + 1])
-                            if node.module:
-                                imported_modules.append(f"{base}.{node.module}")
-                            else:
-                                imported_modules.append(base)
-
-                for imp in imported_modules:
-                    top_pkg = imp.split(".")[0]
-                    if top_pkg in internal_pkgs:
-                        # Internal edge
-                        edges[(mod_name, imp)] += 1
-                    else:
-                        external_counts[top_pkg] += 1
-
-        # Build fan-in / fan-out
-        fan_in: Dict[str, int] = defaultdict(int)
-        fan_out: Dict[str, int] = defaultdict(int)
-        edge_list = []
-
-        for (src, dst), count in edges.items():
-            fan_out[src] += 1
-            fan_in[dst] += 1
-            edge_list.append({"from": src, "to": dst, "count": count})
-
-        # Detect cycles (simple DFS for 2-node and 3-node cycles)
+        edge_list, fan_in, fan_out = self._build_fan_metrics(edges)
         cycles = self._detect_cycles(edges)
 
         return {
@@ -143,6 +105,47 @@ class ImportGraphAnalyzer:
             "fan_out": dict(sorted(fan_out.items(), key=lambda x: -x[1])[:10]),
             "total_internal_edges": len(edge_list),
         }
+
+    def _parse_file_imports(self, pyf: Path, code: str) -> List[str]:
+        """Extract all imported module names from a Python source file."""
+        try:
+            tree = ast.parse(code)
+        except SyntaxError:
+            return []
+
+        imported: List[str] = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    imported.append(alias.name)
+            elif isinstance(node, ast.ImportFrom):
+                if node.module:
+                    imported.append(node.module)
+                elif node.level > 0:
+                    imported.extend(self._resolve_relative_import(pyf, node))
+        return imported
+
+    def _resolve_relative_import(self, pyf: Path, node: ast.ImportFrom) -> List[str]:
+        """Resolve a relative import node to an absolute module name."""
+        parts = list(pyf.relative_to(self.root).parent.parts)
+        if node.level > len(parts):
+            return []
+        base = ".".join(parts[: len(parts) - node.level + 1])
+        if node.module:
+            return [f"{base}.{node.module}"]
+        return [base]
+
+    @staticmethod
+    def _build_fan_metrics(edges: Dict[Tuple[str, str], int]) -> tuple:
+        """Build edge list and fan-in/fan-out dicts from raw edges."""
+        fan_in: Dict[str, int] = defaultdict(int)
+        fan_out: Dict[str, int] = defaultdict(int)
+        edge_list = []
+        for (src, dst), count in edges.items():
+            fan_out[src] += 1
+            fan_in[dst] += 1
+            edge_list.append({"from": src, "to": dst, "count": count})
+        return edge_list, fan_in, fan_out
 
     def _detect_internal_packages(self) -> Set[str]:
         """Detect top-level package directories in the project."""

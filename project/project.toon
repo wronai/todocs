@@ -3,7 +3,6 @@
 M[38]:
   docs/examples/advanced_usage.py,6
   docs/examples/quickstart.py,7
-  tests/test_cli_e2e.py,275
   examples/api_surface_deep.py,132
   examples/article_sections_demo.py,94
   examples/custom_analysis.py,143
@@ -12,6 +11,7 @@ M[38]:
   examples/scan_single.py,74
   tests/conftest.py,344
   tests/test_analyzers.py,164
+  tests/test_cli_e2e.py,275
   tests/test_extractors.py,201
   tests/test_integration.py,246
   tests/test_todocs.py,224
@@ -40,16 +40,6 @@ M[38]:
   todocs/generators/comparison.py,364
   todocs/utils/__init__.py,107
 D:
-  tests/test_cli_e2e.py:
-    i: subprocess,sys,tempfile,pytest,pathlib.Path
-    e: sample_project,sample_organization,TestCLIInspect,TestCLIGenerate,TestCLICompare,TestCLIHealth,TestCLIReadme,TestCLIHelp
-    TestCLIInspect: test_inspect_markdown_output(2),test_inspect_json_output(2),test_inspect_stdout(1)  # E2E tests for 'todocs inspect' command.
-    TestCLIGenerate: test_generate_articles(2),test_generate_with_json_report(2)  # E2E tests for 'todocs generate' command.
-    TestCLICompare: test_compare_multiple_projects(2),test_compare_insufficient_projects(2)  # E2E tests for 'todocs compare' command.
-    TestCLIHealth: test_health_report(2)  # E2E tests for 'todocs health' command.
-    TestCLIReadme: test_readme_generation(2),test_readme_no_projects(1)  # E2E tests for 'todocs readme' command.
-    sample_project(tmp_path)
-    sample_organization(tmp_path;sample_project)
   examples/api_surface_deep.py:
     i: sys,pathlib.Path,todocs.analyzers.api_surface.APISurfaceAnalyzer
     e: print_section,analyze_entry_points,analyze_cli_commands,analyze_public_symbols,analyze_rest_endpoints,analyze_symbol_sources,main
@@ -104,6 +94,16 @@ D:
     e: TestImportGraphAnalyzer,TestAPISurfaceAnalyzer
     TestImportGraphAnalyzer: test_build_graph(1),test_graph_separates_tests(1),test_hub_modules(1),test_empty_project(1),test_cycle_detection(1)
     TestAPISurfaceAnalyzer: test_analyze(1),test_detect_cli_commands(1),test_detect_entry_points(1),test_detect_public_classes(1),test_detect_public_functions(1)
+  tests/test_cli_e2e.py:
+    i: subprocess,sys,tempfile,pytest,pathlib.Path
+    e: sample_project,sample_organization,TestCLIInspect,TestCLIGenerate,TestCLICompare,TestCLIHealth,TestCLIReadme,TestCLIHelp
+    TestCLIInspect: test_inspect_markdown_output(2),test_inspect_json_output(2),test_inspect_stdout(1)  # E2E tests for 'todocs inspect' command.
+    TestCLIGenerate: test_generate_articles(2),test_generate_with_json_report(2)  # E2E tests for 'todocs generate' command.
+    TestCLICompare: test_compare_multiple_projects(2),test_compare_insufficient_projects(2)  # E2E tests for 'todocs compare' command.
+    TestCLIHealth: test_health_report(2)  # E2E tests for 'todocs health' command.
+    TestCLIReadme: test_readme_generation(2),test_readme_no_projects(1)  # E2E tests for 'todocs readme' command.
+    sample_project(tmp_path)
+    sample_organization(tmp_path;sample_project)
   tests/test_extractors.py:
     i: pytest,pathlib.Path,todocs.extractors.docker_parser.DockerParser,todocs.extractors.makefile_parser.MakefileParser,todocs.extractors.toon_parser.ToonParser
     e: TestToonParser,TestMakefileParser,TestDockerParser

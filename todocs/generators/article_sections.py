@@ -126,6 +126,20 @@ def render_architecture(p: "ProjectProfile") -> str:
         f"totaling **{p.code_stats.source_lines:,}** lines of code."
     )
 
+    # Add Directory Structure subsection with tree
+    structure = p.structure
+    if structure and structure.get("top_dirs"):
+        lines.append("")
+        lines.append("### Directory Structure")
+        lines.append("")
+        lines.append("```")
+        lines.append(f"{p.name}/")
+        for i, dir_name in enumerate(structure["top_dirs"]):
+            is_last = i == len(structure["top_dirs"]) - 1
+            prefix = "└── " if is_last else "├── "
+            lines.append(f"{prefix}{dir_name}/")
+        lines.append("```")
+
     lines.append("")
     lines.append("| Module | Lines | Classes | Functions | Description |")
     lines.append("|--------|------:|:-------:|:---------:|-------------|")
@@ -244,6 +258,51 @@ def render_dependencies(p: "ProjectProfile") -> str:
     return "\n".join(lines)
 
 
+def _render_entry_points(entry_pts: dict) -> str:
+    if not entry_pts:
+        return ""
+    return "\n".join([
+        "",
+        "**Entry Points**: " + ", ".join(
+            f"`{cmd}` → `{target}`" for cmd, target in entry_pts.items()
+        ),
+    ])
+
+
+def _render_cli_commands(cli_cmds: list) -> str:
+    if not cli_cmds:
+        return ""
+    lines = ["", "### CLI Commands", ""]
+    for cmd in cli_cmds[:10]:
+        desc = f" — {cmd['description']}" if cmd.get("description") else ""
+        lines.append(f"- `{cmd['name']}`{desc} (`{cmd['file']}`)")
+    return "\n".join(lines)
+
+
+def _render_rest_endpoints(endpoints: list) -> str:
+    if not endpoints:
+        return ""
+    lines = ["", "### REST Endpoints", "",
+             "| Method | Path | File |",
+             "|--------|------|------|",
+             ]
+    for ep in endpoints[:15]:
+        lines.append(f"| {ep['method']} | `{ep['path']}` | `{ep['file']}` |")
+    return "\n".join(lines)
+
+
+def _render_public_classes(pub_classes: list) -> str:
+    if not pub_classes:
+        return ""
+    lines = ["", "### Public Classes", ""]
+    for cls in pub_classes[:10]:
+        desc = f" — {cls['description']}" if cls.get("description") else ""
+        methods = cls.get("methods", [])
+        method_str = f" ({len(methods)} public methods)" if methods else ""
+        lines.append(f"- **{cls['name']}**{desc}{method_str}")
+    return "\n".join(lines)
+
+
 def render_api_surface(p: "ProjectProfile") -> str:
     """Render API surface section."""
     api = p.api_surface
@@ -259,42 +318,12 @@ def render_api_surface(p: "ProjectProfile") -> str:
     if not cli_cmds and not pub_classes and not pub_funcs and not endpoints:
         return ""
 
-    lines = ["## API Surface"]
-
-    if entry_pts:
-        lines.append("")
-        lines.append("**Entry Points**: " + ", ".join(
-            f"`{cmd}` → `{target}`" for cmd, target in entry_pts.items()
-        ))
-
-    if cli_cmds:
-        lines.append("")
-        lines.append("### CLI Commands")
-        lines.append("")
-        for cmd in cli_cmds[:10]:
-            desc = f" — {cmd['description']}" if cmd.get("description") else ""
-            lines.append(f"- `{cmd['name']}`{desc} (`{cmd['file']}`)")
-
-    if endpoints:
-        lines.append("")
-        lines.append("### REST Endpoints")
-        lines.append("")
-        lines.append("| Method | Path | File |")
-        lines.append("|--------|------|------|")
-        for ep in endpoints[:15]:
-            lines.append(f"| {ep['method']} | `{ep['path']}` | `{ep['file']}` |")
-
-    if pub_classes:
-        lines.append("")
-        lines.append("### Public Classes")
-        lines.append("")
-        for cls in pub_classes[:10]:
-            desc = f" — {cls['description']}" if cls.get("description") else ""
-            methods = cls.get("methods", [])
-            method_str = f" ({len(methods)} public methods)" if methods else ""
-            lines.append(f"- **{cls['name']}**{desc}{method_str}")
-
-    return "\n".join(lines)
+    parts = ["## API Surface"]
+    parts.append(_render_entry_points(entry_pts))
+    parts.append(_render_cli_commands(cli_cmds))
+    parts.append(_render_rest_endpoints(endpoints))
+    parts.append(_render_public_classes(pub_classes))
+    return "\n".join(s for s in parts if s)
 
 
 def render_build_targets(p: "ProjectProfile") -> str:

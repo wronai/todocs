@@ -3,7 +3,7 @@ project:
   name: todocs
   repo: /home/tom/github/wronai/todocs
   language: python
-  analyzed_at: '2026-03-08T14:27:43Z'
+  analyzed_at: '2026-03-08T14:30:47Z'
   tool: code2llm
   stats:
     files: 18

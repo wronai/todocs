@@ -46,47 +46,11 @@ class DependencyAnalyzer:
         m = re.match(r"^([A-Za-z0-9_.-]+)", dep)
         return m.group(1) if m else dep
 
-    def get_runtime_deps(self) -> List[str]:
-        """Get runtime dependencies."""
-        deps: List[str] = []
-
-        # From pyproject.toml
-        pyp = self._load_pyproject()
-        proj_deps = pyp.get("project", {}).get("dependencies", [])
-        deps.extend(self._parse_dep_name(d) for d in proj_deps)
-
-        # Poetry format
-        poetry_deps = pyp.get("tool", {}).get("poetry", {}).get("dependencies", {})
-        for name in poetry_deps:
-            if name.lower() != "python":
-                deps.append(name)
-
-        # From requirements.txt
-        req_file = self.root / "requirements.txt"
-        if req_file.exists():
-            try:
-                for line in req_file.read_text(errors="replace").splitlines():
-                    line = line.strip()
-                    if line and not line.startswith("#") and not line.startswith("-"):
-                        name = self._parse_dep_name(line)
-                        if name and name not in deps:
-                            deps.append(name)
-            except Exception:
-                pass
-
-        # From package.json
-        pkg_json = self.root / "package.json"
-        if pkg_json.exists():
-            try:
-                data = json.loads(pkg_json.read_text(errors="replace"))
-                for name in data.get("dependencies", {}):
-                    deps.append(name)
-            except Exception:
-                pass
-
-        # Deduplicate preserving order
-        seen = set()
-        unique = []
+    @staticmethod
+    def _deduplicate(deps: List[str]) -> List[str]:
+        """Deduplicate dependency list preserving order (case-insensitive)."""
+        seen: set = set()
+        unique: List[str] = []
         for d in deps:
             dl = d.lower()
             if dl not in seen:
@@ -94,58 +58,76 @@ class DependencyAnalyzer:
                 unique.append(d)
         return unique
 
-    def get_dev_deps(self) -> List[str]:
-        """Get development dependencies."""
+    def _deps_from_requirements(self, filename: str) -> List[str]:
+        """Parse dependencies from a requirements-style text file."""
+        fp = self.root / filename
+        if not fp.exists():
+            return []
+        deps: List[str] = []
+        try:
+            for line in fp.read_text(errors="replace").splitlines():
+                line = line.strip()
+                if line and not line.startswith("#") and not line.startswith("-"):
+                    name = self._parse_dep_name(line)
+                    if name:
+                        deps.append(name)
+        except Exception:
+            pass
+        return deps
+
+    def _deps_from_package_json(self, key: str) -> List[str]:
+        """Parse dependencies from package.json under the given key."""
+        pkg_json = self.root / "package.json"
+        if not pkg_json.exists():
+            return []
+        try:
+            data = json.loads(pkg_json.read_text(errors="replace"))
+            return list(data.get(key, {}).keys())
+        except Exception:
+            return []
+
+    def _pyproject_runtime_deps(self, pyp: dict) -> List[str]:
+        """Extract runtime deps from pyproject.toml [project] and [tool.poetry]."""
+        deps: List[str] = []
+        proj_deps = pyp.get("project", {}).get("dependencies", [])
+        deps.extend(self._parse_dep_name(d) for d in proj_deps)
+
+        poetry_deps = pyp.get("tool", {}).get("poetry", {}).get("dependencies", {})
+        for name in poetry_deps:
+            if name.lower() != "python":
+                deps.append(name)
+        return deps
+
+    def _pyproject_dev_deps(self, pyp: dict) -> List[str]:
+        """Extract dev deps from pyproject.toml optional-dependencies and poetry groups."""
         deps: List[str] = []
 
-        pyp = self._load_pyproject()
-
-        # From [project.optional-dependencies] dev/test
         opt = pyp.get("project", {}).get("optional-dependencies", {})
         for group in ["dev", "test", "testing", "development"]:
             for d in opt.get(group, []):
                 deps.append(self._parse_dep_name(d))
 
-        # Poetry dev-dependencies
         poetry_dev = pyp.get("tool", {}).get("poetry", {}).get("dev-dependencies", {})
-        for name in poetry_dev:
-            deps.append(name)
+        deps.extend(poetry_dev.keys())
 
-        # Poetry group.dev
         groups = pyp.get("tool", {}).get("poetry", {}).get("group", {})
         dev_group = groups.get("dev", {}).get("dependencies", {})
-        for name in dev_group:
-            deps.append(name)
+        deps.extend(dev_group.keys())
+        return deps
 
-        # requirements-dev.txt
+    def get_runtime_deps(self) -> List[str]:
+        """Get runtime dependencies."""
+        pyp = self._load_pyproject()
+        deps = self._pyproject_runtime_deps(pyp)
+        deps.extend(self._deps_from_requirements("requirements.txt"))
+        deps.extend(self._deps_from_package_json("dependencies"))
+        return self._deduplicate(deps)
+
+    def get_dev_deps(self) -> List[str]:
+        """Get development dependencies."""
+        pyp = self._load_pyproject()
+        deps = self._pyproject_dev_deps(pyp)
         for fname in ["requirements-dev.txt", "requirements-test.txt"]:
-            fp = self.root / fname
-            if fp.exists():
-                try:
-                    for line in fp.read_text(errors="replace").splitlines():
-                        line = line.strip()
-                        if line and not line.startswith("#") and not line.startswith("-"):
-                            name = self._parse_dep_name(line)
-                            if name:
-                                deps.append(name)
-                except Exception:
-                    pass
-
-        # package.json devDependencies
-        pkg_json = self.root / "package.json"
-        if pkg_json.exists():
-            try:
-                data = json.loads(pkg_json.read_text(errors="replace"))
-                for name in data.get("devDependencies", {}):
-                    deps.append(name)
-            except Exception:
-                pass
-
-        seen = set()
-        unique = []
-        for d in deps:
-            dl = d.lower()
-            if dl not in seen:
-                seen.add(dl)
-                unique.append(d)
-        return unique
+            deps.extend(self._deps_from_requirements(fname))
+        deps.extend(self._deps_from_package_json("devDependencies"))
+        return self._deduplicate(deps)

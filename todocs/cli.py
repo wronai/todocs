@@ -333,5 +333,115 @@ def readme(root_dir: str, output_path: str, org_name: str, exclude: tuple, title
     click.echo(f"README written to {output_path} ({len(profiles)} projects)")
 
 
+@main.command()
+@click.argument("root_dir", type=click.Path(exists=True, file_okay=False))
+@click.option("-o", "--output", "output_path", default="status-report.md",
+              help="Output file path")
+@click.option("--org-name", default="WronAI", help="Organization name")
+@click.option("--exclude", multiple=True, help="Directory names to exclude")
+def status(root_dir: str, output_path: str, org_name: str, exclude: tuple):
+    """Generate organization status report with KPIs and recommendations.
+
+    ROOT_DIR is the directory containing project subdirectories.
+    """
+    from todocs.core import scan_organization
+    from todocs.generators.status_report_gen import StatusReportGenerator
+
+    root = Path(root_dir).resolve()
+    profiles = scan_organization(root, exclude=list(exclude))
+
+    gen = StatusReportGenerator(org_name=org_name)
+    gen.generate(profiles, Path(output_path))
+    click.echo(f"Status report written to {output_path} ({len(profiles)} projects)")
+
+
+@main.command()
+@click.argument("root_dir", type=click.Path(exists=True, file_okay=False))
+@click.option("-o", "--output", "output_dir", default="cards",
+              help="Output directory for card files")
+@click.option("--org-name", default="WronAI", help="Organization name")
+@click.option("--exclude", multiple=True, help="Directory names to exclude")
+def cards(root_dir: str, output_dir: str, org_name: str, exclude: tuple):
+    """Generate project cards (compact single-project summaries).
+
+    ROOT_DIR is the directory containing project subdirectories.
+    """
+    from todocs.core import scan_organization
+    from todocs.generators.project_card_gen import ProjectCardGenerator
+
+    root = Path(root_dir).resolve()
+    profiles = scan_organization(root, exclude=list(exclude))
+
+    gen = ProjectCardGenerator(org_name=org_name)
+    paths = gen.generate_all(profiles, Path(output_dir))
+    click.echo(f"Generated {len(paths)} project cards in {output_dir}")
+
+
+@main.command()
+@click.argument("root_dir", type=click.Path(exists=True, file_okay=False))
+@click.option("-o", "--output", "output_path", default="index.md",
+              help="Output file path")
+@click.option("--org-name", default="WronAI", help="Organization name")
+@click.option("--exclude", multiple=True, help="Directory names to exclude")
+def index(root_dir: str, output_path: str, org_name: str, exclude: tuple):
+    """Generate organization project index / catalog page.
+
+    ROOT_DIR is the directory containing project subdirectories.
+    """
+    from todocs.core import scan_organization
+    from todocs.generators.org_index_gen import OrgIndexGenerator
+
+    root = Path(root_dir).resolve()
+    profiles = scan_organization(root, exclude=list(exclude))
+
+    if not profiles:
+        click.echo("No projects found.", err=True)
+        raise SystemExit(1)
+
+    gen = OrgIndexGenerator(org_name=org_name)
+    gen.generate(profiles, Path(output_path))
+    click.echo(f"Index written to {output_path} ({len(profiles)} projects)")
+
+
+@main.command(name="export")
+@click.argument("root_dir", type=click.Path(exists=True, file_okay=False))
+@click.option("-o", "--output", "output_path", required=True,
+              help="Output file or directory path")
+@click.option("--format", "fmt", type=click.Choice(["html", "json"]), required=True,
+              help="Export format")
+@click.option("--org-name", default="WronAI", help="Organization name")
+@click.option("--exclude", multiple=True, help="Directory names to exclude")
+def export_cmd(root_dir: str, output_path: str, fmt: str, org_name: str, exclude: tuple):
+    """Export organization report in HTML or JSON format.
+
+    ROOT_DIR is the directory containing project subdirectories.
+
+    Examples:
+        todocs export /path/to/org --format html -o report.html
+        todocs export /path/to/org --format json -o report.json
+    """
+    from todocs.core import scan_organization
+
+    root = Path(root_dir).resolve()
+    profiles = scan_organization(root, exclude=list(exclude))
+
+    if not profiles:
+        click.echo("No projects found.", err=True)
+        raise SystemExit(1)
+
+    out = Path(output_path)
+
+    if fmt == "html":
+        from todocs.outputs.html import HTMLOutput
+        writer = HTMLOutput(org_name=org_name)
+        writer.write(profiles, out)
+    elif fmt == "json":
+        from todocs.outputs.json import JSONOutput
+        writer = JSONOutput(org_name=org_name)
+        writer.write(profiles, out)
+
+    click.echo(f"{fmt.upper()} report written to {output_path} ({len(profiles)} projects)")
+
+
 if __name__ == "__main__":
     main()

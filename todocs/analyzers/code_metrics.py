@@ -83,53 +83,12 @@ class CodeMetricsAnalyzer:
         test_files = len(self._test_files)
         source_files = total_files - test_files
 
-        source_lines = sum(self._count_lines(f) for f in self._all_source if f not in set(self._test_files))
+        test_set = set(self._test_files)
+        source_lines = sum(self._count_lines(f) for f in self._all_source if f not in test_set)
         test_lines = sum(self._count_lines(f) for f in self._test_files)
         total_lines = source_lines + test_lines
 
-        # Complexity via radon (Python files only)
-        complexities = []
-        hotspots = []
-        mi_scores = []
-
-        for pyf in self._py_files:
-            if self._is_test(pyf):
-                continue
-            try:
-                code = pyf.read_text(errors="replace")
-            except Exception:
-                continue
-
-            if HAS_RADON:
-                try:
-                    blocks = cc_visit(code)
-                    for block in blocks:
-                        complexities.append(block.complexity)
-                        if block.complexity > 10:
-                            hotspots.append({
-                                "file": str(pyf.relative_to(self.root)),
-                                "name": block.name,
-                                "type": block.letter,
-                                "complexity": block.complexity,
-                                "rank": cc_rank(block.complexity),
-                                "line": block.lineno,
-                            })
-                except Exception:
-                    pass
-
-                try:
-                    mi = mi_visit(code, multi=True)
-                    mi_scores.append(mi)
-                except Exception:
-                    pass
-            else:
-                # Fallback: count branches via AST
-                try:
-                    tree = ast.parse(code)
-                    cc = self._ast_complexity(tree)
-                    complexities.append(cc)
-                except Exception:
-                    pass
+        complexities, hotspots, mi_scores = self._collect_complexity_data()
 
         avg_cc = sum(complexities) / len(complexities) if complexities else 0.0
         max_cc = max(complexities) if complexities else 0.0
@@ -150,6 +109,65 @@ class CodeMetricsAnalyzer:
             maintainability_index=round(avg_mi, 2),
         )
 
+    def _collect_complexity_data(self) -> tuple:
+        """Compute complexity metrics for all non-test Python files.
+
+        Returns: (complexities, hotspots, mi_scores)
+        """
+        complexities: List[float] = []
+        hotspots: List[Dict[str, Any]] = []
+        mi_scores: List[float] = []
+
+        for pyf in self._py_files:
+            if self._is_test(pyf):
+                continue
+            try:
+                code = pyf.read_text(errors="replace")
+            except Exception:
+                continue
+
+            if HAS_RADON:
+                self._collect_radon_metrics(pyf, code, complexities, hotspots, mi_scores)
+            else:
+                self._collect_ast_fallback(code, complexities)
+
+        return complexities, hotspots, mi_scores
+
+    def _collect_radon_metrics(
+        self, pyf: Path, code: str,
+        complexities: List[float], hotspots: List[Dict[str, Any]], mi_scores: List[float],
+    ) -> None:
+        """Collect radon CC and MI metrics for a single file."""
+        try:
+            blocks = cc_visit(code)
+            for block in blocks:
+                complexities.append(block.complexity)
+                if block.complexity > 10:
+                    hotspots.append({
+                        "file": str(pyf.relative_to(self.root)),
+                        "name": block.name,
+                        "type": block.letter,
+                        "complexity": block.complexity,
+                        "rank": cc_rank(block.complexity),
+                        "line": block.lineno,
+                    })
+        except Exception:
+            pass
+
+        try:
+            mi = mi_visit(code, multi=True)
+            mi_scores.append(mi)
+        except Exception:
+            pass
+
+    def _collect_ast_fallback(self, code: str, complexities: List[float]) -> None:
+        """Fallback: estimate complexity via AST node counting."""
+        try:
+            tree = ast.parse(code)
+            complexities.append(self._ast_complexity(tree))
+        except Exception:
+            pass
+
     def _ast_complexity(self, tree: ast.AST) -> int:
         """Simple cyclomatic complexity estimate via AST node counting."""
         cc = 1
@@ -161,41 +179,48 @@ class CodeMetricsAnalyzer:
                 cc += len(node.values) - 1
         return cc
 
+    @staticmethod
+    def _extract_module_docstring(tree: ast.Module) -> str:
+        """Extract the module-level docstring from an AST."""
+        if (tree.body and isinstance(tree.body[0], ast.Expr)
+                and isinstance(tree.body[0].value, ast.Constant)):
+            return str(getattr(tree.body[0].value, "value", ""))
+        return ""
+
+    @staticmethod
+    def _extract_imports(node: ast.AST) -> List[str]:
+        """Extract imported module names from an Import or ImportFrom node."""
+        if isinstance(node, ast.ImportFrom) and node.module:
+            return [node.module]
+        if isinstance(node, ast.Import):
+            return [alias.name for alias in node.names]
+        return []
+
     def _parse_module_ast(self, code: str) -> tuple:
         """Parse AST and extract classes, functions, imports, and docstring.
 
         Returns: (classes, functions, imports, docstring)
         """
-        classes = []
-        functions = []
-        imports = []
-        docstring = ""
+        classes: List[Dict[str, Any]] = []
+        functions: List[Dict[str, Any]] = []
+        imports: List[str] = []
 
         try:
             tree = ast.parse(code)
-
-            # Module docstring
-            if (tree.body and isinstance(tree.body[0], ast.Expr)
-                    and isinstance(tree.body[0].value, ast.Constant)):
-                val = tree.body[0].value
-                docstring = str(getattr(val, "value", ""))
-
-            for node in ast.walk(tree):
-                if isinstance(node, ast.ClassDef):
-                    methods = [n.name for n in node.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
-                    classes.append({"name": node.name, "methods": methods, "line": node.lineno})
-                elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    # Only top-level functions
-                    if hasattr(node, "col_offset") and node.col_offset == 0:
-                        functions.append({"name": node.name, "line": node.lineno})
-                elif isinstance(node, (ast.Import, ast.ImportFrom)):
-                    if isinstance(node, ast.ImportFrom) and node.module:
-                        imports.append(node.module)
-                    elif isinstance(node, ast.Import):
-                        for alias in node.names:
-                            imports.append(alias.name)
         except SyntaxError:
-            pass
+            return classes, functions, imports, ""
+
+        docstring = self._extract_module_docstring(tree)
+
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ClassDef):
+                methods = [n.name for n in node.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
+                classes.append({"name": node.name, "methods": methods, "line": node.lineno})
+            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                if hasattr(node, "col_offset") and node.col_offset == 0:
+                    functions.append({"name": node.name, "line": node.lineno})
+            elif isinstance(node, (ast.Import, ast.ImportFrom)):
+                imports.extend(self._extract_imports(node))
 
         return classes, functions, imports, docstring
 
