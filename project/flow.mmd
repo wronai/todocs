@@ -1,0 +1,84 @@
+flowchart TD
+    subgraph todocs_analyzers
+        todocs____init__["__init__"]
+        todocs___should_skip["_should_skip"]
+        todocs___iter_files["_iter_files"]
+        todocs__analyze["analyze"]
+        todocs__detect_tech_stack{{detect_tech_stack CC=19}}
+        todocs___read_deps_text["_read_deps_text"]
+        todocs____init__["__init__"]
+        todocs___load_pyproject["_load_pyproject"]
+        todocs___parse_dep_name["_parse_dep_name"]
+        todocs__get_runtime_deps{{get_runtime_deps CC=17}}
+        todocs__get_dev_deps{{get_dev_deps CC=18}}
+        todocs____init__["__init__"]
+        todocs__analyzers__maturity__MaturityScorer__score("score CC=14")
+        todocs____init__["__init__"]
+        todocs___should_skip["_should_skip"]
+        todocs___is_test["_is_test"]
+        todocs___scan("_scan CC=8")
+        todocs___count_lines["_count_lines"]
+        todocs__analyze{{analyze CC=16}}
+        todocs___ast_complexity["_ast_complexity"]
+        todocs__get_key_modules{{get_key_modules CC=21}}
+    end
+    subgraph todocs_cli
+        todocs__cli__main["main"]
+        todocs__cli__generate("generate CC=12")
+        todocs__cli__inspect["inspect"]
+    end
+    subgraph todocs_core
+        todocs__core__ProjectProfile__to_dict["to_dict"]
+        todocs__core__ProjectProfile__to_json["to_json"]
+        todocs__core__scan_project["scan_project"]
+        todocs__core__scan_organization("scan_organization CC=9")
+        todocs__core__generate_articles["generate_articles"]
+        todocs__core___categorize("_categorize CC=9")
+        todocs__core___generate_summary("_generate_summary CC=8")
+    end
+    subgraph todocs_extractors
+        todocs____init__["__init__"]
+        todocs__parse["parse"]
+        todocs___find_readme["_find_readme"]
+        todocs___parse_sections{{_parse_sections CC=22}}
+        todocs__get_first_paragraph["get_first_paragraph"]
+        todocs____init__["__init__"]
+        todocs__parse["parse"]
+        todocs___find_changelog["_find_changelog"]
+        todocs___parse_entries["_parse_entries"]
+        todocs___summarize_entry("_summarize_entry CC=9")
+        todocs____init__["__init__"]
+        todocs__extract("extract CC=9")
+        todocs___merge["_merge"]
+        todocs___from_pyproject("_from_pyproject CC=10")
+        todocs___from_setup_cfg["_from_setup_cfg"]
+        todocs___from_setup_py("_from_setup_py CC=8")
+        todocs___extract_setup_kwargs["_extract_setup_kwargs"]
+        todocs___from_package_json("_from_package_json CC=8")
+        todocs___extract_license["_extract_license"]
+    end
+    subgraph todocs_generators
+        todocs____init__["__init__"]
+        todocs__generate["generate"]
+        todocs__generate_index["generate_index"]
+        todocs___render_article["_render_article"]
+        todocs___frontmatter["_frontmatter"]
+        todocs___header["_header"]
+        todocs___overview["_overview"]
+        todocs___tech_stack_section("_tech_stack_section CC=8")
+        todocs___architecture_section("_architecture_section CC=8")
+        todocs___metrics_section["_metrics_section"]
+        todocs___maturity_section["_maturity_section"]
+        todocs___dependencies_section("_dependencies_section CC=8")
+        todocs___changelog_section["_changelog_section"]
+        todocs___usage_section("_usage_section CC=11")
+        todocs___footer["_footer"]
+        todocs___render_index("_render_index CC=13")
+    end
+    todocs__cli__inspect --> todocs__core__scan_project
+    todocs__core__scan_organization --> todocs__core__scan_project
+
+    classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
+    class todocs___parse_sections,todocs__detect_tech_stack,todocs__get_runtime_deps,todocs__get_dev_deps,todocs__analyze,todocs__get_key_modules highCC
+    class todocs__cli__generate,todocs___summarize_entry,todocs___tech_stack_section,todocs___architecture_section,todocs___dependencies_section,todocs___usage_section,todocs___render_index,todocs__analyzers__maturity__MaturityScorer__score,todocs___scan,todocs__core__scan_organization,todocs__core___categorize,todocs__core___generate_summary,todocs__extract,todocs___from_pyproject,todocs___from_setup_py,todocs___from_package_json medCC

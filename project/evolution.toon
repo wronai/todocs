@@ -1,0 +1,39 @@
+# code2llm/evolution | 66 func | 10f | 2026-03-08
+
+NEXT[6] (ranked by impact):
+  [1] !  SPLIT-FUNC      StructureAnalyzer.detect_tech_stack  CC=19  fan=23
+      WHY: CC=19 exceeds 15
+      EFFORT: ~1h  IMPACT: 437
+
+  [2] !  SPLIT-FUNC      ReadmeParser._parse_sections  CC=22  fan=19
+      WHY: CC=22 exceeds 15
+      EFFORT: ~1h  IMPACT: 418
+
+  [3] !  SPLIT-FUNC      DependencyAnalyzer.get_dev_deps  CC=18  fan=20
+      WHY: CC=18 exceeds 15
+      EFFORT: ~1h  IMPACT: 360
+
+  [4] !  SPLIT-FUNC      CodeMetricsAnalyzer.get_key_modules  CC=21  fan=17
+      WHY: CC=21 exceeds 15
+      EFFORT: ~1h  IMPACT: 357
+
+  [5] !  SPLIT-FUNC      CodeMetricsAnalyzer.analyze  CC=16  fan=22
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 352
+
+  [6] !  SPLIT-FUNC      DependencyAnalyzer.get_runtime_deps  CC=17  fan=20
+      WHY: CC=17 exceeds 15
+      EFFORT: ~1h  IMPACT: 340
+
+
+RISKS[0]: none
+
+METRICS-TARGET:
+  CC̄:          6.1 → ≤4.3
+  max-CC:      22 → ≤11
+  god-modules: 0 → 0
+  high-CC(≥15): 6 → ≤3
+  hub-types:   0 → ≤0
+
+HISTORY:
+  prev CC̄=6.1 → now CC̄=6.1

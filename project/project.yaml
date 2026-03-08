@@ -1,0 +1,407 @@
+version: '1'
+project:
+  name: todocs
+  repo: /home/tom/github/wronai/todocs
+  language: python
+  analyzed_at: '2026-03-08T07:42:56Z'
+  tool: code2llm
+  stats:
+    files: 10
+    lines: 2344
+    functions: 66
+    classes: 13
+health:
+  cc_avg: 6.1
+  critical_count: 11
+  critical_limit: 10
+  duplicates: 0
+  cycles: 0
+  alerts:
+  - type: high_fan_out
+    target: generate
+    value: 25
+    limit: 10
+    severity: critical
+  - type: high_fan_out
+    target: StructureAnalyzer.detect_tech_stack
+    value: 23
+    limit: 10
+    severity: critical
+  - type: high_fan_out
+    target: CodeMetricsAnalyzer.analyze
+    value: 22
+    limit: 10
+    severity: critical
+  - type: high_fan_out
+    target: DependencyAnalyzer.get_runtime_deps
+    value: 20
+    limit: 10
+    severity: critical
+  - type: high_fan_out
+    target: DependencyAnalyzer.get_dev_deps
+    value: 20
+    limit: 10
+    severity: critical
+  - type: high_fan_out
+    target: scan_project
+    value: 20
+    limit: 10
+    severity: critical
+  - type: cc_exceeded
+    target: ReadmeParser._parse_sections
+    value: 22
+    limit: 15
+    severity: error
+  - type: cc_exceeded
+    target: CodeMetricsAnalyzer.get_key_modules
+    value: 21
+    limit: 15
+    severity: error
+  - type: high_fan_out
+    target: ReadmeParser._parse_sections
+    value: 19
+    limit: 10
+    severity: error
+  - type: high_fan_out
+    target: CodeMetricsAnalyzer.get_key_modules
+    value: 17
+    limit: 10
+    severity: error
+  - type: cc_exceeded
+    target: StructureAnalyzer.detect_tech_stack
+    value: 19
+    limit: 15
+    severity: warning
+  - type: cc_exceeded
+    target: DependencyAnalyzer.get_dev_deps
+    value: 18
+    limit: 15
+    severity: warning
+  - type: cc_exceeded
+    target: DependencyAnalyzer.get_runtime_deps
+    value: 17
+    limit: 15
+    severity: warning
+  - type: cc_exceeded
+    target: CodeMetricsAnalyzer.analyze
+    value: 16
+    limit: 15
+    severity: warning
+  - type: high_fan_out
+    target: inspect
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: ArticleGenerator._render_article
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: ArticleGenerator._render_index
+    value: 12
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: scan_organization
+    value: 12
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: MetadataExtractor._from_pyproject
+    value: 12
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: ChangelogParser._parse_entries
+    value: 11
+    limit: 10
+    severity: warning
+modules:
+- path: todocs/extractors/readme_parser.py
+  lines: 142
+  classes: 1
+  methods: 5
+  cc_max: 22
+  inbound_deps: 0
+  exports:
+  - name: ReadmeParser
+    type: class
+    cc_avg: 6.4
+    methods:
+    - name: _parse_sections
+      cc: 22
+      flag: split
+      fan_out: 19
+- path: todocs/analyzers/code_metrics.py
+  lines: 220
+  classes: 1
+  methods: 8
+  cc_max: 21
+  inbound_deps: 0
+  exports:
+  - name: CodeMetricsAnalyzer
+    type: class
+    cc_avg: 7.4
+    methods:
+    - name: analyze
+      cc: 16
+      flag: split
+      fan_out: 22
+    - name: get_key_modules
+      cc: 21
+      flag: split
+      fan_out: 17
+- path: todocs/analyzers/structure.py
+  lines: 208
+  classes: 1
+  methods: 6
+  cc_max: 19
+  inbound_deps: 0
+  exports:
+  - name: StructureAnalyzer
+    type: class
+    cc_avg: 6.5
+    methods:
+    - name: analyze
+      cc: 7
+      fan_out: 11
+    - name: detect_tech_stack
+      cc: 19
+      flag: split
+      fan_out: 23
+- path: todocs/analyzers/dependencies.py
+  lines: 151
+  classes: 1
+  methods: 5
+  cc_max: 18
+  inbound_deps: 0
+  exports:
+  - name: DependencyAnalyzer
+    type: class
+    cc_avg: 9.0
+    methods:
+    - name: get_runtime_deps
+      cc: 17
+      flag: split
+      fan_out: 20
+    - name: get_dev_deps
+      cc: 18
+      flag: split
+      fan_out: 20
+- path: todocs/analyzers/maturity.py
+  lines: 103
+  classes: 1
+  methods: 2
+  cc_max: 14
+  inbound_deps: 0
+  exports:
+  - name: MaturityScorer
+    type: class
+    cc_avg: 7.5
+    methods:
+    - name: score
+      cc: 14
+- path: todocs/generators/article.py
+  lines: 446
+  classes: 1
+  methods: 16
+  cc_max: 13
+  inbound_deps: 0
+  exports:
+  - name: ArticleGenerator
+    type: class
+    cc_avg: 5.4
+    methods:
+    - name: _render_article
+      cc: 3
+      fan_out: 13
+    - name: _usage_section
+      cc: 11
+    - name: _render_index
+      cc: 13
+      fan_out: 12
+- path: todocs/cli.py
+  lines: 175
+  classes: 0
+  methods: 3
+  cc_max: 12
+  inbound_deps: 0
+  exports:
+  - name: main
+    type: function
+    cc: 1
+  - name: generate
+    type: function
+    cc: 12
+    fan_out: 25
+  - name: inspect
+    type: function
+    cc: 3
+    fan_out: 13
+- path: todocs/extractors/metadata.py
+  lines: 211
+  classes: 1
+  methods: 9
+  cc_max: 10
+  inbound_deps: 0
+  exports:
+  - name: MetadataExtractor
+    type: class
+    cc_avg: 6.2
+    methods:
+    - name: _from_pyproject
+      cc: 10
+      fan_out: 12
+- path: todocs/core.py
+  lines: 269
+  classes: 5
+  methods: 7
+  cc_max: 9
+  inbound_deps: 1
+  exports:
+  - name: TechStack
+    type: class
+    cc_avg: 0.0
+  - name: CodeStats
+    type: class
+    cc_avg: 0.0
+  - name: ProjectMetadata
+    type: class
+    cc_avg: 0.0
+  - name: MaturityProfile
+    type: class
+    cc_avg: 0.0
+  - name: ProjectProfile
+    type: class
+    cc_avg: 1.0
+  - name: scan_project
+    type: function
+    cc: 1
+    fan_out: 20
+  - name: scan_organization
+    type: function
+    cc: 9
+    fan_out: 12
+  - name: generate_articles
+    type: function
+    cc: 2
+- path: todocs/extractors/changelog_parser.py
+  lines: 103
+  classes: 1
+  methods: 5
+  cc_max: 9
+  inbound_deps: 0
+  exports:
+  - name: ChangelogParser
+    type: class
+    cc_avg: 4.4
+    methods:
+    - name: _parse_entries
+      cc: 6
+      fan_out: 11
+    - name: _summarize_entry
+      cc: 9
+      fan_out: 11
+- path: todocs/__init__.py
+  lines: 10
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+- path: todocs/analyzers/__init__.py
+  lines: 1
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+- path: todocs/extractors/__init__.py
+  lines: 1
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+- path: todocs/generators/__init__.py
+  lines: 1
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+hotspots:
+- name: generate
+  fan_out: 25
+  note: 'Scan projects and generate WordPress markdown articles.
+
+
+    ROOT_DIR is the directo'
+- name: StructureAnalyzer.detect_tech_stack
+  fan_out: 23
+  note: Detect technology stack from files and markers.
+- name: CodeMetricsAnalyzer.analyze
+  fan_out: 22
+  note: Analysis pipeline, 22 stages
+- name: DependencyAnalyzer.get_runtime_deps
+  fan_out: 20
+  note: Get runtime dependencies.
+- name: DependencyAnalyzer.get_dev_deps
+  fan_out: 20
+  note: Get development dependencies.
+- name: scan_project
+  fan_out: 20
+  note: Analyze a single project and return its profile.
+- name: ReadmeParser._parse_sections
+  fan_out: 19
+  note: Split markdown by headings into sections.
+- name: CodeMetricsAnalyzer.get_key_modules
+  fan_out: 17
+  note: Return the top N most significant Python modules by size and complexity.
+- name: inspect
+  fan_out: 13
+  note: 'Inspect a single project and show its profile.
+
+
+    PROJECT_DIR is the path to the p'
+- name: ArticleGenerator._render_article
+  fan_out: 13
+  note: Orchestrates 13 calls
+refactoring:
+  priorities:
+  - action: Split ReadmeParser._parse_sections (CC=22 → target CC<10)
+    impact: medium
+    effort: low
+    module: readme_parser.py
+  - action: Split StructureAnalyzer.detect_tech_stack (CC=19 → target CC<10)
+    impact: medium
+    effort: low
+    module: structure.py
+  - action: Split DependencyAnalyzer.get_runtime_deps (CC=17 → target CC<10)
+    impact: medium
+    effort: low
+    module: dependencies.py
+  - action: Split DependencyAnalyzer.get_dev_deps (CC=18 → target CC<10)
+    impact: medium
+    effort: low
+    module: dependencies.py
+  - action: Split CodeMetricsAnalyzer.analyze (CC=16 → target CC<10)
+    impact: medium
+    effort: low
+    module: code_metrics.py
+  - action: Split CodeMetricsAnalyzer.get_key_modules (CC=21 → target CC<10)
+    impact: medium
+    effort: low
+    module: code_metrics.py
+  - action: Reduce generate fan-out (currently 25)
+    impact: medium
+    effort: medium
+  - action: Reduce StructureAnalyzer.detect_tech_stack fan-out (currently 23)
+    impact: medium
+    effort: medium
+  - action: Reduce CodeMetricsAnalyzer.analyze fan-out (currently 22)
+    impact: medium
+    effort: medium
+evolution:
+- date: '2026-03-08'
+  cc_avg: 6.1
+  critical: 11
+  lines: 2344
+  note: Automated analysis

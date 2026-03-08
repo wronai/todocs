@@ -1,0 +1,135 @@
+# code2llm | 14f 2041L | py:14 | 2026-03-08
+# CC̄=6.1 | critical:11/66 | dups:0 | cycles:0
+
+HEALTH[6]:
+  🟡 CC    _parse_sections CC=22 (limit:15)
+  🟡 CC    detect_tech_stack CC=19 (limit:15)
+  🟡 CC    get_runtime_deps CC=17 (limit:15)
+  🟡 CC    get_dev_deps CC=18 (limit:15)
+  🟡 CC    analyze CC=16 (limit:15)
+  🟡 CC    get_key_modules CC=21 (limit:15)
+
+REFACTOR[1]:
+  1. split 6 high-CC methods  (CC>15)
+
+COUPLING: no cross-package imports detected
+
+LAYERS:
+  todocs/                         CC̄=6.1    ←in:0  →out:0
+  │ !  article                    446L  1C   16m  CC=13     ←0
+  │ core                       269L  5C    7m  CC=9      ←1
+  │ !! code_metrics               220L  1C    8m  CC=21     ←0
+  │ !  metadata                   211L  1C    9m  CC=10     ←0
+  │ !! structure                  208L  1C    6m  CC=19     ←0
+  │ !  cli                        175L  0C    3m  CC=12     ←0
+  │ !! dependencies               151L  1C    5m  CC=18     ←0
+  │ !! readme_parser              142L  1C    5m  CC=22     ←0
+  │ changelog_parser           103L  1C    5m  CC=9      ←0
+  │ !  maturity                   103L  1C    2m  CC=14     ←0
+  │ __init__                    10L  0C    0m  CC=0.0    ←0
+  │ __init__                     1L  0C    0m  CC=0.0    ←0
+  │ __init__                     1L  0C    0m  CC=0.0    ←0
+  │ __init__                     1L  0C    0m  CC=0.0    ←0
+  │
+
+DUPLICATES[0]: none
+
+FUNCTIONS (CC≥10, 11 of 66):
+   22.0  ReadmeParser._parse_sections               26n   2exit  loops+cond+ret  !! split
+   21.0  CodeMetricsAnalyzer.get_key_modules         6n   2exit  loops+cond+ret  !! split
+   19.0  StructureAnalyzer.detect_tech_stack        26n   2exit  loops+cond+ret  !! split
+   18.0  DependencyAnalyzer.get_dev_deps            15n   2exit  loops+cond+ret  !! split
+   17.0  DependencyAnalyzer.get_runtime_deps        13n   2exit  loops+cond+ret  !! split
+   16.0  CodeMetricsAnalyzer.analyze                 8n   2exit  loops+cond+ret  !! split
+   14.0  MaturityScorer.score                        9n   2exit  loops+cond+ret
+   13.0  ArticleGenerator._render_index             10n   2exit  loops+cond+ret
+   12.0  generate                                   10n   1exit  loops+cond
+   11.0  ArticleGenerator._usage_section            18n   2exit  loops+cond+ret
+   10.0  MetadataExtractor._from_pyproject          13n   3exit  loops+cond+ret
+
+  summary:
+    critical(≥10): 11 | high(5-10): 21 | medium(2-5): 19 | low(<2): 15
+    17% CC≥10  48% CC≥5
+
+HOTSPOTS:
+  #1  generate                             fan=25   "calls 25 functions"
+  #2  StructureAnalyzer.detect_tech_stack  fan=23   "StructureAnalyzer method, fan-out=23"
+  #3  CodeMetricsAnalyzer.analyze          fan=22   "analysis pipeline, 22 stages"
+  #4  DependencyAnalyzer.get_runtime_deps  fan=20   "DependencyAnalyzer method, fan-out=20"
+  #5  DependencyAnalyzer.get_dev_deps      fan=20   "DependencyAnalyzer method, fan-out=20"
+  #6  scan_project                         fan=20   "calls 20 functions"
+  #7  ReadmeParser._parse_sections         fan=19   "ReadmeParser method, fan-out=19"
+  #8  CodeMetricsAnalyzer.get_key_modules  fan=17   "CodeMetricsAnalyzer method, fan-out=17"
+  #9  inspect                              fan=13   "calls 13 functions"
+  #10 ArticleGenerator._render_article     fan=13   "ArticleGenerator method, fan-out=13"
+
+CLASSES:
+  ArticleGenerator               ████████████████████████  16m  CC̄=5.4   max=13  
+  MetadataExtractor              █████████████              9m  CC̄=6.2   max=10  
+  CodeMetricsAnalyzer            ████████████               8m  CC̄=7.4   max=21    !!
+  StructureAnalyzer              █████████                  6m  CC̄=6.5   max=19    !!
+  ReadmeParser                   ███████                    5m  CC̄=6.4   max=22    !!
+  ChangelogParser                ███████                    5m  CC̄=4.4   max=9   
+  DependencyAnalyzer             ███████                    5m  CC̄=9.0   max=18    !!
+  MaturityScorer                 ███                        2m  CC̄=7.5   max=14  
+  ProjectProfile                 ███                        2m  CC̄=1.0   max=1   
+  TechStack                                                 0m  CC̄=0.0   max=0.0 
+  CodeStats                                                 0m  CC̄=0.0   max=0.0 
+  ProjectMetadata                                           0m  CC̄=0.0   max=0.0 
+  MaturityProfile                                           0m  CC̄=0.0   max=0.0 
+
+D:
+  todocs/extractors/readme_parser.py:
+    e: ReadmeParser
+    ReadmeParser  # Extract structured sections from a README.md file....
+      __init__(1)  CC=1.0
+  todocs/analyzers/code_metrics.py:
+    e: CodeMetricsAnalyzer
+    CodeMetricsAnalyzer  # Analyze code metrics: lines, complexity, maintainability....
+      __init__(1)  CC=1.0
+  todocs/analyzers/structure.py:
+    e: StructureAnalyzer
+    StructureAnalyzer  # Analyze project directory structure....
+      __init__(1)  CC=1.0
+  todocs/analyzers/dependencies.py:
+    e: DependencyAnalyzer
+    DependencyAnalyzer  # Extract project dependencies without executing anything....
+      __init__(1)  CC=1.0
+  todocs/analyzers/maturity.py:
+    e: MaturityScorer
+    MaturityScorer  # Compute a maturity score (0-100) for a project....
+      __init__(2)  CC=1.0
+  todocs/generators/article.py:
+    e: ArticleGenerator
+    ArticleGenerator  # Generate markdown articles for WordPress from analyzed proje...
+      __init__(2)  CC=1.0
+  todocs/cli.py:
+    e: main,generate,inspect
+    main()
+    generate(root_dir,output_dir,org_name,org_url,exclude,json_report,verbose)
+    inspect(project_dir,output,fmt)
+  todocs/extractors/metadata.py:
+    e: MetadataExtractor
+    MetadataExtractor  # Extract structured metadata from project config files....
+      __init__(1)  CC=1.0
+  todocs/extractors/changelog_parser.py:
+    e: ChangelogParser
+    ChangelogParser  # Extract structured entries from CHANGELOG.md....
+      __init__(1)  CC=1.0
+  todocs/core.py:
+    e: TechStack,CodeStats,ProjectMetadata,MaturityProfile,ProjectProfile,scan_project,scan_organization,generate_articles,_categorize,_generate_summary
+    TechStack  # Detected technology stack....
+    CodeStats  # Aggregated code statistics....
+    ProjectMetadata  # Extracted project metadata....
+    MaturityProfile  # Project maturity assessment....
+    ProjectProfile  # Complete project profile for article generation....
+      to_dict(0)  CC=1.0
+    scan_project(project_path)
+    scan_organization(root_path,exclude)
+    generate_articles(profiles,output_dir,org_name,org_url)
+    _categorize(profile)
+    _generate_summary(profile)
+  todocs/__init__.py:
+  todocs/extractors/__init__.py:
+  todocs/generators/__init__.py:
+  todocs/analyzers/__init__.py:

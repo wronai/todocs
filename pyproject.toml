@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "todocs"
-version = "0.1.1"
+version = "0.1.2"
 description = "Static-analysis documentation generator for project portfolios — WordPress-ready markdown articles without LLM"
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
 authors = [
     {name = "Softreck", email = "info@softreck.dev"},
-    "Tom Sapletta <tom@sapletta.com>",
+    {name = "Tom Sapletta", email = "tom@sapletta.com"},
 ]
 keywords = ["documentation", "static-analysis", "code-metrics", "wordpress", "markdown"]
 classifiers = [

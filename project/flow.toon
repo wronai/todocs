@@ -1,0 +1,304 @@
+# todocs/flow | 66 func | 11 pipelines | 3 hub-types | 2026-03-08
+
+PIPELINES[11] (Analysis:4, Core:2, Export:1, IO:1, Unknown:3):
+  Todocs [Core]: str → str
+              → generate(root_dir:str, output_dir:str, org_name:str, org_url:str, exclude:tuple, json_report:Optional[str], verbose:bool) CC=12   IO ▶
+              → scan_organization(root_path:Path, exclude:Optional[List[str]]) → List[ProjectProfile] CC=9    IO
+              → scan_project(project_path:Path) → ProjectProfile CC=1    pure
+              → _generate_summary(profile:ProjectProfile) → str CC=8    mutation ■
+              PURITY: 1/4 pure  BOTTLENECK: generate(CC=12)
+
+  Todocs [Core]: str → str
+              → inspect(project_dir:str, output:Optional[str], fmt:str) CC=3    IO ▶
+              → scan_project(project_path:Path) → ProjectProfile CC=1    pure
+              → _generate_summary(profile:ProjectProfile) → str CC=8    mutation ■
+              PURITY: 1/3 pure  BOTTLENECK: _generate_summary(CC=8)
+
+  Todocs [IO]: ? → Dict[str, str]
+              → get_first_paragraph() → str             CC=3    pure ▶
+              → parse() → Dict[str, str]                CC=3    IO
+              → _parse_sections(text:str) → Dict[str, str] CC=22   mutation  !! ■
+              PURITY: 1/3 pure  BOTTLENECK: _parse_sections(CC=22)
+
+  Todocs [Unknown]: int → str
+              → parse(max_entries:int) → List[Dict[str, str]] CC=3    IO ▶
+              → _parse_entries(text:str, max_entries:int) → List[Dict[str, str]] CC=6    mutation
+              → _summarize_entry(content:str, max_items:int) → str CC=9    mutation ■
+              PURITY: 0/3 pure  BOTTLENECK: _summarize_entry(CC=9)
+
+  Todocs [Analysis]: ? → bool
+              → analyze() → Dict[str, Any]              CC=7    mutation ▶
+              → _iter_files() → AnalysisResult          CC=4    pure
+              → _should_skip(path:Path) → bool          CC=4    pure ■
+              PURITY: 2/3 pure  BOTTLENECK: analyze(CC=7)
+
+  Todocs [Analysis]: ? → bool
+              → detect_tech_stack()                     CC=19   mutation  !! ▶
+              → _iter_files() → AnalysisResult          CC=4    pure
+              → _should_skip(path:Path) → bool          CC=4    pure ■
+              PURITY: 2/3 pure  BOTTLENECK: detect_tech_stack(CC=19)
+
+  Todocs [Export]: ProjectProfile → str
+              → generate(profile:ProjectProfile, output_path:Path) → None CC=1    IO ▶
+              → _render_article(p:ProjectProfile) → str CC=3    mutation
+              → _footer(p:ProjectProfile) → str         CC=1    pure ■
+              PURITY: 1/3 pure  BOTTLENECK: _render_article(CC=3)
+
+  Todocs [Analysis]: ? → bool
+              → analyze() → AnalysisResult              CC=16   IO  !! ▶
+              → _scan()                                 CC=8    mutation
+              → _is_test(path:Path) → bool              CC=2    pure ■
+              PURITY: 1/3 pure  BOTTLENECK: analyze(CC=16)
+
+  Todocs [Analysis]: int → bool
+              → get_key_modules(top_n:int) → List[Dict[str, Any]] CC=21   IO  !! ▶
+              → _scan()                                 CC=8    mutation
+              → _is_test(path:Path) → bool              CC=2    pure ■
+              PURITY: 1/3 pure  BOTTLENECK: get_key_modules(CC=21)
+
+  Todocs [Unknown]: ? → Dict
+              → extract()                               CC=9    IO ▶
+              → _from_setup_py() → Optional[Dict]       CC=8    IO
+              → _extract_setup_kwargs(call_node:ast.Call) → Dict CC=5    pure ■
+              PURITY: 1/3 pure  BOTTLENECK: extract(CC=9)
+
+  Todocs [Unknown]: ? → str
+              → extract()                               CC=9    IO ▶
+              → _from_pyproject() → Optional[Dict]      CC=10   IO
+              → _extract_license(lic_val) → str         CC=3    pure ■
+              PURITY: 1/3 pure  BOTTLENECK: _from_pyproject(CC=10)
+
+
+TRANSFORMS (fan-out ≥10):
+  generate(root_dir:str, output_dir:str, org_name:str, org_url:str, exclude:tuple, json_report:Optional[str], verbose:bool) fan=25   !! side-effects
+  detect_tech_stack()                                     fan=23   !! side-effects
+  analyze() → AnalysisResult                              fan=22   !! side-effects
+  get_runtime_deps() → List[str]                          fan=20   !! side-effects
+  get_dev_deps() → List[str]                              fan=20   !! side-effects
+  scan_project(project_path:Path) → ProjectProfile        fan=20   !! side-effects
+  _parse_sections(text:str) → Dict[str, str]              fan=19   PIPELINE:ReadmeParser.entry
+  get_key_modules(top_n:int) → List[Dict[str, Any]]       fan=17   PIPELINE:CodeMetricsAnalyzer.entry
+  inspect(project_dir:str, output:Optional[str], fmt:str) fan=13   fan=13
+  _render_article(p:ProjectProfile) → str                 fan=13   PIPELINE:ArticleGenerator.entry
+  _render_index(profiles:List[ProjectProfile]) → str      fan=12   PIPELINE:ArticleGenerator.entry
+  scan_organization(root_path:Path, exclude:Optional[List[str]]) → List[ProjectProfile] fan=12   fan=12
+  _from_pyproject() → Optional[Dict]                      fan=12   PIPELINE:MetadataExtractor.entry
+  _parse_entries(text:str, max_entries:int) → List[Dict[str, str]] fan=11   PIPELINE:ChangelogParser.entry
+  _summarize_entry(content:str, max_items:int) → str      fan=11   PIPELINE:ChangelogParser.entry
+
+CONTRACTS:
+  Pipeline: Todocs
+    generate(root_dir:str, output_dir:str, org_name:str, org_url:str, exclude:tuple, json_report:Optional[str], verbose:bool)
+      IN:  root_dir:str, output_dir:str, org_name:str, org_url:str, exclude:tuple, json_report:Optional[str], verbose:bool
+      OUT: None
+      SIDE-EFFECT: IO(print, print, print)
+
+    scan_organization(root_path:Path, exclude:Optional[List[str]]) → List[ProjectProfile]
+      IN:  root_path:Path, exclude:Optional[List[str]]
+      OUT: List[ProjectProfile]
+      SIDE-EFFECT: IO(print)
+
+    scan_project(project_path:Path) → ProjectProfile
+      IN:  project_path:Path
+      OUT: ProjectProfile
+
+    _generate_summary(profile:ProjectProfile) → str
+      IN:  profile:ProjectProfile
+      OUT: str
+      SIDE-EFFECT: pure
+
+  Pipeline: Todocs
+    inspect(project_dir:str, output:Optional[str], fmt:str)
+      IN:  project_dir:str, output:Optional[str], fmt:str
+      OUT: None
+      SIDE-EFFECT: IO(write_text, print, print)
+
+    scan_project(project_path:Path) → ProjectProfile
+      IN:  project_path:Path
+      OUT: ProjectProfile
+
+    _generate_summary(profile:ProjectProfile) → str
+      IN:  profile:ProjectProfile
+      OUT: str
+      SIDE-EFFECT: pure
+
+  Pipeline: Todocs
+    get_first_paragraph() → str
+      IN:  ()
+      OUT: str
+
+    parse() → Dict[str, str]
+      IN:  ()
+      OUT: Dict[str, str]
+      SIDE-EFFECT: IO(read_text)
+
+    _parse_sections(text:str) → Dict[str, str]
+      IN:  text:str
+      OUT: Dict[str, str]
+      SIDE-EFFECT: pure
+      SMELL: CC=22 → split
+
+  Pipeline: Todocs
+    parse(max_entries:int) → List[Dict[str, str]]
+      IN:  max_entries:int
+      OUT: List[Dict[str, str]]
+      SIDE-EFFECT: IO(read_text)
+
+    _parse_entries(text:str, max_entries:int) → List[Dict[str, str]]
+      IN:  text:str, max_entries:int
+      OUT: List[Dict[str, str]]
+      SIDE-EFFECT: pure
+
+    _summarize_entry(content:str, max_items:int) → str
+      IN:  content:str, max_items:int
+      OUT: str
+      SIDE-EFFECT: pure
+
+  Pipeline: Todocs
+    analyze() → Dict[str, Any]
+      IN:  ()
+      OUT: Dict[str, Any]
+      SIDE-EFFECT: pure
+
+    _iter_files() → AnalysisResult
+      IN:  ()
+      OUT: AnalysisResult
+
+    _should_skip(path:Path) → bool
+      IN:  path:Path
+      OUT: bool
+
+  Pipeline: Todocs
+    detect_tech_stack()
+      IN:  ()
+      OUT: None
+      SIDE-EFFECT: pure
+      SMELL: CC=19 → split
+
+    _iter_files() → AnalysisResult
+      IN:  ()
+      OUT: AnalysisResult
+
+    _should_skip(path:Path) → bool
+      IN:  path:Path
+      OUT: bool
+
+  Pipeline: Todocs
+    generate(profile:ProjectProfile, output_path:Path) → None
+      IN:  profile:ProjectProfile, output_path:Path
+      OUT: None
+      SIDE-EFFECT: IO(write_text)
+
+    _render_article(p:ProjectProfile) → str
+      IN:  p:ProjectProfile
+      OUT: str
+      SIDE-EFFECT: pure
+
+    _footer(p:ProjectProfile) → str
+      IN:  p:ProjectProfile
+      OUT: str
+
+  Pipeline: Todocs
+    analyze() → AnalysisResult
+      IN:  ()
+      OUT: AnalysisResult
+      SIDE-EFFECT: IO(read_text)
+      SMELL: CC=16 → split
+
+    _scan()
+      IN:  ()
+      OUT: None
+      SIDE-EFFECT: mutates self._scanned
+
+    _is_test(path:Path) → bool
+      IN:  path:Path
+      OUT: bool
+
+  Pipeline: Todocs
+    get_key_modules(top_n:int) → List[Dict[str, Any]]
+      IN:  top_n:int
+      OUT: List[Dict[str, Any]]
+      SIDE-EFFECT: IO(read_text)
+      SMELL: CC=21 → split
+
+    _scan()
+      IN:  ()
+      OUT: None
+      SIDE-EFFECT: mutates self._scanned
+
+    _is_test(path:Path) → bool
+      IN:  path:Path
+      OUT: bool
+
+  Pipeline: Todocs
+    extract()
+      IN:  ()
+      OUT: None
+      SIDE-EFFECT: IO(read_text)
+
+    _from_setup_py() → Optional[Dict]
+      IN:  ()
+      OUT: Optional[Dict]
+      SIDE-EFFECT: IO(read_text)
+
+    _extract_setup_kwargs(call_node:ast.Call) → Dict
+      IN:  call_node:ast.Call
+      OUT: Dict
+
+  Pipeline: Todocs
+    extract()
+      IN:  ()
+      OUT: None
+      SIDE-EFFECT: IO(read_text)
+
+    _from_pyproject() → Optional[Dict]
+      IN:  ()
+      OUT: Optional[Dict]
+      SIDE-EFFECT: IO(loads, read_text)
+
+    _extract_license(lic_val) → str
+      IN:  lic_val
+      OUT: str
+
+
+DATA_TYPES (by cross-function usage) [60 annotated, 0 inferred / 66 functions]:
+  str                  consumed:17  produced:23   !! HUB-TYPE → split interface
+  ProjectProfile       consumed:19  produced:2    !! HUB-TYPE → split interface
+  Path                 consumed:16  produced:3    !! HUB-TYPE → split interface
+  int                  consumed:5   produced:2  
+  Dict                 consumed:1   produced:5    output-heavy
+  bool                 consumed:1   produced:3    narrow scope
+  str, str             consumed:0   produced:4    narrow scope
+  str, Any             consumed:0   produced:3    narrow scope
+  AnalysisResult       consumed:0   produced:2    narrow scope
+  ast.AST              consumed:1   produced:0    narrow scope
+  tuple                consumed:1   produced:0    narrow scope
+  MaturityProfile      consumed:0   produced:1    narrow scope
+  dict                 consumed:0   produced:1    narrow scope
+  ast.Call             consumed:1   produced:0    narrow scope
+
+  HUB TYPES (consumed ≥10):
+    str → 17 consumers → split into:
+      - (analyze consumers to suggest sub-interfaces)
+    ProjectProfile → 19 consumers → split into:
+      - (analyze consumers to suggest sub-interfaces)
+    Path → 16 consumers → split into:
+      - (analyze consumers to suggest sub-interfaces)
+
+SIDE_EFFECTS:
+  IO:        generate, inspect, ReadmeParser.parse, ChangelogParser.parse, StructureAnalyzer._read_deps_text, DependencyAnalyzer._load_pyproject, DependencyAnalyzer.get_runtime_deps, DependencyAnalyzer.get_dev_deps, ArticleGenerator.generate, ArticleGenerator.generate_index
+  Mutation:  ReadmeParser.__init__, ReadmeParser._parse_sections, ChangelogParser.__init__, ChangelogParser._parse_entries, ChangelogParser._summarize_entry, StructureAnalyzer.__init__, StructureAnalyzer.analyze, StructureAnalyzer.detect_tech_stack, DependencyAnalyzer.__init__, ArticleGenerator.__init__
+  Pure:      main, ReadmeParser._find_readme, ReadmeParser.get_first_paragraph, ChangelogParser._find_changelog, StructureAnalyzer._should_skip, StructureAnalyzer._iter_files, DependencyAnalyzer._parse_dep_name, ArticleGenerator._frontmatter, ArticleGenerator._footer, MaturityScorer.score
+
+  PIPELINE PURITY:
+    Todocs          █░░░ 25% pure
+    Todocs          █░░░ 33% pure
+    Todocs          █░░░ 33% pure
+    Todocs          ░░░░ 0% pure
+    Todocs          ██░░ 66% pure
+    Todocs          ██░░ 66% pure
+    Todocs          █░░░ 33% pure
+    Todocs          █░░░ 33% pure
+    Todocs          █░░░ 33% pure
+    Todocs          █░░░ 33% pure
+    Todocs          █░░░ 33% pure

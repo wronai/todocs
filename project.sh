@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 clear
 pip install glon --upgrade
+pip install goal --upgrade
 pip install code2llm --upgrade
 pip install -e .
 code2docs ./code2docs --output ../docs/

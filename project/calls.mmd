@@ -1,0 +1,10 @@
+flowchart LR
+    subgraph todocs_cli
+        todocs__cli__inspect["inspect"]
+    end
+    subgraph todocs_core
+        todocs__core__scan_organization["scan_organization"]
+        todocs__core__scan_project["scan_project"]
+    end
+    todocs__cli__inspect --> todocs__core__scan_project
+    todocs__core__scan_organization --> todocs__core__scan_project
