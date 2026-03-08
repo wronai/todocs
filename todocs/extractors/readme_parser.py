@@ -71,18 +71,41 @@ class ReadmeParser:
         """Split markdown by headings into sections."""
         sections: Dict[str, str] = {}
 
-        # Extract description: text before first heading, OR text between h1 and first h2
+        desc_text = self._extract_description(text)
+        if desc_text:
+            sections["description"] = desc_text[:500]
+
+        sections.update(self._extract_heading_sections(text))
+        return sections
+
+    def _extract_description(self, text: str) -> str:
+        """Extract description from text before first heading or between h1 and h2."""
         lines = text.split("\n")
 
-        # Strategy 1: text before any heading
+        preamble = self._extract_preamble(lines)
+        post_h1 = self._extract_post_h1(lines)
+
+        desc_lines = preamble if len(preamble) >= len(post_h1) else post_h1
+        desc_text = "\n".join(desc_lines).strip()
+
+        if desc_text:
+            desc_text = re.sub(r"\*\*(.+?)\*\*", r"\1", desc_text)
+            desc_text = re.sub(r"\[(.+?)\]\(.+?\)", r"\1", desc_text)
+
+        return desc_text
+
+    def _extract_preamble(self, lines: list) -> list:
+        """Extract text before any heading."""
         preamble = []
         for line in lines:
             if re.match(r"^#{1,3}\s", line):
                 break
-            if line.strip() and not line.strip().startswith("[![") and not line.strip().startswith("[!"):
+            if line.strip() and not line.strip().startswith(("[![", "[!")):
                 preamble.append(line)
+        return preamble
 
-        # Strategy 2: text between first h1 and first h2/h3
+    def _extract_post_h1(self, lines: list) -> list:
+        """Extract text between first h1 and first h2/h3."""
         post_h1 = []
         found_h1 = False
         for line in lines:
@@ -92,42 +115,30 @@ class ReadmeParser:
             if found_h1:
                 if re.match(r"^#{1,3}\s", line):
                     break
-                if line.strip() and not line.strip().startswith("[![") and not line.strip().startswith("[!"):
+                if line.strip() and not line.strip().startswith(("[![", "[!")):
                     post_h1.append(line)
+        return post_h1
 
-        # Use whichever has more content
-        desc_lines = preamble if len(preamble) >= len(post_h1) else post_h1
-        desc_text = "\n".join(desc_lines).strip()
-        if desc_text:
-            desc_text = re.sub(r"\*\*(.+?)\*\*", r"\1", desc_text)
-            desc_text = re.sub(r"\[(.+?)\]\(.+?\)", r"\1", desc_text)
-            sections["description"] = desc_text[:500]
-
-        # Now parse heading-based sections
+    def _extract_heading_sections(self, text: str) -> Dict[str, str]:
+        """Extract sections based on markdown headings."""
+        sections: Dict[str, str] = {}
         heading_pattern = re.compile(r"^(#{1,3})\s+(.+)", re.MULTILINE)
         matches = list(heading_pattern.finditer(text))
 
         for i, m in enumerate(matches):
-            level = len(m.group(1))
             title = m.group(2).strip()
             title_lower = re.sub(r"[^a-z0-9\s]", "", title.lower()).strip()
-
-            # Map to canonical section name
             canonical = _SECTION_ALIASES.get(title_lower, title_lower)
 
-            # Get content until next heading of same or higher level
             start = m.end()
             end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
             content = text[start:end].strip()
 
-            # Limit content size
             if len(content) > 1000:
                 content = content[:1000] + "..."
 
-            if canonical and content:
-                # Don't overwrite if we already have a shorter section name
-                if canonical not in sections:
-                    sections[canonical] = content
+            if canonical and content and canonical not in sections:
+                sections[canonical] = content
 
         return sections
 

@@ -17,8 +17,9 @@ _SKIP_DIRS = {
 class ImportGraphAnalyzer:
     """Analyze import relationships between project modules."""
 
-    def __init__(self, project_path: Path):
+    def __init__(self, project_path: Path, filter_func=None):
         self.root = Path(project_path)
+        self._filter = filter_func
 
     def _should_skip(self, path: Path) -> bool:
         for part in path.parts:
@@ -28,8 +29,11 @@ class ImportGraphAnalyzer:
 
     def _iter_py_files(self):
         for p in self.root.rglob("*.py"):
-            if not self._should_skip(p.relative_to(self.root)):
-                yield p
+            if self._should_skip(p.relative_to(self.root)):
+                continue
+            if self._filter and not self._filter(p):
+                continue
+            yield p
 
     def _module_name(self, path: Path) -> str:
         """Convert file path to dotted module name."""

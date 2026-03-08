@@ -90,8 +90,9 @@ _DOCKER_FILES = {
 class StructureAnalyzer:
     """Analyze project directory structure."""
 
-    def __init__(self, project_path: Path):
+    def __init__(self, project_path: Path, filter_func=None):
         self.root = Path(project_path)
+        self._filter = filter_func
 
     def _should_skip(self, path: Path) -> bool:
         for part in path.parts:
@@ -101,8 +102,14 @@ class StructureAnalyzer:
 
     def _iter_files(self):
         for p in self.root.rglob("*"):
-            if p.is_file() and not self._should_skip(p.relative_to(self.root)):
-                yield p
+            if not p.is_file():
+                continue
+            rel = p.relative_to(self.root)
+            if self._should_skip(rel):
+                continue
+            if self._filter and not self._filter(p):
+                continue
+            yield p
 
     def analyze(self) -> Dict[str, Any]:
         """Return structure summary."""
@@ -138,50 +145,12 @@ class StructureAnalyzer:
         """Detect technology stack from files and markers."""
         from todocs.core import TechStack
 
-        lang_counts: Counter = Counter()
-        frameworks: List[str] = []
-        build_tools: List[str] = []
-        test_fws: List[str] = []
-        ci_cd: List[str] = []
-        containers: List[str] = []
-
-        for p in self._iter_files():
-            ext = p.suffix.lower()
-            if ext in _LANG_EXTENSIONS:
-                lang_counts[_LANG_EXTENSIONS[ext]] += 1
-
-        # Build tools
-        for fname, tool in _BUILD_TOOL_FILES.items():
-            if (self.root / fname).exists():
-                build_tools.append(tool)
-
-        # Test frameworks
-        for fname, fw in _TEST_FRAMEWORK_FILES.items():
-            if (self.root / fname).exists():
-                test_fws.append(fw)
-        # Also check for tests/ with pytest convention
-        tests_dir = self.root / "tests"
-        if tests_dir.is_dir() and any(tests_dir.glob("test_*.py")):
-            if "pytest" not in test_fws:
-                test_fws.append("pytest")
-
-        # CI/CD
-        for path_str, ci in _CI_FILES.items():
-            if (self.root / path_str).exists():
-                ci_cd.append(ci)
-
-        # Docker
-        for fname, dock in _DOCKER_FILES.items():
-            if (self.root / fname).exists():
-                containers.append(dock)
-
-        # Frameworks (check pyproject.toml deps + directory markers)
-        dep_text = self._read_deps_text()
-        for fw_name, markers in _FRAMEWORK_MARKERS.items():
-            for marker in markers:
-                if (self.root / marker).exists() or marker in dep_text:
-                    frameworks.append(fw_name)
-                    break
+        lang_counts = self._detect_languages()
+        build_tools = self._detect_build_tools()
+        test_fws = self._detect_test_frameworks()
+        ci_cd = self._detect_ci_cd()
+        containers = self._detect_containers()
+        frameworks = self._detect_frameworks()
 
         primary = lang_counts.most_common(1)[0][0] if lang_counts else "unknown"
 
@@ -194,6 +163,63 @@ class StructureAnalyzer:
             ci_cd=list(set(ci_cd)),
             containerization=list(set(containers)),
         )
+
+    def _detect_languages(self) -> Counter:
+        """Detect programming languages from file extensions."""
+        lang_counts: Counter = Counter()
+        for p in self._iter_files():
+            ext = p.suffix.lower()
+            if ext in _LANG_EXTENSIONS:
+                lang_counts[_LANG_EXTENSIONS[ext]] += 1
+        return lang_counts
+
+    def _detect_build_tools(self) -> List[str]:
+        """Detect build tools from configuration files."""
+        build_tools: List[str] = []
+        for fname, tool in _BUILD_TOOL_FILES.items():
+            if (self.root / fname).exists():
+                build_tools.append(tool)
+        return build_tools
+
+    def _detect_test_frameworks(self) -> List[str]:
+        """Detect test frameworks from configuration files and directory structure."""
+        test_fws: List[str] = []
+        for fname, fw in _TEST_FRAMEWORK_FILES.items():
+            if (self.root / fname).exists():
+                test_fws.append(fw)
+
+        tests_dir = self.root / "tests"
+        if tests_dir.is_dir() and any(tests_dir.glob("test_*.py")):
+            if "pytest" not in test_fws:
+                test_fws.append("pytest")
+        return test_fws
+
+    def _detect_ci_cd(self) -> List[str]:
+        """Detect CI/CD systems from configuration files."""
+        ci_cd: List[str] = []
+        for path_str, ci in _CI_FILES.items():
+            if (self.root / path_str).exists():
+                ci_cd.append(ci)
+        return ci_cd
+
+    def _detect_containers(self) -> List[str]:
+        """Detect containerization from Docker files."""
+        containers: List[str] = []
+        for fname, dock in _DOCKER_FILES.items():
+            if (self.root / fname).exists():
+                containers.append(dock)
+        return containers
+
+    def _detect_frameworks(self) -> List[str]:
+        """Detect frameworks from directory markers and dependencies."""
+        frameworks: List[str] = []
+        dep_text = self._read_deps_text()
+        for fw_name, markers in _FRAMEWORK_MARKERS.items():
+            for marker in markers:
+                if (self.root / marker).exists() or marker in dep_text:
+                    frameworks.append(fw_name)
+                    break
+        return frameworks
 
     def _read_deps_text(self) -> str:
         """Read dependency names from pyproject.toml/requirements.txt as raw text."""

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-03-08
+
+### Docs
+- Update README.md
+
+### Other
+- Update examples/api_surface_deep.py
+- Update examples/article_sections_demo.py
+- Update examples/custom_analysis.py
+- Update examples/organization_health_report.py
+- Update todocs/analyzers/api_surface.py
+- Update todocs/analyzers/code_metrics.py
+- Update todocs/analyzers/import_graph.py
+- Update todocs/analyzers/structure.py
+- Update todocs/core.py
+- Update todocs/extractors/makefile_parser.py
+- ... and 5 more files
+
 ## [0.1.3] - 2026-03-08
 
 ### Docs

@@ -21,6 +21,7 @@ from todocs.extractors.toon_parser import ToonParser
 from todocs.extractors.makefile_parser import MakefileParser
 from todocs.extractors.docker_parser import DockerParser
 from todocs.generators.article import ArticleGenerator
+from todocs.utils import create_scan_filter
 
 
 @dataclass
@@ -117,21 +118,29 @@ class ProjectProfile:
         return json.dumps(self.to_dict(), indent=indent, default=str)
 
 
-def scan_project(project_path: Path) -> ProjectProfile:
-    """Analyze a single project and return its profile."""
+def scan_project(project_path: Path, max_depth: int = 3) -> ProjectProfile:
+    """Analyze a single project and return its profile.
+
+    Args:
+        project_path: Path to the project directory
+        max_depth: Maximum directory depth to scan (default: 3)
+    """
     profile = ProjectProfile(path=project_path, name=project_path.name)
+
+    # Create scan filter with depth limit and gitignore support
+    scan_filter = create_scan_filter(project_path, max_depth=max_depth)
 
     # 1. Extract metadata from pyproject.toml / setup.py / setup.cfg
     meta_ext = MetadataExtractor(project_path)
     profile.metadata = meta_ext.extract()
 
-    # 2. Analyze directory structure
-    struct_analyzer = StructureAnalyzer(project_path)
+    # 2. Analyze directory structure (with filter)
+    struct_analyzer = StructureAnalyzer(project_path, filter_func=scan_filter)
     profile.structure = struct_analyzer.analyze()
     profile.tech_stack = struct_analyzer.detect_tech_stack()
 
-    # 3. Code metrics (AST + radon)
-    metrics_analyzer = CodeMetricsAnalyzer(project_path)
+    # 3. Code metrics (AST + radon) (with filter)
+    metrics_analyzer = CodeMetricsAnalyzer(project_path, filter_func=scan_filter)
     profile.code_stats = metrics_analyzer.analyze()
     profile.key_modules = metrics_analyzer.get_key_modules(top_n=10)
 
@@ -163,13 +172,13 @@ def scan_project(project_path: Path) -> ProjectProfile:
     docker_parser = DockerParser(project_path)
     profile.docker_info = docker_parser.parse()
 
-    # 10. Import graph (Python projects only)
+    # 10. Import graph (Python projects only) (with filter)
     if profile.tech_stack.primary_language == "python":
-        ig = ImportGraphAnalyzer(project_path)
+        ig = ImportGraphAnalyzer(project_path, filter_func=scan_filter)
         profile.import_graph = ig.build_graph()
 
-    # 11. API surface detection
-    api_analyzer = APISurfaceAnalyzer(project_path)
+    # 11. API surface detection (with filter)
+    api_analyzer = APISurfaceAnalyzer(project_path, filter_func=scan_filter)
     profile.api_surface = api_analyzer.analyze()
 
     # 12. Maturity scoring (after all data collected)
@@ -185,8 +194,18 @@ def scan_project(project_path: Path) -> ProjectProfile:
     return profile
 
 
-def scan_organization(root_path: Path, exclude: Optional[List[str]] = None) -> List[ProjectProfile]:
-    """Scan all projects under root_path and return profiles."""
+def scan_organization(
+    root_path: Path,
+    exclude: Optional[List[str]] = None,
+    max_depth: int = 3
+) -> List[ProjectProfile]:
+    """Scan all projects under root_path and return profiles.
+
+    Args:
+        root_path: Root directory containing project subdirectories
+        exclude: Additional directory names to exclude
+        max_depth: Maximum directory depth to scan within each project
+    """
     exclude = set(exclude or [])
     exclude.update({
         "venv", ".venv", "node_modules", "__pycache__", ".git",
@@ -207,7 +226,7 @@ def scan_organization(root_path: Path, exclude: Optional[List[str]] = None) -> L
             continue
 
         try:
-            profile = scan_project(child)
+            profile = scan_project(child, max_depth=max_depth)
             profiles.append(profile)
         except Exception as e:
             print(f"[WARN] Failed to analyze {child.name}: {e}")

@@ -16,8 +16,9 @@ _SKIP_DIRS = {
 class APISurfaceAnalyzer:
     """Detect public API surface of a project."""
 
-    def __init__(self, project_path: Path):
+    def __init__(self, project_path: Path, filter_func=None):
         self.root = Path(project_path)
+        self._filter = filter_func
 
     def analyze(self) -> Dict[str, Any]:
         """Return public API surface summary."""
@@ -74,6 +75,8 @@ class APISurfaceAnalyzer:
         for pyf in self.root.rglob("*.py"):
             if self._should_skip(pyf.relative_to(self.root)):
                 continue
+            if self._filter and not self._filter(pyf):
+                continue
             if "test" in pyf.name.lower():
                 continue
 
@@ -129,87 +132,117 @@ class APISurfaceAnalyzer:
         """Scan __init__.py and main modules for public classes and functions."""
         classes: List[Dict[str, Any]] = []
         functions: List[Dict[str, Any]] = []
+        seen_classes = set()
+        seen_funcs = set()
 
-        # Focus on __init__.py files and non-test modules
+        target_files = self._collect_target_files()
+
+        for pyf in target_files:
+            cls, funcs = self._extract_from_file(pyf, seen_classes, seen_funcs)
+            classes.extend(cls)
+            functions.extend(funcs)
+
+        return classes[:20], functions[:20]
+
+    def _collect_target_files(self) -> List[Path]:
+        """Collect target Python files for public symbol scanning."""
         target_files = []
         for pyf in self.root.rglob("__init__.py"):
             if not self._should_skip(pyf.relative_to(self.root)):
+                if self._filter and not self._filter(pyf):
+                    continue
                 target_files.append(pyf)
 
-        # Also scan top-level source modules (not tests)
         for pyf in self.root.rglob("*.py"):
             if self._should_skip(pyf.relative_to(self.root)):
+                continue
+            if self._filter and not self._filter(pyf):
                 continue
             if "test" in pyf.name.lower():
                 continue
             rel = pyf.relative_to(self.root)
-            # Only 1-2 level deep files
             if len(rel.parts) <= 3:
                 target_files.append(pyf)
 
-        seen_classes = set()
-        seen_funcs = set()
+        return target_files
 
-        for pyf in target_files:
-            try:
-                code = pyf.read_text(errors="replace")
-                tree = ast.parse(code)
-            except Exception:
-                continue
+    def _extract_from_file(
+        self, pyf: Path, seen_classes: set, seen_funcs: set
+    ) -> tuple:
+        """Extract classes and functions from a single Python file."""
+        classes: List[Dict[str, Any]] = []
+        functions: List[Dict[str, Any]] = []
 
-            rel = str(pyf.relative_to(self.root))
+        try:
+            code = pyf.read_text(errors="replace")
+            tree = ast.parse(code)
+        except Exception:
+            return classes, functions
 
-            # Check __all__ for explicit exports
-            all_names = self._extract_all(tree)
+        rel = str(pyf.relative_to(self.root))
+        all_names = self._extract_all(tree)
 
-            for node in ast.iter_child_nodes(tree):
-                if isinstance(node, ast.ClassDef):
-                    name = node.name
-                    if name.startswith("_") and name not in (all_names or []):
-                        continue
-                    if name in seen_classes:
-                        continue
-                    seen_classes.add(name)
+        for node in ast.iter_child_nodes(tree):
+            if isinstance(node, ast.ClassDef):
+                cls = self._extract_class(node, rel, all_names, seen_classes)
+                if cls:
+                    classes.append(cls)
+            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                func = self._extract_function(node, rel, all_names, seen_funcs)
+                if func:
+                    functions.append(func)
 
-                    doc = ast.get_docstring(node) or ""
-                    methods = [
-                        n.name for n in node.body
-                        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
-                        and not n.name.startswith("_")
-                    ]
+        return classes, functions
 
-                    classes.append({
-                        "name": name,
-                        "file": rel,
-                        "methods": methods[:10],
-                        "method_count": len(methods),
-                        "description": doc[:120],
-                        "is_exported": name in (all_names or set()),
-                    })
+    def _extract_class(
+        self, node: ast.ClassDef, rel_path: str, all_names: set, seen: set
+    ) -> Dict[str, Any] | None:
+        """Extract class information from AST node."""
+        name = node.name
+        if name.startswith("_") and name not in (all_names or []):
+            return None
+        if name in seen:
+            return None
+        seen.add(name)
 
-                elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    name = node.name
-                    if name.startswith("_"):
-                        continue
-                    if name in seen_funcs:
-                        continue
-                    seen_funcs.add(name)
+        doc = ast.get_docstring(node) or ""
+        methods = [
+            n.name for n in node.body
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and not n.name.startswith("_")
+        ]
 
-                    doc = ast.get_docstring(node) or ""
-                    args = [
-                        a.arg for a in node.args.args
-                        if a.arg != "self"
-                    ]
+        return {
+            "name": name,
+            "file": rel_path,
+            "methods": methods[:10],
+            "method_count": len(methods),
+            "description": doc[:120],
+            "is_exported": name in (all_names or set()),
+        }
 
-                    functions.append({
-                        "name": name,
-                        "file": rel,
-                        "args": args[:8],
-                        "description": doc[:120],
-                        "is_exported": name in (all_names or set()),
-                    })
+    def _extract_function(
+        self, node: ast.FunctionDef | ast.AsyncFunctionDef, rel_path: str,
+        all_names: set, seen: set
+    ) -> Dict[str, Any] | None:
+        """Extract function information from AST node."""
+        name = node.name
+        if name.startswith("_"):
+            return None
+        if name in seen:
+            return None
+        seen.add(name)
 
-        return classes[:20], functions[:20]
+        doc = ast.get_docstring(node) or ""
+        args = [a.arg for a in node.args.args if a.arg != "self"]
+
+        return {
+            "name": name,
+            "file": rel_path,
+            "args": args[:8],
+            "description": doc[:120],
+            "is_exported": name in (all_names or set()),
+        }
 
     def _extract_all(self, tree: ast.AST) -> set:
         """Extract __all__ = [...] from module."""
@@ -232,6 +265,8 @@ class APISurfaceAnalyzer:
 
         for pyf in self.root.rglob("*.py"):
             if self._should_skip(pyf.relative_to(self.root)):
+                continue
+            if self._filter and not self._filter(pyf):
                 continue
 
             try:

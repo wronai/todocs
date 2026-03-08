@@ -21,17 +21,16 @@ from todocs.extractors.makefile_parser import MakefileParser
 from todocs.extractors.docker_parser import DockerParser
 
 
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python custom_analysis.py <project_path>")
-        sys.exit(1)
-
-    project_path = Path(sys.argv[1]).resolve()
-
-    # ── 1. Import Graph ──────────────────────────────────────
+def _print_section_header(title: str) -> None:
+    """Print a formatted section header."""
     print("═" * 60)
-    print("  Import Dependency Graph")
+    print(f"  {title}")
     print("═" * 60)
+
+
+def _analyze_import_graph(project_path: Path) -> None:
+    """Analyze and display import dependency graph."""
+    _print_section_header("Import Dependency Graph")
 
     ig = ImportGraphAnalyzer(project_path)
     graph = ig.build_graph()
@@ -56,10 +55,10 @@ def main():
         for h in hubs:
             print(f"    {h['module']:30s}  in={h['fan_in']} out={h['fan_out']}")
 
-    # ── 2. API Surface ───────────────────────────────────────
-    print(f"\n{'═' * 60}")
-    print("  API Surface")
-    print("═" * 60)
+
+def _analyze_api_surface(project_path: Path) -> None:
+    """Analyze and display API surface."""
+    _print_section_header("API Surface")
 
     api = APISurfaceAnalyzer(project_path)
     surface = api.analyze()
@@ -90,61 +89,67 @@ def main():
             methods = cls.get("methods", [])
             print(f"    {cls['name']:25s}  {len(methods)} public methods")
 
-    # ── 3. TOON Files ────────────────────────────────────────
+
+def _analyze_toon_files(project_path: Path) -> None:
+    """Analyze and display TOON file data."""
     toon = ToonParser(project_path)
     toon_files = toon.find_toon_files()
-    if toon_files:
-        print(f"\n{'═' * 60}")
-        print("  TOON Data")
-        print("═" * 60)
+    if not toon_files:
+        return
 
-        data = toon.parse_all()
-        print(f"  Found files: {', '.join(data.get('toon_files', []))}")
+    _print_section_header("TOON Data")
 
-        if "analysis" in data:
-            analysis = data["analysis"]
-            print(f"  Avg complexity (toon): {analysis.get('avg_complexity', '?')}")
-            print(f"  Dependency cycles:     {analysis.get('dependency_cycles', '?')}")
-            for w in analysis.get("health_warnings", [])[:3]:
-                print(f"    ⚠ {w['function']} CC={w['complexity']}")
+    data = toon.parse_all()
+    print(f"  Found files: {', '.join(data.get('toon_files', []))}")
 
-        if "flow" in data:
-            flow = data["flow"]
-            pipes = flow.get("pipelines", [])
-            print(f"  Pipelines: {len(pipes)}")
-            for pipe in pipes[:3]:
-                print(f"    [{pipe['category']}] {pipe['signature']}")
+    if "analysis" in data:
+        analysis = data["analysis"]
+        print(f"  Avg complexity (toon): {analysis.get('avg_complexity', '?')}")
+        print(f"  Dependency cycles:     {analysis.get('dependency_cycles', '?')}")
+        for w in analysis.get("health_warnings", [])[:3]:
+            print(f"    ⚠ {w['function']} CC={w['complexity']}")
 
-    # ── 4. Makefile Targets ──────────────────────────────────
+    if "flow" in data:
+        flow = data["flow"]
+        pipes = flow.get("pipelines", [])
+        print(f"  Pipelines: {len(pipes)}")
+        for pipe in pipes[:3]:
+            print(f"    [{pipe['category']}] {pipe['signature']}")
+
+
+def _analyze_makefile(project_path: Path) -> None:
+    """Analyze and display Makefile targets."""
     mk = MakefileParser(project_path)
     mk_data = mk.parse()
     targets = mk_data.get("targets", [])
-    if targets:
-        print(f"\n{'═' * 60}")
-        print(f"  Build Targets ({mk_data['type']})")
-        print("═" * 60)
-        for t in targets[:10]:
-            desc = f" — {t['description']}" if t.get('description') else ""
-            print(f"  make {t['name']}{desc}")
+    if not targets:
+        return
 
-    # ── 5. Docker Infrastructure ─────────────────────────────
+    _print_section_header(f"Build Targets ({mk_data['type']})")
+    for t in targets[:10]:
+        desc = f" — {t['description']}" if t.get('description') else ""
+        print(f"  make {t['name']}{desc}")
+
+
+def _analyze_docker(project_path: Path) -> None:
+    """Analyze and display Docker infrastructure."""
     docker = DockerParser(project_path)
     docker_data = docker.parse()
-    if docker_data.get("has_dockerfile") or docker_data.get("has_compose"):
-        print(f"\n{'═' * 60}")
-        print("  Docker Infrastructure")
-        print("═" * 60)
-        if docker_data.get("base_images"):
-            print(f"  Base images: {', '.join(docker_data['base_images'])}")
-        for svc in docker_data.get("services", []):
-            img = svc.get("image") or "(build)"
-            ports = ", ".join(svc.get("ports", [])) or "—"
-            print(f"  Service: {svc['name']:15s}  image={img}  ports={ports}")
+    if not docker_data.get("has_dockerfile") and not docker_data.get("has_compose"):
+        return
 
-    # ── 6. Code Metrics ──────────────────────────────────────
-    print(f"\n{'═' * 60}")
-    print("  Code Metrics (radon)")
-    print("═" * 60)
+    _print_section_header("Docker Infrastructure")
+    if docker_data.get("base_images"):
+        print(f"  Base images: {', '.join(docker_data['base_images'])}")
+    for svc in docker_data.get("services", []):
+        img = svc.get("image") or "(build)"
+        ports = ", ".join(svc.get("ports", [])) or "—"
+        print(f"  Service: {svc['name']:15s}  image={img}  ports={ports}")
+
+
+def _analyze_code_metrics(project_path: Path) -> None:
+    """Analyze and display code metrics."""
+    _print_section_header("Code Metrics (radon)")
 
     cm = CodeMetricsAnalyzer(project_path)
     stats = cm.analyze()
@@ -159,6 +164,21 @@ def main():
         for hs in stats.hotspots[:5]:
             print(f"    {hs['name']:30s}  CC={hs['complexity']:>3}  "
                   f"rank={hs.get('rank','?')}  {hs['file']}")
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python custom_analysis.py <project_path>")
+        sys.exit(1)
+
+    project_path = Path(sys.argv[1]).resolve()
+
+    _analyze_import_graph(project_path)
+    _analyze_api_surface(project_path)
+    _analyze_toon_files(project_path)
+    _analyze_makefile(project_path)
+    _analyze_docker(project_path)
+    _analyze_code_metrics(project_path)
 
     print()
 

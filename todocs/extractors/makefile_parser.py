@@ -44,61 +44,72 @@ class MakefileParser:
             return []
 
         targets = []
-        phony_targets = set()
+        phony_targets = self._collect_phony_targets(text)
+        lines = text.splitlines()
 
-        # Collect .PHONY declarations
+        for i, line in enumerate(lines):
+            target = self._parse_target_line(line, lines, i, phony_targets)
+            if target:
+                targets.append(target)
+
+        return targets
+
+    def _collect_phony_targets(self, text: str) -> set:
+        """Collect .PHONY target declarations from Makefile."""
+        phony_targets = set()
         for line in text.splitlines():
             phony_m = re.match(r"\.PHONY:\s*(.+)", line)
             if phony_m:
                 phony_targets.update(phony_m.group(1).split())
+        return phony_targets
 
-        lines = text.splitlines()
-        for i, line in enumerate(lines):
-            # Target pattern: target_name: [dependencies]  ## optional help text
-            target_m = re.match(r"^([a-zA-Z_][\w.-]*)\s*:(?!=)", line)
-            if target_m:
-                name = target_m.group(1)
+    def _parse_target_line(self, line: str, lines: list, index: int, phony_targets: set) -> Dict[str, Any] | None:
+        """Parse a single Makefile target line."""
+        target_m = re.match(r"^([a-zA-Z_][\w.-]*)\s*:(?!=)", line)
+        if not target_m:
+            return None
 
-                # Skip internal targets
-                if name.startswith("_") or name.startswith("."):
+        name = target_m.group(1)
+        if name.startswith("_") or name.startswith("."):
+            return None
+
+        help_text = self._extract_help_text(line, lines, index)
+        commands = self._collect_commands(lines, index)
+
+        return {
+            "name": name,
+            "description": help_text,
+            "commands": commands[:3],
+            "is_phony": name in phony_targets,
+        }
+
+    def _extract_help_text(self, line: str, lines: list, index: int) -> str:
+        """Extract help text from inline comment or previous line."""
+        help_m = re.search(r"##\s*(.+)", line)
+        if help_m:
+            return help_m.group(1).strip()
+
+        if index > 0:
+            prev = lines[index - 1].strip()
+            if prev.startswith("#") and not prev.startswith("##"):
+                return prev.lstrip("# ").strip()
+        return ""
+
+    def _collect_commands(self, lines: list, index: int) -> List[str]:
+        """Collect indented command lines after a target."""
+        commands = []
+        for j in range(index + 1, min(index + 10, len(lines))):
+            cmd_line = lines[j]
+            if cmd_line.startswith("\t") or cmd_line.startswith("    "):
+                cmd = cmd_line.strip()
+                if cmd.startswith("@"):
+                    cmd = cmd[1:]
+                if "MAKEFILE_LIST" in cmd:
                     continue
-
-                # Help comment: ## description
-                help_text = ""
-                help_m = re.search(r"##\s*(.+)", line)
-                if help_m:
-                    help_text = help_m.group(1).strip()
-
-                # If no inline help, check line above for comment
-                if not help_text and i > 0:
-                    prev = lines[i - 1].strip()
-                    if prev.startswith("#") and not prev.startswith("##"):
-                        help_text = prev.lstrip("# ").strip()
-
-                # Collect commands (indented lines after target)
-                commands = []
-                for j in range(i + 1, min(i + 10, len(lines))):
-                    cmd_line = lines[j]
-                    if cmd_line.startswith("\t") or cmd_line.startswith("    "):
-                        cmd = cmd_line.strip()
-                        # Strip @ prefix
-                        if cmd.startswith("@"):
-                            cmd = cmd[1:]
-                        # Skip internal grep/awk help generators
-                        if "MAKEFILE_LIST" in cmd:
-                            continue
-                        commands.append(cmd)
-                    elif cmd_line.strip():
-                        break
-
-                targets.append({
-                    "name": name,
-                    "description": help_text,
-                    "commands": commands[:3],  # first 3 commands
-                    "is_phony": name in phony_targets,
-                })
-
-        return targets
+                commands.append(cmd)
+            elif cmd_line.strip():
+                break
+        return commands
 
     def _parse_taskfile(self, path: Path) -> List[Dict[str, str]]:
         """Parse Taskfile.yml (go-task format)."""

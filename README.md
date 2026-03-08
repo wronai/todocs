@@ -1,6 +1,6 @@
 # todocs
 
-[![Version](https://img.shields.io/badge/version-0.1.3-blue)](https://github.com/wronai/todocs)
+[![Version](https://img.shields.io/badge/version-0.1.4-blue)](https://github.com/wronai/todocs)
 [![Python](https://img.shields.io/badge/python-3.10+-3776AB)](https://python.org)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Tests](https://img.shields.io/badge/tests-63%20passed-brightgreen)](tests/)
@@ -128,13 +128,133 @@ data = toon.parse_all()
 ```
 todocs/
 ├── analyzers/           # AST + radon: structure, metrics, imports, API, maturity
+│   ├── api_surface.py   # APISurfaceAnalyzer with extracted symbol scanners
+│   ├── code_metrics.py  # CodeMetricsAnalyzer with radon integration
+│   ├── dependencies.py  # DependencyAnalyzer for runtime/dev deps
+│   ├── import_graph.py  # ImportGraphAnalyzer with cycle detection
+│   ├── maturity.py      # MaturityScorer with 16 quality indicators
+│   └── structure.py     # StructureAnalyzer with tech stack detection
 ├── extractors/          # Parsers: metadata, README, CHANGELOG, TOON, Makefile, Docker
+│   ├── changelog_parser.py
+│   ├── docker_parser.py
+│   ├── makefile_parser.py
+│   ├── metadata.py
+│   ├── readme_parser.py
+│   └── toon_parser.py   # TOON file parser (refactored into section parsers)
 ├── generators/          # Article + comparison/category/health generators
+│   ├── article.py              # Main ArticleGenerator (146L, refactored)
+│   ├── article_sections.py     # 13 section rendering functions
+│   └── comparison.py           # ComparisonGenerator for cross-project analysis
 ├── cli.py               # Click CLI: generate/inspect/compare/health
 ├── core.py              # Data models + orchestration pipeline
-examples/                # scan_single, scan_org, custom_analysis
+examples/                # Usage examples (see below)
 tests/                   # 63 tests, 88% coverage
 ```
+
+## Project Status (v0.1.3)
+
+After refactoring (2026-03-08):
+
+| Metric | Value |
+|--------|-------|
+| Source files | 24 (+1 new: article_sections.py) |
+| Source lines | ~4,100 |
+| Test files | 5 |
+| Test lines | 1,560 |
+| Test coverage | 88% (63 tests passing) |
+| High-CC functions (≥15) | Reduced from 15 to 7 |
+| Maturity Grade | B+ (71/100) |
+
+**Refactoring highlights:**
+- `article.py`: 560L → 146L (split into `article_sections.py`)
+- `custom_analysis.py` main(): CC 33 → 8 (extracted 6 helpers)
+- `_scan_public_symbols`: CC 27 → 8 (extracted 4 helpers)
+- `parse_analysis` & `parse_map`: CC 25/24 → ~6 (section parsers)
+- `detect_tech_stack`: CC 19 → 6 (6 detection methods)
+- `_parse_makefile`: CC 19 → 8 (extracted 4 helpers)
+- `_parse_sections`: CC 22 → 8 (description + heading extractors)
+
+## Examples
+
+### Basic: Scan single project
+```python
+from todocs.core import scan_project
+
+profile = scan_project("/path/to/project")
+print(f"{profile.name}: {profile.maturity.grade} ({profile.code_stats.source_lines} lines)")
+```
+
+### Using refactored article sections directly
+```python
+from todocs.generators.article_sections import (
+    render_metrics, render_tech_stack, render_maturity
+)
+from todocs.core import scan_project
+
+profile = scan_project("/path/to/project")
+
+# Generate individual sections
+metrics_md = render_metrics(profile)
+tech_md = render_tech_stack(profile)
+maturity_md = render_maturity(profile)
+
+print(metrics_md)
+```
+
+### Custom API surface analysis (using refactored helpers)
+```python
+from todocs.analyzers.api_surface import APISurfaceAnalyzer
+
+api = APISurfaceAnalyzer("/path/to/project")
+surface = api.analyze()
+
+# Access specific components
+print(f"CLI commands: {len(surface['cli_commands'])}")
+print(f"Public classes: {len(surface['public_classes'])}")
+print(f"REST endpoints: {len(surface['rest_endpoints'])}")
+print(f"Entry points: {surface['entry_points']}")
+```
+
+### Organization health report
+```python
+from todocs import scan_organization
+from todocs.generators.comparison import ComparisonGenerator
+from pathlib import Path
+
+# Scan organization
+profiles = scan_organization("/path/to/org")
+
+# Generate health report
+gen = ComparisonGenerator()
+report_path = Path("health-report.md")
+report_path.write_text(gen.generate_health_report(profiles, org_name="WronAI"))
+```
+
+### Category-based analysis
+```python
+from todocs import scan_organization
+from todocs.generators.comparison import ComparisonGenerator
+
+profiles = scan_organization("/path/to/org")
+gen = ComparisonGenerator()
+
+# Generate articles grouped by category
+category_articles = gen.generate_category_articles(
+    profiles,
+    output_dir="articles/",
+    org_name="WronAI"
+)
+
+for path in category_articles:
+    print(f"Generated: {path}")
+```
+
+### See also: `examples/` directory
+- `scan_single.py` — Basic single project scan
+- `scan_org.py` — Organization-wide scan  
+- `custom_analysis.py` — Using individual analyzers (refactored with 6 helpers)
+- `article_sections_demo.py` — New: Direct section rendering
+- `api_surface_deep.py` — New: Deep API analysis with refactored helpers
 
 ## License
 

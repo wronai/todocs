@@ -64,15 +64,25 @@ class ToonParser:
             return {}
 
         result: Dict[str, Any] = {}
+        result.update(self._parse_map_header(text))
+        result["modules"] = self._parse_modules_section(text)
+        classes, functions = self._parse_details_section(text)
+        result["classes"] = classes
+        result["top_functions"] = functions
+        return result
 
-        # Header: # project_name | Nf NL | lang:N
+    def _parse_map_header(self, text: str) -> Dict[str, Any]:
+        """Parse header from map.toon: # project_name | Nf NL | lang:N."""
+        result: Dict[str, Any] = {}
         header_m = re.match(r"^#\s+(\S+)\s*\|\s*(\d+)f\s+(\d+)L", text)
         if header_m:
             result["project"] = header_m.group(1)
             result["total_functions"] = int(header_m.group(2))
             result["total_lines"] = int(header_m.group(3))
+        return result
 
-        # Modules section: M[N]:
+    def _parse_modules_section(self, text: str) -> List[Dict[str, Any]]:
+        """Parse M[] section from map.toon."""
         modules = []
         in_modules = False
         for line in text.splitlines():
@@ -89,13 +99,15 @@ class ToonParser:
                 m = re.match(r"\s+(\S+),(\d+)", line)
                 if m:
                     modules.append({"path": m.group(1), "lines": int(m.group(2))})
-        result["modules"] = modules
+        return modules
 
-        # Details section: class/function signatures
+    def _parse_details_section(self, text: str) -> tuple:
+        """Parse D: section from map.toon — classes and functions."""
         classes = []
         functions_list = []
         current_file = ""
         in_details = False
+
         for line in text.splitlines():
             if line.strip() == "D:":
                 in_details = True
@@ -108,38 +120,43 @@ class ToonParser:
                 current_file = file_m.group(1)
                 continue
 
-            # Class: ClassName(Base): method1(N),method2(N)  # docstring
-            cls_m = re.match(r"\s+(\w+)(?:\([\w.,\s]+\))?:\s*(.+)", line)
-            if cls_m and not line.strip().startswith(("e:", "i:")):
-                name = cls_m.group(1)
-                rest = cls_m.group(2).strip()
-                # Count methods
+            cls = self._parse_class_line(line, current_file)
+            if cls:
+                classes.append(cls)
+
+            func = self._parse_function_line(line, current_file)
+            if func:
+                functions_list.append(func)
+
+        return classes, functions_list[:30]
+
+    def _parse_class_line(self, line: str, current_file: str) -> Dict[str, Any] | None:
+        """Parse a class definition line from map.toon details."""
+        cls_m = re.match(r"\s+(\w+)(?:\([\w.,\s]+\))?:\s*(.+)", line)
+        if cls_m and not line.strip().startswith(("e:", "i:")):
+            name = cls_m.group(1)
+            rest = cls_m.group(2).strip()
+            if name[0].isupper():
                 method_count = rest.count("(")
-                # Extract docstring after #
                 doc = ""
                 if "#" in rest:
                     doc = rest.split("#", 1)[1].strip().rstrip(".")
-                if name[0].isupper():  # Likely a class
-                    classes.append({
-                        "name": name,
-                        "file": current_file,
-                        "methods": method_count,
-                        "description": doc[:120],
-                    })
+                return {
+                    "name": name,
+                    "file": current_file,
+                    "methods": method_count,
+                    "description": doc[:120],
+                }
+        return None
 
-            # Standalone function: func_name(args)
-            func_m = re.match(r"\s+(\w+)\(([^)]*)\)", line)
-            if func_m and not line.strip().startswith(("e:", "i:", "c:")):
-                fname = func_m.group(1)
-                if fname[0].islower() and fname not in ("e", "i", "c", "m", "f"):
-                    functions_list.append({
-                        "name": fname,
-                        "file": current_file,
-                    })
-
-        result["classes"] = classes
-        result["top_functions"] = functions_list[:30]
-        return result
+    def _parse_function_line(self, line: str, current_file: str) -> Dict[str, Any] | None:
+        """Parse a function definition line from map.toon details."""
+        func_m = re.match(r"\s+(\w+)\(([^)]*)\)", line)
+        if func_m and not line.strip().startswith(("e:", "i:", "c:")):
+            fname = func_m.group(1)
+            if fname[0].islower() and fname not in ("e", "i", "c", "m", "f"):
+                return {"name": fname, "file": current_file}
+        return None
 
     def parse_analysis(self, path: Path) -> Dict[str, Any]:
         """Parse analysis.toon — health, coupling, layers."""
@@ -148,8 +165,16 @@ class ToonParser:
             return {}
 
         result: Dict[str, Any] = {}
+        result.update(self._parse_analysis_header(text))
+        result["health_warnings"] = self._parse_health_section(text)
+        result["refactor_suggestions"] = self._parse_refactor_section(text)
+        result["layers"] = self._parse_layers_section(text)
+        return result
 
-        # Header metrics: CC̄=N | critical:X/Y | dups:N | cycles:N
+    def _parse_analysis_header(self, text: str) -> Dict[str, Any]:
+        """Parse header metrics from analysis.toon."""
+        result: Dict[str, Any] = {}
+
         header2 = re.search(r"CC̄=([0-9.]+)", text)
         if header2:
             result["avg_complexity"] = float(header2.group(1))
@@ -167,7 +192,10 @@ class ToonParser:
         if cycles_m:
             result["dependency_cycles"] = int(cycles_m.group(1))
 
-        # HEALTH section
+        return result
+
+    def _parse_health_section(self, text: str) -> List[Dict[str, Any]]:
+        """Parse HEALTH section from analysis.toon."""
         health_items = []
         in_health = False
         for line in text.splitlines():
@@ -183,9 +211,10 @@ class ToonParser:
                         "function": hm.group(1),
                         "complexity": int(hm.group(2)),
                     })
-        result["health_warnings"] = health_items
+        return health_items
 
-        # REFACTOR section
+    def _parse_refactor_section(self, text: str) -> List[str]:
+        """Parse REFACTOR section from analysis.toon."""
         refactor_items = []
         in_refactor = False
         for line in text.splitlines():
@@ -198,9 +227,10 @@ class ToonParser:
                 rm = re.match(r"\s+\d+\.\s+(.+)", line)
                 if rm:
                     refactor_items.append(rm.group(1).strip())
-        result["refactor_suggestions"] = refactor_items
+        return refactor_items
 
-        # LAYERS — extract module complexity data
+    def _parse_layers_section(self, text: str) -> List[Dict[str, Any]]:
+        """Parse LAYERS section from analysis.toon."""
         layers = []
         in_layers = False
         for line in text.splitlines():
@@ -222,9 +252,7 @@ class ToonParser:
                         "methods": int(lm.group(4)),
                         "complexity": float(lm.group(5)),
                     })
-        result["layers"] = layers
-
-        return result
+        return layers
 
     def parse_flow(self, path: Path) -> Dict[str, Any]:
         """Parse flow.toon — pipeline and data-flow analysis."""

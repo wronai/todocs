@@ -29,8 +29,9 @@ _TEST_PATTERNS = {"test_", "_test.py", "tests/", "test/", "spec/"}
 class CodeMetricsAnalyzer:
     """Analyze code metrics: lines, complexity, maintainability."""
 
-    def __init__(self, project_path: Path):
+    def __init__(self, project_path: Path, filter_func=None):
         self.root = Path(project_path)
+        self._filter = filter_func
         self._py_files: List[Path] = []
         self._all_source: List[Path] = []
         self._test_files: List[Path] = []
@@ -54,6 +55,8 @@ class CodeMetricsAnalyzer:
             if not p.is_file():
                 continue
             if self._should_skip(p.relative_to(self.root)):
+                continue
+            if self._filter and not self._filter(p):
                 continue
             ext = p.suffix.lower()
             if ext in _SOURCE_EXTENSIONS:
