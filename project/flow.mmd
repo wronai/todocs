@@ -37,11 +37,6 @@ flowchart TD
     end
     subgraph todocs_analyzers
         todocs____init__["__init__"]
-        todocs___load_pyproject["_load_pyproject"]
-        todocs___parse_dep_name["_parse_dep_name"]
-        todocs__get_runtime_deps{{get_runtime_deps CC=17}}
-        todocs__get_dev_deps{{get_dev_deps CC=18}}
-        todocs____init__["__init__"]
         todocs___should_skip["_should_skip"]
         todocs___iter_files["_iter_files"]
         todocs__analyze["analyze"]
@@ -53,6 +48,11 @@ flowchart TD
         todocs___detect_containers["_detect_containers"]
         todocs___detect_frameworks["_detect_frameworks"]
         todocs___read_deps_text["_read_deps_text"]
+        todocs____init__["__init__"]
+        todocs___load_pyproject["_load_pyproject"]
+        todocs___parse_dep_name["_parse_dep_name"]
+        todocs__get_runtime_deps{{get_runtime_deps CC=17}}
+        todocs__get_dev_deps{{get_dev_deps CC=18}}
         todocs____init__["__init__"]
         todocs__analyzers__maturity__MaturityScorer__score("score CC=14")
         todocs____init__["__init__"]
@@ -121,15 +121,6 @@ flowchart TD
         todocs___parse_taskfile("_parse_taskfile CC=10")
         todocs__get_target_names["get_target_names"]
         todocs____init__["__init__"]
-        todocs__parse["parse"]
-        todocs___find_readme["_find_readme"]
-        todocs___parse_sections["_parse_sections"]
-        todocs___extract_description["_extract_description"]
-        todocs___extract_preamble["_extract_preamble"]
-        todocs___extract_post_h1("_extract_post_h1 CC=8")
-        todocs___extract_heading_sections["_extract_heading_sections"]
-        todocs__get_first_paragraph["get_first_paragraph"]
-        todocs____init__["__init__"]
         todocs__find_toon_files["find_toon_files"]
         todocs__parse_all["parse_all"]
         todocs__parse_map["parse_map"]
@@ -146,6 +137,15 @@ flowchart TD
         todocs__parse_flow("parse_flow CC=11")
         todocs__parse_functions["parse_functions"]
         todocs__extractors__toon_parser__ToonParser___read["_read"]
+        todocs____init__["__init__"]
+        todocs__parse["parse"]
+        todocs___find_readme["_find_readme"]
+        todocs___parse_sections["_parse_sections"]
+        todocs___extract_description["_extract_description"]
+        todocs___extract_preamble["_extract_preamble"]
+        todocs___extract_post_h1("_extract_post_h1 CC=8")
+        todocs___extract_heading_sections["_extract_heading_sections"]
+        todocs__get_first_paragraph["get_first_paragraph"]
         todocs____init__["__init__"]
         todocs__parse["parse"]
         todocs___find_changelog["_find_changelog"]
@@ -209,10 +209,8 @@ flowchart TD
         todocs__utils__GitignoreParser__is_ignored["is_ignored"]
         todocs__utils__create_scan_filter["create_scan_filter"]
     end
-    examples__scan_single__main --> todocs__core__scan_project
     examples__article_sections_demo__main --> todocs__core__scan_project
-    examples__scan_org__main --> todocs__core__scan_organization
-    examples__scan_org__main --> todocs__core__generate_articles
+    examples__scan_single__main --> todocs__core__scan_project
     examples__custom_analysis___analyze_import_graph --> examples__custom_analysis___print_section_header
     examples__custom_analysis___analyze_api_surface --> examples__custom_analysis___print_section_header
     examples__custom_analysis___analyze_toon_files --> examples__custom_analysis___print_section_header
@@ -228,6 +226,8 @@ flowchart TD
     examples__print_health_summary --> examples__analyze_maturity_distribution
     examples__print_health_summary --> examples__analyze_code_metrics
     examples__organization_health_report__main --> todocs__core__scan_organization
+    examples__scan_org__main --> todocs__core__scan_organization
+    examples__scan_org__main --> todocs__core__generate_articles
     examples__api_surface_deep__analyze_entry_points --> examples__api_surface_deep__print_section
     examples__api_surface_deep__analyze_cli_commands --> examples__api_surface_deep__print_section
     examples__api_surface_deep__analyze_public_symbols --> examples__api_surface_deep__print_section
@@ -269,4 +269,4 @@ flowchart TD
     classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
     class examples__scan_single__main,todocs__render_api_surface,todocs___render_health_report,todocs__get_runtime_deps,todocs__get_dev_deps,todocs__build_graph,todocs__analyze,todocs___parse_module_ast highCC
-    class examples__scan_org__main,examples__custom_analysis___analyze_api_surface,examples__print_health_summary,todocs___parse_taskfile,todocs___extract_post_h1,todocs___parse_modules_section,todocs___parse_layers_section,todocs__parse_flow,todocs___summarize_entry,todocs___find_dockerfiles,todocs___parse_dockerfile,todocs___parse_compose,todocs___render_index,todocs__render_tech_stack,todocs__render_architecture,todocs__render_dependencies,todocs__render_docker,todocs__generators__article_sections__render_usage,todocs__utils__GitignoreParser___match_pattern,todocs___tech_stack_overview,todocs___dependency_overlap,todocs___render_category,todocs__analyzers__maturity__MaturityScorer__score,todocs___detect_internal_packages,todocs___scan,todocs___detect_cli_commands,todocs___collect_target_files,todocs___extract_class,todocs___extract_all,todocs__core___discover_projects medCC
+    class examples__custom_analysis___analyze_api_surface,examples__print_health_summary,examples__scan_org__main,todocs___parse_taskfile,todocs___parse_modules_section,todocs___parse_layers_section,todocs__parse_flow,todocs___extract_post_h1,todocs___summarize_entry,todocs___find_dockerfiles,todocs___parse_dockerfile,todocs___parse_compose,todocs___render_index,todocs__render_tech_stack,todocs__render_architecture,todocs__render_dependencies,todocs__render_docker,todocs__generators__article_sections__render_usage,todocs___tech_stack_overview,todocs___dependency_overlap,todocs___render_category,todocs__utils__GitignoreParser___match_pattern,todocs__analyzers__maturity__MaturityScorer__score,todocs___detect_internal_packages,todocs___scan,todocs___detect_cli_commands,todocs___collect_target_files,todocs___extract_class,todocs___extract_all,todocs__core___discover_projects medCC

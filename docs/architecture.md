@@ -1,6 +1,6 @@
 # todocs — Architecture
 
-> 22 modules | 162 functions | 20 classes
+> 24 modules | 162 functions | 20 classes
 
 ## How It Works
 
@@ -41,7 +41,7 @@ graph TD
     Analysis["Analysis<br/>11 modules"]
     API___CLI["API / CLI<br/>2 modules"]
     Core["Core<br/>2 modules"]
-    Other["Other<br/>7 modules"]
+    Other["Other<br/>9 modules"]
     Analysis --> API___CLI
     API___CLI --> Core
     Core --> Other
@@ -73,6 +73,8 @@ graph TD
 
 ### Other
 
+- `examples.advanced_usage`
+- `examples.quickstart`
 - `extractors`
 - `extractors.metadata`
 - `generators`
@@ -244,10 +246,10 @@ classDiagram
 
 | Metric | Value |
 |--------|-------|
-| Modules | 22 |
+| Modules | 24 |
 | Functions | 162 |
 | Classes | 20 |
 | CFG Nodes | 1270 |
 | Patterns | 0 |
 | Avg Complexity | 5.5 |
-| Analysis Time | 0.92s |
+| Analysis Time | 1.02s |

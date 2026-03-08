@@ -9,6 +9,14 @@ PIPELINES[12] (Analysis:4, Core:4, Export:1, IO:2, Unknown:1):
               → _collect_commands(lines:list, index:int) → List[str] CC=7    mutation ■
               PURITY: 3/5 pure  BOTTLENECK: _collect_commands(CC=7)
 
+  Extractors [IO]: ? → list
+              → get_first_paragraph() → str             CC=3    pure ▶
+              → parse() → Dict[str, str]                CC=3    IO
+              → _parse_sections(text:str) → Dict[str, str] CC=2    mutation
+              → _extract_description(text:str) → str    CC=3    pure
+              → _extract_post_h1(lines:list) → list     CC=8    mutation ■
+              PURITY: 2/5 pure  BOTTLENECK: _extract_post_h1(CC=8)
+
   Core [Core]: str → str
               → generate(root_dir:str, output_dir:str, org_name:str, org_url:str, exclude:tuple, json_report:Optional[str], verbose:bool) CC=5    IO ▶
               → _scan_with_progress(root:Path, exclude:tuple, console, project_dirs:list) → list CC=1    mutation
@@ -17,13 +25,12 @@ PIPELINES[12] (Analysis:4, Core:4, Export:1, IO:2, Unknown:1):
               → _generate_summary(profile:ProjectProfile) → str CC=8    mutation ■
               PURITY: 1/5 pure  BOTTLENECK: scan_organization(CC=11)
 
-  Extractors [IO]: ? → list
-              → get_first_paragraph() → str             CC=3    pure ▶
-              → parse() → Dict[str, str]                CC=3    IO
-              → _parse_sections(text:str) → Dict[str, str] CC=2    mutation
-              → _extract_description(text:str) → str    CC=3    pure
-              → _extract_post_h1(lines:list) → list     CC=8    mutation ■
-              PURITY: 2/5 pure  BOTTLENECK: _extract_post_h1(CC=8)
+  Extractors [Export]: ? → Dict[str, Any] | None
+              → parse_all() → Dict[str, Any]            CC=5    pure ▶
+              → parse_map(path:Path) → Dict[str, Any]   CC=2    mutation
+              → _parse_details_section(text:str) → tuple CC=7    mutation
+              → _parse_function_line(line:str, current_file:str) → Dict[str, Any] | None CC=5    pure ■
+              PURITY: 2/4 pure  BOTTLENECK: _parse_details_section(CC=7)
 
   Core [Core]: str → str
               → compare(root_dir:str, output_path:str, org_name:str, exclude:tuple) CC=2    pure ▶
@@ -38,13 +45,6 @@ PIPELINES[12] (Analysis:4, Core:4, Export:1, IO:2, Unknown:1):
               → scan_project(project_path:Path, max_depth:int) → ProjectProfile CC=3    pure
               → _generate_summary(profile:ProjectProfile) → str CC=8    mutation ■
               PURITY: 2/4 pure  BOTTLENECK: scan_organization(CC=11)
-
-  Extractors [Export]: ? → Dict[str, Any] | None
-              → parse_all() → Dict[str, Any]            CC=5    pure ▶
-              → parse_map(path:Path) → Dict[str, Any]   CC=2    mutation
-              → _parse_details_section(text:str) → tuple CC=7    mutation
-              → _parse_function_line(line:str, current_file:str) → Dict[str, Any] | None CC=5    pure ■
-              PURITY: 2/4 pure  BOTTLENECK: _parse_details_section(CC=7)
 
   Analyzers [Analysis]: ? → bool
               → detect_tech_stack()                     CC=2    pure ▶
@@ -98,9 +98,9 @@ TRANSFORMS (fan-out ≥10):
   generate(root_dir:str, output_dir:str, org_name:str, org_url:str, exclude:tuple, json_report:Optional[str], verbose:bool) fan=15   fan=15
   _render_article(p:ProjectProfile) → str                 fan=15   PIPELINE:ArticleGenerator.entry
   _parse_compose(path:Path) → Dict[str, Any]              fan=14   PIPELINE:DockerParser.entry
+  parse_flow(path:Path) → Dict[str, Any]                  fan=13   PIPELINE:ToonParser.entry
   inspect(project_dir:str, output:Optional[str], fmt:str) fan=13   fan=13
   compare(root_dir:str, output_path:str, org_name:str, exclude:tuple) fan=13   fan=13
-  parse_flow(path:Path) → Dict[str, Any]                  fan=13   PIPELINE:ToonParser.entry
   _render_health_report(profiles:List[ProjectProfile]) → str fan=13   PIPELINE:ComparisonGenerator.entry
   _detect_cli_commands() → List[Dict[str, str]]           fan=13   PIPELINE:APISurfaceAnalyzer.entry
 
@@ -126,6 +126,30 @@ CONTRACTS:
     _collect_commands(lines:list, index:int) → List[str]
       IN:  lines:list, index:int
       OUT: List[str]
+      SIDE-EFFECT: pure
+
+  Pipeline: Extractors
+    get_first_paragraph() → str
+      IN:  ()
+      OUT: str
+
+    parse() → Dict[str, str]
+      IN:  ()
+      OUT: Dict[str, str]
+      SIDE-EFFECT: IO(read_text)
+
+    _parse_sections(text:str) → Dict[str, str]
+      IN:  text:str
+      OUT: Dict[str, str]
+      SIDE-EFFECT: pure
+
+    _extract_description(text:str) → str
+      IN:  text:str
+      OUT: str
+
+    _extract_post_h1(lines:list) → list
+      IN:  lines:list
+      OUT: list
       SIDE-EFFECT: pure
 
   Pipeline: Core
@@ -154,28 +178,23 @@ CONTRACTS:
       SIDE-EFFECT: pure
 
   Pipeline: Extractors
-    get_first_paragraph() → str
+    parse_all() → Dict[str, Any]
       IN:  ()
-      OUT: str
+      OUT: Dict[str, Any]
 
-    parse() → Dict[str, str]
-      IN:  ()
-      OUT: Dict[str, str]
-      SIDE-EFFECT: IO(read_text)
-
-    _parse_sections(text:str) → Dict[str, str]
-      IN:  text:str
-      OUT: Dict[str, str]
+    parse_map(path:Path) → Dict[str, Any]
+      IN:  path:Path
+      OUT: Dict[str, Any]
       SIDE-EFFECT: pure
 
-    _extract_description(text:str) → str
+    _parse_details_section(text:str) → tuple
       IN:  text:str
-      OUT: str
-
-    _extract_post_h1(lines:list) → list
-      IN:  lines:list
-      OUT: list
+      OUT: tuple
       SIDE-EFFECT: pure
+
+    _parse_function_line(line:str, current_file:str) → Dict[str, Any] | None
+      IN:  line:str, current_file:str
+      OUT: Dict[str, Any] | None
 
   Pipeline: Core
     compare(root_dir:str, output_path:str, org_name:str, exclude:tuple)
@@ -214,25 +233,6 @@ CONTRACTS:
       IN:  profile:ProjectProfile
       OUT: str
       SIDE-EFFECT: pure
-
-  Pipeline: Extractors
-    parse_all() → Dict[str, Any]
-      IN:  ()
-      OUT: Dict[str, Any]
-
-    parse_map(path:Path) → Dict[str, Any]
-      IN:  path:Path
-      OUT: Dict[str, Any]
-      SIDE-EFFECT: pure
-
-    _parse_details_section(text:str) → tuple
-      IN:  text:str
-      OUT: tuple
-      SIDE-EFFECT: pure
-
-    _parse_function_line(line:str, current_file:str) → Dict[str, Any] | None
-      IN:  line:str, current_file:str
-      OUT: Dict[str, Any] | None
 
   Pipeline: Analyzers
     detect_tech_stack()
@@ -351,18 +351,18 @@ DATA_TYPES (by cross-function usage) [154 annotated, 0 inferred / 162 functions]
   list                 consumed:9   produced:6  
   bool                 consumed:7   produced:7  
   str, str             consumed:0   produced:10   output-heavy
-  tuple                consumed:6   produced:4  
   set                  consumed:8   produced:2  
-  Dict                 consumed:1   produced:5    output-heavy
+  tuple                consumed:6   produced:4  
   Dict[str, Any] | None consumed:0   produced:6    output-heavy
+  Dict                 consumed:1   produced:5    output-heavy
   AnalysisResult       consumed:0   produced:3    narrow scope
   ast.AST              consumed:2   produced:0    narrow scope
-  str, Path            consumed:0   produced:1    narrow scope
   Tuple[str, str], int consumed:1   produced:0    narrow scope
-  ast.FunctionDef | ast.AsyncFunctionDef consumed:1   produced:0    narrow scope
-  ast.ClassDef         consumed:1   produced:0    narrow scope
   Counter              consumed:0   produced:1    narrow scope
   MaturityProfile      consumed:0   produced:1    narrow scope
+  List[str]            consumed:0   produced:1    narrow scope
+  str, Path            consumed:0   produced:1    narrow scope
+  dict                 consumed:0   produced:1    narrow scope
 
   HUB TYPES (consumed ≥10):
     str → 61 consumers → split into:
@@ -375,17 +375,17 @@ DATA_TYPES (by cross-function usage) [154 annotated, 0 inferred / 162 functions]
       - (analyze consumers to suggest sub-interfaces)
 
 SIDE_EFFECTS:
-  IO:        MakefileParser._parse_makefile, MakefileParser._parse_taskfile, generate, _print_project_summary, _generate_without_rich, _write_json_report, inspect, ToonParser._read, ReadmeParser.parse, DockerParser._parse_dockerfile
-  Mutation:  MakefileParser.__init__, MakefileParser._collect_phony_targets, MakefileParser._collect_commands, _discover_and_show_progress, _scan_with_progress, _generate_articles_with_progress, ToonParser.__init__, ToonParser.find_toon_files, ToonParser.parse_map, ToonParser._parse_modules_section
-  Pure:      MakefileParser.parse, MakefileParser._parse_target_line, MakefileParser._extract_help_text, MakefileParser.get_target_names, main, compare, health, ToonParser.parse_all, ToonParser._parse_map_header, ToonParser._parse_class_line
+  IO:        ToonParser._read, MakefileParser._parse_makefile, MakefileParser._parse_taskfile, ReadmeParser.parse, generate, _print_project_summary, _generate_without_rich, _write_json_report, inspect, ChangelogParser.parse
+  Mutation:  ToonParser.__init__, ToonParser.find_toon_files, ToonParser.parse_map, ToonParser._parse_modules_section, ToonParser._parse_details_section, ToonParser.parse_analysis, ToonParser._parse_health_section, ToonParser._parse_refactor_section, ToonParser._parse_layers_section, ToonParser.parse_flow
+  Pure:      ToonParser.parse_all, ToonParser._parse_map_header, ToonParser._parse_class_line, ToonParser._parse_function_line, ToonParser._parse_analysis_header, MakefileParser.parse, MakefileParser._parse_target_line, MakefileParser._extract_help_text, MakefileParser.get_target_names, ReadmeParser._find_readme
 
   PIPELINE PURITY:
     Extractors      ██░░ 60% pure
-    Core            ░░░░ 20% pure
     Extractors      █░░░ 40% pure
-    Core            ██░░ 50% pure
-    Core            ██░░ 50% pure
+    Core            ░░░░ 20% pure
     Extractors      ██░░ 50% pure
+    Core            ██░░ 50% pure
+    Core            ██░░ 50% pure
     Analyzers       ████ 100% pure
     Analyzers       ██░░ 50% pure
     Analyzers       █░░░ 25% pure

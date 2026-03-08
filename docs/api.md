@@ -1,6 +1,6 @@
 # todocs — API Reference
 
-> 22 modules | 162 functions | 20 classes
+> 24 modules | 162 functions | 20 classes
 
 ## Contents
 

@@ -20,6 +20,8 @@
 | `analyzers.structure` | 0/0 | 1/1 | 🟢 100% |
 | `cli` | 11/11 | 0/0 | 🟢 100% |
 | `core` | 5/6 | 5/5 | 🟢 91% |
+| `examples.advanced_usage` | 0/0 | 0/0 | 🟢 100% |
+| `examples.quickstart` | 0/0 | 0/0 | 🟢 100% |
 | `extractors` | 0/0 | 0/0 | 🟢 100% |
 | `extractors.changelog_parser` | 0/0 | 1/1 | 🟢 100% |
 | `extractors.docker_parser` | 0/0 | 1/1 | 🟢 100% |

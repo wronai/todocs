@@ -6,7 +6,7 @@
 - **Analysis Mode**: static
 - **Total Functions**: 186
 - **Total Classes**: 20
-- **Modules**: 28
+- **Modules**: 30
 - **Entry Points**: 141
 
 ## Architecture by Module
@@ -407,14 +407,6 @@ Key functions that process and transform data:
 > Parse Taskfile.yml (go-task format).
 - **Output to**: data.get, tasks.items, yaml.safe_load, isinstance, isinstance
 
-### todocs.extractors.readme_parser.ReadmeParser.parse
-> Parse README and return section_name -> content dict.
-- **Output to**: self._find_readme, self._parse_sections, readme_path.read_text
-
-### todocs.extractors.readme_parser.ReadmeParser._parse_sections
-> Split markdown by headings into sections.
-- **Output to**: self._extract_description, sections.update, self._extract_heading_sections
-
 ### todocs.extractors.toon_parser.ToonParser.parse_all
 > Parse all discovered .toon files and return unified summary.
 - **Output to**: self.find_toon_files, list, self.parse_map, self.parse_analysis, self.parse_flow
@@ -470,6 +462,14 @@ Key functions that process and transform data:
 ### todocs.extractors.toon_parser.ToonParser.parse_functions
 > Parse *.functions.toon — exported function signatures.
 - **Output to**: self._read, text.splitlines, re.match, fm.group, None.islower
+
+### todocs.extractors.readme_parser.ReadmeParser.parse
+> Parse README and return section_name -> content dict.
+- **Output to**: self._find_readme, self._parse_sections, readme_path.read_text
+
+### todocs.extractors.readme_parser.ReadmeParser._parse_sections
+> Split markdown by headings into sections.
+- **Output to**: self._extract_description, sections.update, self._extract_heading_sections
 
 ### todocs.extractors.changelog_parser.ChangelogParser.parse
 > Return list of {version, date, content} dicts for recent releases.
@@ -532,8 +532,8 @@ Functions exposed as public API (no underscore prefix):
 - `examples.organization_health_report.analyze_tech_stacks` - 11 calls
 - `todocs.analyzers.structure.StructureAnalyzer.analyze` - 11 calls
 - `todocs.analyzers.import_graph.ImportGraphAnalyzer.get_hub_modules` - 11 calls
-- `todocs.utils.create_scan_filter` - 10 calls
 - `todocs.generators.comparison.ComparisonGenerator.generate_category_articles` - 10 calls
+- `todocs.utils.create_scan_filter` - 10 calls
 - `todocs.extractors.toon_parser.ToonParser.parse_functions` - 9 calls
 
 ## System Interactions

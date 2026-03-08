@@ -77,8 +77,8 @@ FUNCTIONS (CC≥10, 25 of 162):
    11.0  ComparisonGenerator._tech_stack_overview   15n   2exit  loops+cond+ret
    11.0  APISurfaceAnalyzer._collect_target_files   17n   2exit  loops+cond+ret
    11.0  scan_organization                          13n   2exit  loops+cond+ret
-   10.0  MakefileParser._parse_taskfile             13n   4exit  loops+cond+ret
    10.0  ToonParser._parse_modules_section          16n   2exit  loops+cond+ret
+   10.0  MakefileParser._parse_taskfile             13n   4exit  loops+cond+ret
    10.0  DockerParser._parse_dockerfile             15n   2exit  loops+cond+ret
    10.0  CodeMetricsAnalyzer._scan                  18n   2exit  loops+cond+ret
    10.0  APISurfaceAnalyzer._extract_class           9n   4exit  cond+ret
@@ -233,6 +233,6 @@ D:
   __init__.py:
   extractors/__init__.py:
   examples/quickstart.py:
-  generators/__init__.py:
   examples/advanced_usage.py:
+  generators/__init__.py:
   analyzers/__init__.py:

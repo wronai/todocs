@@ -1,6 +1,6 @@
-# todocs | 33f 6599L | python:33
+# todocs | 35f 6626L | python:35
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[33]:
+M[35]:
   examples/api_surface_deep.py,132
   examples/article_sections_demo.py,94
   examples/custom_analysis.py,143
@@ -22,6 +22,8 @@ M[33]:
   todocs/analyzers/structure.py,200
   todocs/cli.py,237
   todocs/core.py,286
+  todocs/examples/advanced_usage.py,6
+  todocs/examples/quickstart.py,7
   todocs/extractors/__init__.py,1
   todocs/extractors/changelog_parser.py,73
   todocs/extractors/docker_parser.py,130

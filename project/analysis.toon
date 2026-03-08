@@ -197,9 +197,6 @@ D:
     e: MetadataExtractor
     MetadataExtractor  # Extract structured metadata from project config files....
       __init__(1)  CC=1.0
-  examples/scan_org.py:
-    e: main
-    main()
   examples/organization_health_report.py:
     e: analyze_maturity_distribution,analyze_code_metrics,analyze_tech_stacks,find_critical_projects,print_health_summary,main
     analyze_maturity_distribution(profiles)
@@ -207,6 +204,9 @@ D:
     analyze_tech_stacks(profiles)
     find_critical_projects(profiles,threshold)
     print_health_summary(profiles,org_name)
+    main()
+  examples/scan_org.py:
+    e: main
     main()
   todocs/extractors/changelog_parser.py:
     e: ChangelogParser
@@ -254,5 +254,7 @@ D:
     main()
   todocs/__init__.py:
   todocs/extractors/__init__.py:
+  todocs/examples/quickstart.py:
   todocs/generators/__init__.py:
+  todocs/examples/advanced_usage.py:
   todocs/analyzers/__init__.py:

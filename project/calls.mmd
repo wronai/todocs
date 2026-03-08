@@ -1,30 +1,30 @@
 flowchart LR
     subgraph examples_api_surface_deep
-        examples__api_surface_deep__analyze_symbol_sources["analyze_symbol_sources"]
-        examples__api_surface_deep__analyze_entry_points["analyze_entry_points"]
         examples__api_surface_deep__main["main"]
         examples__api_surface_deep__analyze_rest_endpoints["analyze_rest_endpoints"]
+        examples__api_surface_deep__analyze_entry_points["analyze_entry_points"]
+        examples__api_surface_deep__analyze_symbol_sources["analyze_symbol_sources"]
         examples__api_surface_deep__analyze_cli_commands["analyze_cli_commands"]
-        examples__api_surface_deep__analyze_public_symbols["analyze_public_symbols"]
         examples__api_surface_deep__print_section["print_section"]
+        examples__api_surface_deep__analyze_public_symbols["analyze_public_symbols"]
     end
     subgraph examples_article_sections_demo
         examples__article_sections_demo__main["main"]
     end
     subgraph examples_custom_analysis
+        examples__custom_analysis___analyze_import_graph["_analyze_import_graph"]
         examples__custom_analysis___analyze_docker["_analyze_docker"]
         examples__custom_analysis___analyze_api_surface["_analyze_api_surface"]
-        examples__custom_analysis___analyze_toon_files["_analyze_toon_files"]
         examples__custom_analysis__main["main"]
-        examples__custom_analysis___print_section_header["_print_section_header"]
-        examples__custom_analysis___analyze_import_graph["_analyze_import_graph"]
         examples__custom_analysis___analyze_makefile["_analyze_makefile"]
+        examples__custom_analysis___analyze_toon_files["_analyze_toon_files"]
         examples__custom_analysis___analyze_code_metrics["_analyze_code_metrics"]
+        examples__custom_analysis___print_section_header["_print_section_header"]
     end
     subgraph examples_organization_health_report
-        examples__print_health_summary["print_health_summary"]
         examples__organization_health_report__main["main"]
         examples__analyze_maturity_distribution["analyze_maturity_distribution"]
+        examples__print_health_summary["print_health_summary"]
     end
     subgraph examples_scan_org
         examples__scan_org__main["main"]
@@ -33,13 +33,13 @@ flowchart LR
         examples__scan_single__main["main"]
     end
     subgraph todocs_cli
+        todocs__cli___scan_with_progress["_scan_with_progress"]
         todocs__cli___generate_without_rich["_generate_without_rich"]
         todocs__cli__health["health"]
-        todocs__cli__inspect["inspect"]
-        todocs__cli___scan_with_progress["_scan_with_progress"]
         todocs__cli___discover_and_show_progress["_discover_and_show_progress"]
-        todocs__cli___generate_articles_with_progress["_generate_articles_with_progre"]
+        todocs__cli__inspect["inspect"]
         todocs__cli__compare["compare"]
+        todocs__cli___generate_articles_with_progress["_generate_articles_with_progre"]
     end
     subgraph todocs_core
         todocs__core___discover_projects["_discover_projects"]
@@ -48,24 +48,22 @@ flowchart LR
         todocs__core__generate_articles["generate_articles"]
     end
     subgraph todocs_generators
-        todocs__render_dependencies["render_dependencies"]
-        todocs__render_api_surface["render_api_surface"]
-        todocs__render_overview["render_overview"]
-        todocs__render_header["render_header"]
-        todocs__render_architecture["render_architecture"]
         todocs___render_article["_render_article"]
         todocs__render_maturity["render_maturity"]
-        todocs__render_frontmatter["render_frontmatter"]
+        todocs__render_api_surface["render_api_surface"]
+        todocs__render_header["render_header"]
         todocs__render_metrics["render_metrics"]
         todocs__render_tech_stack["render_tech_stack"]
+        todocs__render_frontmatter["render_frontmatter"]
+        todocs__render_overview["render_overview"]
+        todocs__render_dependencies["render_dependencies"]
+        todocs__render_architecture["render_architecture"]
     end
     subgraph todocs_utils
         todocs__utils__create_scan_filter["create_scan_filter"]
     end
-    examples__scan_single__main --> todocs__core__scan_project
     examples__article_sections_demo__main --> todocs__core__scan_project
-    examples__scan_org__main --> todocs__core__scan_organization
-    examples__scan_org__main --> todocs__core__generate_articles
+    examples__scan_single__main --> todocs__core__scan_project
     examples__custom_analysis___analyze_import_graph --> examples__custom_analysis___print_section_header
     examples__custom_analysis___analyze_api_surface --> examples__custom_analysis___print_section_header
     examples__custom_analysis___analyze_toon_files --> examples__custom_analysis___print_section_header
@@ -80,6 +78,8 @@ flowchart LR
     examples__custom_analysis__main --> examples__custom_analysis___analyze_code_metrics
     examples__print_health_summary --> examples__analyze_maturity_distribution
     examples__organization_health_report__main --> todocs__core__scan_organization
+    examples__scan_org__main --> todocs__core__scan_organization
+    examples__scan_org__main --> todocs__core__generate_articles
     examples__api_surface_deep__analyze_entry_points --> examples__api_surface_deep__print_section
     examples__api_surface_deep__analyze_cli_commands --> examples__api_surface_deep__print_section
     examples__api_surface_deep__analyze_public_symbols --> examples__api_surface_deep__print_section

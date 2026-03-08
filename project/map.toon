@@ -1,6 +1,6 @@
-# todocs | 28f 5006L | python:28
+# todocs | 30f 5031L | python:30
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[28]:
+M[30]:
   examples/api_surface_deep.py,176
   examples/article_sections_demo.py,119
   examples/custom_analysis.py,187
@@ -17,6 +17,8 @@ M[28]:
   todocs/analyzers/structure.py,234
   todocs/cli.py,307
   todocs/core.py,387
+  todocs/examples/advanced_usage.py,9
+  todocs/examples/quickstart.py,16
   todocs/extractors/__init__.py,1
   todocs/extractors/changelog_parser.py,103
   todocs/extractors/docker_parser.py,174
@@ -105,9 +107,6 @@ D:
   todocs/extractors/metadata.py:
     e: MetadataExtractor
     MetadataExtractor: __init__(1),extract(0),_merge(2),_from_pyproject(0),_from_setup_cfg(0),_from_setup_py(0),_extract_setup_kwargs(1),_from_package_json(0),_extract_license(1)  # Extract structured metadata from project config files...
-  examples/scan_org.py:
-    e: main
-    main()
   examples/organization_health_report.py:
     e: analyze_maturity_distribution,analyze_code_metrics,analyze_tech_stacks,find_critical_projects,print_health_summary,main
     analyze_maturity_distribution(profiles)
@@ -115,6 +114,9 @@ D:
     analyze_tech_stacks(profiles)
     find_critical_projects(profiles;threshold)
     print_health_summary(profiles;org_name)
+    main()
+  examples/scan_org.py:
+    e: main
     main()
   todocs/extractors/changelog_parser.py:
     e: ChangelogParser
@@ -156,5 +158,7 @@ D:
     main()
   todocs/__init__.py:
   todocs/extractors/__init__.py:
+  todocs/examples/quickstart.py:
   todocs/generators/__init__.py:
+  todocs/examples/advanced_usage.py:
   todocs/analyzers/__init__.py:

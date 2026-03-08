@@ -174,15 +174,15 @@ ROOT_DIR is the directory containing project subdirectories.
 ### generators.comparison.ComparisonGenerator._render_comparison
 - **Calls**: sections.append, sections.append, sections.append, sections.append, sections.append, sections.append, sections.append, sections.append
 
+### extractors.toon_parser.ToonParser._parse_layers_section
+> Parse LAYERS section from analysis.toon.
+- **Calls**: text.splitlines, None.startswith, re.match, line.strip, line.strip, layers.append, line.startswith, line.startswith
+
 ### cli.inspect
 > Inspect a single project and show its profile.
 
 PROJECT_DIR is the path to the project directory.
 - **Calls**: main.command, click.argument, click.option, click.option, None.resolve, core.scan_project, profile.to_json, ArticleGenerator
-
-### extractors.toon_parser.ToonParser._parse_layers_section
-> Parse LAYERS section from analysis.toon.
-- **Calls**: text.splitlines, None.startswith, re.match, line.strip, line.strip, layers.append, line.startswith, line.startswith
 
 ### analyzers.code_metrics.CodeMetricsAnalyzer._parse_module_ast
 > Parse AST and extract classes, functions, imports, and docstring.
@@ -387,22 +387,6 @@ _from_pyproject [extractors.metadata.MetadataExtractor]
 
 Key functions that process and transform data:
 
-### extractors.makefile_parser.MakefileParser.parse
-> Parse build file and return targets with descriptions.
-- **Output to**: makefile.exists, self._parse_makefile, taskfile.exists, self._parse_taskfile
-
-### extractors.makefile_parser.MakefileParser._parse_makefile
-> Parse GNU Makefile targets.
-- **Output to**: self._collect_phony_targets, text.splitlines, enumerate, path.read_text, self._parse_target_line
-
-### extractors.makefile_parser.MakefileParser._parse_target_line
-> Parse a single Makefile target line.
-- **Output to**: re.match, target_m.group, self._extract_help_text, self._collect_commands, name.startswith
-
-### extractors.makefile_parser.MakefileParser._parse_taskfile
-> Parse Taskfile.yml (go-task format).
-- **Output to**: data.get, tasks.items, yaml.safe_load, isinstance, isinstance
-
 ### extractors.toon_parser.ToonParser.parse_all
 > Parse all discovered .toon files and return unified summary.
 - **Output to**: self.find_toon_files, list, self.parse_map, self.parse_analysis, self.parse_flow
@@ -459,6 +443,22 @@ Key functions that process and transform data:
 > Parse *.functions.toon — exported function signatures.
 - **Output to**: self._read, text.splitlines, re.match, fm.group, None.islower
 
+### extractors.makefile_parser.MakefileParser.parse
+> Parse build file and return targets with descriptions.
+- **Output to**: makefile.exists, self._parse_makefile, taskfile.exists, self._parse_taskfile
+
+### extractors.makefile_parser.MakefileParser._parse_makefile
+> Parse GNU Makefile targets.
+- **Output to**: self._collect_phony_targets, text.splitlines, enumerate, path.read_text, self._parse_target_line
+
+### extractors.makefile_parser.MakefileParser._parse_target_line
+> Parse a single Makefile target line.
+- **Output to**: re.match, target_m.group, self._extract_help_text, self._collect_commands, name.startswith
+
+### extractors.makefile_parser.MakefileParser._parse_taskfile
+> Parse Taskfile.yml (go-task format).
+- **Output to**: data.get, tasks.items, yaml.safe_load, isinstance, isinstance
+
 ### extractors.readme_parser.ReadmeParser.parse
 > Parse README and return section_name -> content dict.
 - **Output to**: self._find_readme, self._parse_sections, readme_path.read_text
@@ -466,6 +466,14 @@ Key functions that process and transform data:
 ### extractors.readme_parser.ReadmeParser._parse_sections
 > Split markdown by headings into sections.
 - **Output to**: self._extract_description, sections.update, self._extract_heading_sections
+
+### extractors.changelog_parser.ChangelogParser.parse
+> Return list of {version, date, content} dicts for recent releases.
+- **Output to**: self._find_changelog, self._parse_entries, cl_path.read_text
+
+### extractors.changelog_parser.ChangelogParser._parse_entries
+> Parse Keep-a-Changelog or similar format.
+- **Output to**: re.compile, list, enumerate, heading_re.finditer, m.group
 
 ### extractors.docker_parser.DockerParser.parse
 > Parse all Docker-related files.
@@ -478,14 +486,6 @@ Key functions that process and transform data:
 ### extractors.docker_parser.DockerParser._parse_compose
 > Extract services, ports, volumes from docker-compose.yml.
 - **Output to**: data.get, raw_services.items, list, yaml.safe_load, isinstance
-
-### extractors.changelog_parser.ChangelogParser.parse
-> Return list of {version, date, content} dicts for recent releases.
-- **Output to**: self._find_changelog, self._parse_entries, cl_path.read_text
-
-### extractors.changelog_parser.ChangelogParser._parse_entries
-> Parse Keep-a-Changelog or similar format.
-- **Output to**: re.compile, list, enumerate, heading_re.finditer, m.group
 
 ## Public API Surface
 
@@ -516,8 +516,8 @@ Functions exposed as public API (no underscore prefix):
 - `extractors.metadata.MetadataExtractor.extract` - 12 calls
 - `analyzers.structure.StructureAnalyzer.analyze` - 11 calls
 - `analyzers.import_graph.ImportGraphAnalyzer.get_hub_modules` - 11 calls
-- `generators.comparison.ComparisonGenerator.generate_category_articles` - 10 calls
 - `utils.create_scan_filter` - 10 calls
+- `generators.comparison.ComparisonGenerator.generate_category_articles` - 10 calls
 - `extractors.toon_parser.ToonParser.parse_functions` - 9 calls
 - `generators.article_sections.render_header` - 8 calls
 - `generators.article_sections.render_changelog` - 8 calls
@@ -528,8 +528,8 @@ Functions exposed as public API (no underscore prefix):
 - `generators.article_sections.render_maturity` - 6 calls
 - `extractors.toon_parser.ToonParser.parse_map` - 5 calls
 - `generators.article_sections.render_frontmatter` - 5 calls
-- `extractors.makefile_parser.MakefileParser.parse` - 4 calls
 - `extractors.toon_parser.ToonParser.find_toon_files` - 4 calls
+- `extractors.makefile_parser.MakefileParser.parse` - 4 calls
 - `extractors.readme_parser.ReadmeParser.get_first_paragraph` - 4 calls
 
 ## System Interactions
