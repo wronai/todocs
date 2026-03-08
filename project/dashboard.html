@@ -60,12 +60,12 @@
 </p>
 
 <div class="grid">
-  <div class="card"><div class="value">6.1</div><div class="label">Avg CC</div></div>
-  <div class="card"><div class="value">11</div><div class="label">Critical (CC≥10)</div></div>
-  <div class="card"><div class="value">66</div><div class="label">Functions</div></div>
-  <div class="card"><div class="value">13</div><div class="label">Classes</div></div>
-  <div class="card"><div class="value">10</div><div class="label">Files</div></div>
-  <div class="card"><div class="value">2344</div><div class="label">Lines</div></div>
+  <div class="card"><div class="value">6.6</div><div class="label">Avg CC</div></div>
+  <div class="card"><div class="value">27</div><div class="label">Critical (CC≥10)</div></div>
+  <div class="card"><div class="value">120</div><div class="label">Functions</div></div>
+  <div class="card"><div class="value">19</div><div class="label">Classes</div></div>
+  <div class="card"><div class="value">16</div><div class="label">Files</div></div>
+  <div class="card"><div class="value">5283</div><div class="label">Lines</div></div>
   <div class="card"><div class="value">0</div><div class="label">Duplicates</div></div>
   <div class="card"><div class="value">0</div><div class="label">Cycles</div></div>
 </div>
@@ -74,9 +74,9 @@
   <div class="chart-container">
     <h2 style="border:none;margin:0 0 .5rem;">Evolution (2026-03-08)</h2>
     <div class="evo-cards">
-      <div class="card"><div class="value">6.1</div><div class="label">CC̄ →</div></div>
-      <div class="card"><div class="value">11</div><div class="label">Critical →</div></div>
-      <div class="card"><div class="value">2344</div><div class="label">Lines</div></div>
+      <div class="card"><div class="value">6.6</div><div class="label">CC̄ →</div></div>
+      <div class="card"><div class="value">27</div><div class="label">Critical →</div></div>
+      <div class="card"><div class="value">5283</div><div class="label">Lines</div></div>
     </div>
     <p class="trend" style="margin-top:.5rem;">Run analysis multiple times to build a trend chart (≥3 data points needed).</p>
   </div>
@@ -93,9 +93,44 @@
   <tbody>
             <tr class="critical">
                 <td><span class="badge critical">critical</span></td>
+                <td>scan_project</td>
+                <td>high_fan_out</td>
+                <td>32</td>
+                <td>10</td>
+            </tr>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
+                <td>APISurfaceAnalyzer._scan_public_symbols</td>
+                <td>cc_exceeded</td>
+                <td>27</td>
+                <td>15</td>
+            </tr>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
+                <td>ImportGraphAnalyzer.build_graph</td>
+                <td>high_fan_out</td>
+                <td>26</td>
+                <td>10</td>
+            </tr>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
+                <td>ToonParser.parse_analysis</td>
+                <td>cc_exceeded</td>
+                <td>25</td>
+                <td>15</td>
+            </tr>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
                 <td>generate</td>
                 <td>high_fan_out</td>
                 <td>25</td>
+                <td>10</td>
+            </tr>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
+                <td>MakefileParser._parse_makefile</td>
+                <td>high_fan_out</td>
+                <td>23</td>
                 <td>10</td>
             </tr>
             <tr class="critical">
@@ -114,6 +149,20 @@
             </tr>
             <tr class="critical">
                 <td><span class="badge critical">critical</span></td>
+                <td>ToonParser.parse_map</td>
+                <td>high_fan_out</td>
+                <td>21</td>
+                <td>10</td>
+            </tr>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
+                <td>ToonParser.parse_analysis</td>
+                <td>high_fan_out</td>
+                <td>20</td>
+                <td>10</td>
+            </tr>
+            <tr class="critical">
+                <td><span class="badge critical">critical</span></td>
                 <td>DependencyAnalyzer.get_runtime_deps</td>
                 <td>high_fan_out</td>
                 <td>20</td>
@@ -128,10 +177,17 @@
             </tr>
             <tr class="critical">
                 <td><span class="badge critical">critical</span></td>
-                <td>scan_project</td>
+                <td>APISurfaceAnalyzer._scan_public_symbols</td>
                 <td>high_fan_out</td>
                 <td>20</td>
                 <td>10</td>
+            </tr>
+            <tr class="error">
+                <td><span class="badge error">error</span></td>
+                <td>ToonParser.parse_map</td>
+                <td>cc_exceeded</td>
+                <td>24</td>
+                <td>15</td>
             </tr>
             <tr class="error">
                 <td><span class="badge error">error</span></td>
@@ -139,62 +195,6 @@
                 <td>cc_exceeded</td>
                 <td>22</td>
                 <td>15</td>
-            </tr>
-            <tr class="error">
-                <td><span class="badge error">error</span></td>
-                <td>CodeMetricsAnalyzer.get_key_modules</td>
-                <td>cc_exceeded</td>
-                <td>21</td>
-                <td>15</td>
-            </tr>
-            <tr class="error">
-                <td><span class="badge error">error</span></td>
-                <td>ReadmeParser._parse_sections</td>
-                <td>high_fan_out</td>
-                <td>19</td>
-                <td>10</td>
-            </tr>
-            <tr class="error">
-                <td><span class="badge error">error</span></td>
-                <td>CodeMetricsAnalyzer.get_key_modules</td>
-                <td>high_fan_out</td>
-                <td>17</td>
-                <td>10</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>StructureAnalyzer.detect_tech_stack</td>
-                <td>cc_exceeded</td>
-                <td>19</td>
-                <td>15</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>DependencyAnalyzer.get_dev_deps</td>
-                <td>cc_exceeded</td>
-                <td>18</td>
-                <td>15</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>DependencyAnalyzer.get_runtime_deps</td>
-                <td>cc_exceeded</td>
-                <td>17</td>
-                <td>15</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>CodeMetricsAnalyzer.analyze</td>
-                <td>cc_exceeded</td>
-                <td>16</td>
-                <td>15</td>
-            </tr>
-            <tr class="warning">
-                <td><span class="badge warning">warning</span></td>
-                <td>inspect</td>
-                <td>high_fan_out</td>
-                <td>13</td>
-                <td>10</td>
             </tr></tbody>
 </table>
 </div></div>
@@ -207,11 +207,30 @@
   <thead><tr><th>Function</th><th>Fan-out</th><th>Note</th></tr></thead>
   <tbody>
             <tr>
+                <td><strong>scan_project</strong></td>
+                <td>32</td>
+                <td>Analyze a single project and return its profile.</td>
+            </tr>
+            <tr>
+                <td><strong>ImportGraphAnalyzer.build_graph</strong></td>
+                <td>26</td>
+                <td>Build the import dependency graph.
+
+Returns:
+    {
+        "nodes": [{"name": "m</td>
+            </tr>
+            <tr>
                 <td><strong>generate</strong></td>
                 <td>25</td>
                 <td>Scan projects and generate WordPress markdown articles.
 
 ROOT_DIR is the directo</td>
+            </tr>
+            <tr>
+                <td><strong>MakefileParser._parse_makefile</strong></td>
+                <td>23</td>
+                <td>Parse GNU Makefile targets.</td>
             </tr>
             <tr>
                 <td><strong>StructureAnalyzer.detect_tech_stack</strong></td>
@@ -224,6 +243,16 @@ ROOT_DIR is the directo</td>
                 <td>Analysis pipeline, 22 stages</td>
             </tr>
             <tr>
+                <td><strong>ToonParser.parse_map</strong></td>
+                <td>21</td>
+                <td>Parse project.toon / map.toon — module listing with metadata.</td>
+            </tr>
+            <tr>
+                <td><strong>ToonParser.parse_analysis</strong></td>
+                <td>20</td>
+                <td>Parse analysis.toon — health, coupling, layers.</td>
+            </tr>
+            <tr>
                 <td><strong>DependencyAnalyzer.get_runtime_deps</strong></td>
                 <td>20</td>
                 <td>Get runtime dependencies.</td>
@@ -232,104 +261,83 @@ ROOT_DIR is the directo</td>
                 <td><strong>DependencyAnalyzer.get_dev_deps</strong></td>
                 <td>20</td>
                 <td>Get development dependencies.</td>
-            </tr>
-            <tr>
-                <td><strong>scan_project</strong></td>
-                <td>20</td>
-                <td>Analyze a single project and return its profile.</td>
-            </tr>
-            <tr>
-                <td><strong>ReadmeParser._parse_sections</strong></td>
-                <td>19</td>
-                <td>Split markdown by headings into sections.</td>
-            </tr>
-            <tr>
-                <td><strong>CodeMetricsAnalyzer.get_key_modules</strong></td>
-                <td>17</td>
-                <td>Return the top N most significant Python modules by size and complexity.</td>
-            </tr>
-            <tr>
-                <td><strong>inspect</strong></td>
-                <td>13</td>
-                <td>Inspect a single project and show its profile.
-
-PROJECT_DIR is the path to the p</td>
-            </tr>
-            <tr>
-                <td><strong>ArticleGenerator._render_article</strong></td>
-                <td>13</td>
-                <td>Orchestrates 13 calls</td>
             </tr></tbody>
 </table>
 </div></div>
 </div>
 
 <div>
-<h2>Refactoring Priorities (9)</h2>
+<h2>Refactoring Priorities (15)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>#</th><th>Action</th><th>Impact</th><th>Effort</th></tr></thead>
   <tbody>
             <tr>
                 <td>1</td>
-                <td>Split ReadmeParser._parse_sections (CC=22 → target CC<10)</td>
-                <td><span class="badge medium">medium</span></td>
+                <td>Split ToonParser.parse_analysis (CC=25 → target CC<10)</td>
+                <td><span class="badge high">high</span></td>
                 <td>low</td>
             </tr>
             <tr>
                 <td>2</td>
-                <td>Split StructureAnalyzer.detect_tech_stack (CC=19 → target CC<10)</td>
-                <td><span class="badge medium">medium</span></td>
+                <td>Split APISurfaceAnalyzer._scan_public_symbols (CC=27 → target CC<10)</td>
+                <td><span class="badge high">high</span></td>
                 <td>low</td>
             </tr>
             <tr>
                 <td>3</td>
-                <td>Split DependencyAnalyzer.get_runtime_deps (CC=17 → target CC<10)</td>
-                <td><span class="badge medium">medium</span></td>
-                <td>low</td>
+                <td>Split god module todocs/generators/article.py (560L, 1 classes)</td>
+                <td><span class="badge high">high</span></td>
+                <td>high</td>
             </tr>
             <tr>
                 <td>4</td>
-                <td>Split DependencyAnalyzer.get_dev_deps (CC=18 → target CC<10)</td>
+                <td>Split MakefileParser._parse_makefile (CC=19 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>low</td>
             </tr>
             <tr>
                 <td>5</td>
-                <td>Split CodeMetricsAnalyzer.analyze (CC=16 → target CC<10)</td>
+                <td>Split ToonParser.parse_map (CC=24 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>low</td>
             </tr>
             <tr>
                 <td>6</td>
-                <td>Split CodeMetricsAnalyzer.get_key_modules (CC=21 → target CC<10)</td>
+                <td>Split ReadmeParser._parse_sections (CC=22 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>low</td>
             </tr>
             <tr>
                 <td>7</td>
-                <td>Reduce generate fan-out (currently 25)</td>
+                <td>Split ComparisonGenerator._render_health_report (CC=18 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
-                <td>medium</td>
+                <td>low</td>
             </tr>
             <tr>
                 <td>8</td>
-                <td>Reduce StructureAnalyzer.detect_tech_stack fan-out (currently 23)</td>
+                <td>Split ArticleGenerator._api_surface_section (CC=17 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
-                <td>medium</td>
+                <td>low</td>
             </tr>
             <tr>
                 <td>9</td>
-                <td>Reduce CodeMetricsAnalyzer.analyze fan-out (currently 22)</td>
+                <td>Split StructureAnalyzer.detect_tech_stack (CC=19 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
-                <td>medium</td>
+                <td>low</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Split DependencyAnalyzer.get_runtime_deps (CC=17 → target CC<10)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>low</td>
             </tr></tbody>
 </table>
 </div></div>
 </div>
 </div>
 
-<footer>Generated by code2llm on 2026-03-08 07:42</footer>
+<footer>Generated by code2llm on 2026-03-08 07:45</footer>
 
 <script>
 // Evolution chart disabled — fewer than 3 data points
@@ -338,9 +346,9 @@ const modCtx = document.getElementById('modChart').getContext('2d');
 new Chart(modCtx, {
   type: 'bar',
   data: {
-    labels: ['readme_parser.py', 'code_metrics.py', 'structure.py', 'dependencies.py', 'maturity.py', 'article.py', 'cli.py', 'metadata.py', 'core.py', 'changelog_parser.py', '__init__.py', '__init__.py', '__init__.py', '__init__.py'],
-    datasets: [{ label: 'Max CC', data: [22, 21, 19, 18, 14, 13, 12, 10, 9, 9, 0, 0, 0, 0],
-      backgroundColor: [22, 21, 19, 18, 14, 13, 12, 10, 9, 9, 0, 0, 0, 0].map(v => v >= 15 ? '#ef4444' : v >= 10 ? '#eab308' : '#22c55e')
+    labels: ['api_surface.py', 'toon_parser.py', 'readme_parser.py', 'code_metrics.py', 'structure.py', 'makefile_parser.py', 'dependencies.py', 'comparison.py', 'article.py', 'import_graph.py', 'maturity.py', 'docker_parser.py', 'cli.py', 'metadata.py', 'core.py'],
+    datasets: [{ label: 'Max CC', data: [27, 25, 22, 21, 19, 19, 18, 18, 17, 15, 14, 13, 12, 10, 9],
+      backgroundColor: [27, 25, 22, 21, 19, 19, 18, 18, 17, 15, 14, 13, 12, 10, 9].map(v => v >= 15 ? '#ef4444' : v >= 10 ? '#eab308' : '#22c55e')
     }]
   },
   options: {

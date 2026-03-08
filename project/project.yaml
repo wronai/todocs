@@ -3,23 +3,48 @@ project:
   name: todocs
   repo: /home/tom/github/wronai/todocs
   language: python
-  analyzed_at: '2026-03-08T07:42:56Z'
+  analyzed_at: '2026-03-08T07:45:48Z'
   tool: code2llm
   stats:
-    files: 10
-    lines: 2344
-    functions: 66
-    classes: 13
+    files: 16
+    lines: 5283
+    functions: 120
+    classes: 19
 health:
-  cc_avg: 6.1
-  critical_count: 11
+  cc_avg: 6.6
+  critical_count: 27
   critical_limit: 10
   duplicates: 0
   cycles: 0
   alerts:
   - type: high_fan_out
+    target: scan_project
+    value: 32
+    limit: 10
+    severity: critical
+  - type: cc_exceeded
+    target: APISurfaceAnalyzer._scan_public_symbols
+    value: 27
+    limit: 15
+    severity: critical
+  - type: high_fan_out
+    target: ImportGraphAnalyzer.build_graph
+    value: 26
+    limit: 10
+    severity: critical
+  - type: cc_exceeded
+    target: ToonParser.parse_analysis
+    value: 25
+    limit: 15
+    severity: critical
+  - type: high_fan_out
     target: generate
     value: 25
+    limit: 10
+    severity: critical
+  - type: high_fan_out
+    target: MakefileParser._parse_makefile
+    value: 23
     limit: 10
     severity: critical
   - type: high_fan_out
@@ -33,6 +58,16 @@ health:
     limit: 10
     severity: critical
   - type: high_fan_out
+    target: ToonParser.parse_map
+    value: 21
+    limit: 10
+    severity: critical
+  - type: high_fan_out
+    target: ToonParser.parse_analysis
+    value: 20
+    limit: 10
+    severity: critical
+  - type: high_fan_out
     target: DependencyAnalyzer.get_runtime_deps
     value: 20
     limit: 10
@@ -43,10 +78,15 @@ health:
     limit: 10
     severity: critical
   - type: high_fan_out
-    target: scan_project
+    target: APISurfaceAnalyzer._scan_public_symbols
     value: 20
     limit: 10
     severity: critical
+  - type: cc_exceeded
+    target: ToonParser.parse_map
+    value: 24
+    limit: 15
+    severity: error
   - type: cc_exceeded
     target: ReadmeParser._parse_sections
     value: 22
@@ -67,57 +107,62 @@ health:
     value: 17
     limit: 10
     severity: error
-  - type: cc_exceeded
-    target: StructureAnalyzer.detect_tech_stack
-    value: 19
-    limit: 15
-    severity: warning
-  - type: cc_exceeded
-    target: DependencyAnalyzer.get_dev_deps
-    value: 18
-    limit: 15
-    severity: warning
-  - type: cc_exceeded
-    target: DependencyAnalyzer.get_runtime_deps
-    value: 17
-    limit: 15
-    severity: warning
-  - type: cc_exceeded
-    target: CodeMetricsAnalyzer.analyze
-    value: 16
-    limit: 15
-    severity: warning
   - type: high_fan_out
-    target: inspect
-    value: 13
+    target: DockerParser._parse_dockerfile
+    value: 16
     limit: 10
-    severity: warning
+    severity: error
   - type: high_fan_out
     target: ArticleGenerator._render_article
-    value: 13
+    value: 16
     limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: ArticleGenerator._render_index
-    value: 12
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: scan_organization
-    value: 12
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: MetadataExtractor._from_pyproject
-    value: 12
-    limit: 10
-    severity: warning
-  - type: high_fan_out
-    target: ChangelogParser._parse_entries
-    value: 11
-    limit: 10
-    severity: warning
+    severity: error
 modules:
+- path: todocs/analyzers/api_surface.py
+  lines: 255
+  classes: 1
+  methods: 9
+  cc_max: 27
+  inbound_deps: 0
+  exports:
+  - name: APISurfaceAnalyzer
+    type: class
+    cc_avg: 7.8
+    methods:
+    - name: _detect_cli_commands
+      cc: 11
+      fan_out: 12
+    - name: _scan_public_symbols
+      cc: 27
+      flag: split
+      fan_out: 20
+    - name: _extract_all
+      cc: 10
+    - name: _detect_rest_endpoints
+      cc: 5
+      fan_out: 10
+- path: todocs/extractors/toon_parser.py
+  lines: 315
+  classes: 1
+  methods: 8
+  cc_max: 25
+  inbound_deps: 0
+  exports:
+  - name: ToonParser
+    type: class
+    cc_avg: 10.1
+    methods:
+    - name: parse_map
+      cc: 24
+      flag: split
+      fan_out: 21
+    - name: parse_analysis
+      cc: 25
+      flag: split
+      fan_out: 20
+    - name: parse_flow
+      cc: 11
+      fan_out: 13
 - path: todocs/extractors/readme_parser.py
   lines: 142
   classes: 1
@@ -170,6 +215,23 @@ modules:
       cc: 19
       flag: split
       fan_out: 23
+- path: todocs/extractors/makefile_parser.py
+  lines: 142
+  classes: 1
+  methods: 5
+  cc_max: 19
+  inbound_deps: 0
+  exports:
+  - name: MakefileParser
+    type: class
+    cc_avg: 7.0
+    methods:
+    - name: _parse_makefile
+      cc: 19
+      flag: split
+      fan_out: 23
+    - name: _parse_taskfile
+      cc: 10
 - path: todocs/analyzers/dependencies.py
   lines: 151
   classes: 1
@@ -189,6 +251,64 @@ modules:
       cc: 18
       flag: split
       fan_out: 20
+- path: todocs/generators/comparison.py
+  lines: 380
+  classes: 1
+  methods: 13
+  cc_max: 18
+  inbound_deps: 0
+  exports:
+  - name: ComparisonGenerator
+    type: class
+    cc_avg: 5.9
+    methods:
+    - name: _tech_stack_overview
+      cc: 11
+    - name: _render_category
+      cc: 14
+    - name: _render_health_report
+      cc: 18
+      flag: split
+      fan_out: 13
+- path: todocs/generators/article.py
+  lines: 560
+  classes: 1
+  methods: 19
+  cc_max: 17
+  inbound_deps: 0
+  exports:
+  - name: ArticleGenerator
+    type: class
+    cc_avg: 6.4
+    methods:
+    - name: _render_article
+      cc: 3
+      fan_out: 16
+    - name: _api_surface_section
+      cc: 17
+      flag: split
+    - name: _docker_section
+      cc: 12
+    - name: _usage_section
+      cc: 11
+    - name: _render_index
+      cc: 13
+      fan_out: 12
+- path: todocs/analyzers/import_graph.py
+  lines: 197
+  classes: 1
+  methods: 8
+  cc_max: 15
+  inbound_deps: 0
+  exports:
+  - name: ImportGraphAnalyzer
+    type: class
+    cc_avg: 5.4
+    methods:
+    - name: build_graph
+      cc: 15
+      flag: split
+      fan_out: 26
 - path: todocs/analyzers/maturity.py
   lines: 103
   classes: 1
@@ -202,29 +322,27 @@ modules:
     methods:
     - name: score
       cc: 14
-- path: todocs/generators/article.py
-  lines: 446
+- path: todocs/extractors/docker_parser.py
+  lines: 174
   classes: 1
-  methods: 16
+  methods: 6
   cc_max: 13
   inbound_deps: 0
   exports:
-  - name: ArticleGenerator
+  - name: DockerParser
     type: class
-    cc_avg: 5.4
+    cc_avg: 6.3
     methods:
-    - name: _render_article
-      cc: 3
-      fan_out: 13
-    - name: _usage_section
-      cc: 11
-    - name: _render_index
+    - name: _parse_dockerfile
+      cc: 10
+      fan_out: 16
+    - name: _parse_compose
       cc: 13
-      fan_out: 12
+      fan_out: 14
 - path: todocs/cli.py
-  lines: 175
+  lines: 223
   classes: 0
-  methods: 3
+  methods: 5
   cc_max: 12
   inbound_deps: 0
   exports:
@@ -239,6 +357,14 @@ modules:
     type: function
     cc: 3
     fan_out: 13
+  - name: compare
+    type: function
+    cc: 2
+    fan_out: 13
+  - name: health
+    type: function
+    cc: 1
+    fan_out: 12
 - path: todocs/extractors/metadata.py
   lines: 211
   classes: 1
@@ -254,11 +380,11 @@ modules:
       cc: 10
       fan_out: 12
 - path: todocs/core.py
-  lines: 269
+  lines: 326
   classes: 5
   methods: 7
   cc_max: 9
-  inbound_deps: 1
+  inbound_deps: 3
   exports:
   - name: TechStack
     type: class
@@ -277,15 +403,16 @@ modules:
     cc_avg: 1.0
   - name: scan_project
     type: function
-    cc: 1
-    fan_out: 20
+    cc: 3
+    fan_out: 32
   - name: scan_organization
     type: function
     cc: 9
     fan_out: 12
   - name: generate_articles
     type: function
-    cc: 2
+    cc: 6
+    fan_out: 13
 - path: todocs/extractors/changelog_parser.py
   lines: 103
   classes: 1
@@ -328,48 +455,73 @@ modules:
   cc_max: 0
   inbound_deps: 0
 hotspots:
+- name: scan_project
+  fan_out: 32
+  note: Analyze a single project and return its profile.
+- name: ImportGraphAnalyzer.build_graph
+  fan_out: 26
+  note: "Build the import dependency graph.\n\nReturns:\n    {\n        \"nodes\"\
+    : [{\"name\": \"m"
 - name: generate
   fan_out: 25
   note: 'Scan projects and generate WordPress markdown articles.
 
 
     ROOT_DIR is the directo'
+- name: MakefileParser._parse_makefile
+  fan_out: 23
+  note: Parse GNU Makefile targets.
 - name: StructureAnalyzer.detect_tech_stack
   fan_out: 23
   note: Detect technology stack from files and markers.
 - name: CodeMetricsAnalyzer.analyze
   fan_out: 22
   note: Analysis pipeline, 22 stages
+- name: ToonParser.parse_map
+  fan_out: 21
+  note: Parse project.toon / map.toon — module listing with metadata.
+- name: ToonParser.parse_analysis
+  fan_out: 20
+  note: Parse analysis.toon — health, coupling, layers.
 - name: DependencyAnalyzer.get_runtime_deps
   fan_out: 20
   note: Get runtime dependencies.
 - name: DependencyAnalyzer.get_dev_deps
   fan_out: 20
   note: Get development dependencies.
-- name: scan_project
-  fan_out: 20
-  note: Analyze a single project and return its profile.
-- name: ReadmeParser._parse_sections
-  fan_out: 19
-  note: Split markdown by headings into sections.
-- name: CodeMetricsAnalyzer.get_key_modules
-  fan_out: 17
-  note: Return the top N most significant Python modules by size and complexity.
-- name: inspect
-  fan_out: 13
-  note: 'Inspect a single project and show its profile.
-
-
-    PROJECT_DIR is the path to the p'
-- name: ArticleGenerator._render_article
-  fan_out: 13
-  note: Orchestrates 13 calls
 refactoring:
   priorities:
+  - action: Split ToonParser.parse_analysis (CC=25 → target CC<10)
+    impact: high
+    effort: low
+    module: toon_parser.py
+  - action: Split APISurfaceAnalyzer._scan_public_symbols (CC=27 → target CC<10)
+    impact: high
+    effort: low
+    module: api_surface.py
+  - action: Split god module todocs/generators/article.py (560L, 1 classes)
+    impact: high
+    effort: high
+  - action: Split MakefileParser._parse_makefile (CC=19 → target CC<10)
+    impact: medium
+    effort: low
+    module: makefile_parser.py
+  - action: Split ToonParser.parse_map (CC=24 → target CC<10)
+    impact: medium
+    effort: low
+    module: toon_parser.py
   - action: Split ReadmeParser._parse_sections (CC=22 → target CC<10)
     impact: medium
     effort: low
     module: readme_parser.py
+  - action: Split ComparisonGenerator._render_health_report (CC=18 → target CC<10)
+    impact: medium
+    effort: low
+    module: comparison.py
+  - action: Split ArticleGenerator._api_surface_section (CC=17 → target CC<10)
+    impact: medium
+    effort: low
+    module: article.py
   - action: Split StructureAnalyzer.detect_tech_stack (CC=19 → target CC<10)
     impact: medium
     effort: low
@@ -382,6 +534,10 @@ refactoring:
     impact: medium
     effort: low
     module: dependencies.py
+  - action: Split ImportGraphAnalyzer.build_graph (CC=15 → target CC<10)
+    impact: medium
+    effort: low
+    module: import_graph.py
   - action: Split CodeMetricsAnalyzer.analyze (CC=16 → target CC<10)
     impact: medium
     effort: low
@@ -390,18 +546,12 @@ refactoring:
     impact: medium
     effort: low
     module: code_metrics.py
-  - action: Reduce generate fan-out (currently 25)
-    impact: medium
-    effort: medium
-  - action: Reduce StructureAnalyzer.detect_tech_stack fan-out (currently 23)
-    impact: medium
-    effort: medium
-  - action: Reduce CodeMetricsAnalyzer.analyze fan-out (currently 22)
+  - action: Reduce scan_project fan-out (currently 32)
     impact: medium
     effort: medium
 evolution:
 - date: '2026-03-08'
-  cc_avg: 6.1
-  critical: 11
-  lines: 2344
+  cc_avg: 6.6
+  critical: 27
+  lines: 5283
   note: Automated analysis

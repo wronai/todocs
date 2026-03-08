@@ -171,5 +171,53 @@ def inspect(project_dir: str, output: Optional[str], fmt: str):
         print(text)
 
 
+@main.command()
+@click.argument("root_dir", type=click.Path(exists=True, file_okay=False))
+@click.option("-o", "--output", "output_path", default="comparison.md",
+              help="Output file path")
+@click.option("--org-name", default="WronAI", help="Organization name")
+@click.option("--exclude", multiple=True, help="Directory names to exclude")
+def compare(root_dir: str, output_path: str, org_name: str, exclude: tuple):
+    """Generate cross-project comparison report.
+
+    ROOT_DIR is the directory containing project subdirectories.
+    """
+    from todocs.core import scan_organization
+    from todocs.generators.comparison import ComparisonGenerator
+
+    root = Path(root_dir).resolve()
+    profiles = scan_organization(root, exclude=list(exclude))
+
+    if len(profiles) < 2:
+        click.echo("Need at least 2 projects for comparison.", err=True)
+        raise SystemExit(1)
+
+    gen = ComparisonGenerator(org_name=org_name)
+    gen.generate_comparison(profiles, Path(output_path))
+    click.echo(f"Comparison report written to {output_path} ({len(profiles)} projects)")
+
+
+@main.command()
+@click.argument("root_dir", type=click.Path(exists=True, file_okay=False))
+@click.option("-o", "--output", "output_path", default="health-report.md",
+              help="Output file path")
+@click.option("--org-name", default="WronAI", help="Organization name")
+@click.option("--exclude", multiple=True, help="Directory names to exclude")
+def health(root_dir: str, output_path: str, org_name: str, exclude: tuple):
+    """Generate organization health report.
+
+    ROOT_DIR is the directory containing project subdirectories.
+    """
+    from todocs.core import scan_organization
+    from todocs.generators.comparison import ComparisonGenerator
+
+    root = Path(root_dir).resolve()
+    profiles = scan_organization(root, exclude=list(exclude))
+
+    gen = ComparisonGenerator(org_name=org_name)
+    gen.generate_health_report(profiles, Path(output_path))
+    click.echo(f"Health report written to {output_path} ({len(profiles)} projects)")
+
+
 if __name__ == "__main__":
     main()

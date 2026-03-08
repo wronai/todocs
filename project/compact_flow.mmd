@@ -1,4 +1,8 @@
 flowchart TD
-    todocs_cli["todocs.cli<br/>3 funcs"]
+    examples_scan_org["examples.scan_org<br/>1 funcs"]
+    examples_scan_single["examples.scan_single<br/>1 funcs"]
+    todocs_cli["todocs.cli<br/>5 funcs"]
     todocs_core["todocs.core<br/>7 funcs"]
-    todocs_cli ==>|5| todocs_core
+    todocs_cli ==>|7| todocs_core
+    examples_scan_org -->|2| todocs_core
+    examples_scan_single -->|1| todocs_core

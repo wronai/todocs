@@ -57,6 +57,15 @@ class ArticleGenerator:
         # Dependencies
         sections.append(self._dependencies_section(p))
 
+        # API Surface
+        sections.append(self._api_surface_section(p))
+
+        # Build Targets
+        sections.append(self._build_targets_section(p))
+
+        # Docker Infrastructure
+        sections.append(self._docker_section(p))
+
         # Recent Changes
         sections.append(self._changelog_section(p))
 
@@ -291,6 +300,111 @@ class ArticleGenerator:
             lines.append("")
             lines.append(f"**Development** ({len(p.dev_dependencies)}): "
                          + ", ".join(f"`{d}`" for d in p.dev_dependencies[:15]))
+
+        return "\n".join(lines)
+
+    def _api_surface_section(self, p: "ProjectProfile") -> str:
+        api = p.api_surface
+        if not api:
+            return ""
+
+        cli_cmds = api.get("cli_commands", [])
+        pub_classes = api.get("public_classes", [])
+        pub_funcs = api.get("public_functions", [])
+        endpoints = api.get("rest_endpoints", [])
+        entry_pts = api.get("entry_points", {})
+
+        if not cli_cmds and not pub_classes and not pub_funcs and not endpoints:
+            return ""
+
+        lines = ["## API Surface"]
+
+        if entry_pts:
+            lines.append("")
+            lines.append("**Entry Points**: " + ", ".join(
+                f"`{cmd}` → `{target}`" for cmd, target in entry_pts.items()
+            ))
+
+        if cli_cmds:
+            lines.append("")
+            lines.append("### CLI Commands")
+            lines.append("")
+            for cmd in cli_cmds[:10]:
+                desc = f" — {cmd['description']}" if cmd.get("description") else ""
+                lines.append(f"- `{cmd['name']}`{desc} (`{cmd['file']}`)")
+
+        if endpoints:
+            lines.append("")
+            lines.append("### REST Endpoints")
+            lines.append("")
+            lines.append("| Method | Path | File |")
+            lines.append("|--------|------|------|")
+            for ep in endpoints[:15]:
+                lines.append(f"| {ep['method']} | `{ep['path']}` | `{ep['file']}` |")
+
+        if pub_classes:
+            lines.append("")
+            lines.append("### Public Classes")
+            lines.append("")
+            for cls in pub_classes[:10]:
+                desc = f" — {cls['description']}" if cls.get("description") else ""
+                methods = cls.get("methods", [])
+                method_str = f" ({len(methods)} public methods)" if methods else ""
+                lines.append(f"- **{cls['name']}**{desc}{method_str}")
+
+        return "\n".join(lines)
+
+    def _build_targets_section(self, p: "ProjectProfile") -> str:
+        targets = p.makefile_targets
+        if not targets:
+            return ""
+
+        lines = ["## Build Targets"]
+        lines.append("")
+
+        for t in targets[:12]:
+            name = t.get("name", "")
+            desc = t.get("description", "")
+            cmds = t.get("commands", [])
+
+            entry = f"- **`make {name}`**"
+            if desc:
+                entry += f" — {desc}"
+            lines.append(entry)
+
+            if cmds:
+                for cmd in cmds[:2]:
+                    lines.append(f"  - `{cmd[:80]}`")
+
+        return "\n".join(lines)
+
+    def _docker_section(self, p: "ProjectProfile") -> str:
+        docker = p.docker_info
+        if not docker or (not docker.get("has_dockerfile") and not docker.get("has_compose")):
+            return ""
+
+        lines = ["## Docker Infrastructure"]
+
+        if docker.get("base_images"):
+            lines.append("")
+            lines.append("**Base Images**: " + ", ".join(f"`{img}`" for img in docker["base_images"]))
+
+        services = docker.get("services", [])
+        if services:
+            lines.append("")
+            lines.append("### Services")
+            lines.append("")
+            lines.append("| Service | Image | Ports | Depends On |")
+            lines.append("|---------|-------|-------|------------|")
+            for svc in services[:10]:
+                image = svc.get("image") or "(build)"
+                ports = ", ".join(svc.get("ports", [])) or "—"
+                deps = ", ".join(svc.get("depends_on", [])) or "—"
+                lines.append(f"| {svc['name']} | `{image}` | {ports} | {deps} |")
+
+        if docker.get("exposed_ports"):
+            lines.append("")
+            lines.append("**Exposed Ports**: " + ", ".join(docker["exposed_ports"]))
 
         return "\n".join(lines)
 

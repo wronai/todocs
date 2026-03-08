@@ -1,39 +1,56 @@
-# code2llm/evolution | 66 func | 10f | 2026-03-08
+# code2llm/evolution | 123 func | 19f | 2026-03-08
 
-NEXT[6] (ranked by impact):
-  [1] !  SPLIT-FUNC      StructureAnalyzer.detect_tech_stack  CC=19  fan=23
+NEXT[10] (ranked by impact):
+  [1] !! SPLIT           todocs/generators/article.py
+      WHY: 560L, 1 classes, max CC=17
+      EFFORT: ~4h  IMPACT: 9520
+
+  [2] !! SPLIT-FUNC      main  CC=33  fan=34
+      WHY: CC=33 exceeds 15
+      EFFORT: ~1h  IMPACT: 1122
+
+  [3] !! SPLIT-FUNC      APISurfaceAnalyzer._scan_public_symbols  CC=27  fan=20
+      WHY: CC=27 exceeds 15
+      EFFORT: ~1h  IMPACT: 540
+
+  [4] !  SPLIT-FUNC      ToonParser.parse_map  CC=24  fan=21
+      WHY: CC=24 exceeds 15
+      EFFORT: ~1h  IMPACT: 504
+
+  [5] !! SPLIT-FUNC      ToonParser.parse_analysis  CC=25  fan=20
+      WHY: CC=25 exceeds 15
+      EFFORT: ~1h  IMPACT: 500
+
+  [6] !  SPLIT-FUNC      MakefileParser._parse_makefile  CC=19  fan=23
       WHY: CC=19 exceeds 15
       EFFORT: ~1h  IMPACT: 437
 
-  [2] !  SPLIT-FUNC      ReadmeParser._parse_sections  CC=22  fan=19
+  [7] !  SPLIT-FUNC      StructureAnalyzer.detect_tech_stack  CC=19  fan=23
+      WHY: CC=19 exceeds 15
+      EFFORT: ~1h  IMPACT: 437
+
+  [8] !  SPLIT-FUNC      ReadmeParser._parse_sections  CC=22  fan=19
       WHY: CC=22 exceeds 15
       EFFORT: ~1h  IMPACT: 418
 
-  [3] !  SPLIT-FUNC      DependencyAnalyzer.get_dev_deps  CC=18  fan=20
+  [9] !  SPLIT-FUNC      ImportGraphAnalyzer.build_graph  CC=15  fan=26
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 390
+
+  [10] !  SPLIT-FUNC      DependencyAnalyzer.get_dev_deps  CC=18  fan=20
       WHY: CC=18 exceeds 15
       EFFORT: ~1h  IMPACT: 360
 
-  [4] !  SPLIT-FUNC      CodeMetricsAnalyzer.get_key_modules  CC=21  fan=17
-      WHY: CC=21 exceeds 15
-      EFFORT: ~1h  IMPACT: 357
 
-  [5] !  SPLIT-FUNC      CodeMetricsAnalyzer.analyze  CC=16  fan=22
-      WHY: CC=16 exceeds 15
-      EFFORT: ~1h  IMPACT: 352
-
-  [6] !  SPLIT-FUNC      DependencyAnalyzer.get_runtime_deps  CC=17  fan=20
-      WHY: CC=17 exceeds 15
-      EFFORT: ~1h  IMPACT: 340
-
-
-RISKS[0]: none
+RISKS[1]:
+  ⚠ Splitting todocs/generators/article.py may break 19 import paths
 
 METRICS-TARGET:
-  CC̄:          6.1 → ≤4.3
-  max-CC:      22 → ≤11
-  god-modules: 0 → 0
-  high-CC(≥15): 6 → ≤3
+  CC̄:          7.0 → ≤4.9
+  max-CC:      33 → ≤16
+  god-modules: 1 → 0
+  high-CC(≥15): 15 → ≤7
   hub-types:   0 → ≤0
 
 HISTORY:
-  prev CC̄=6.1 → now CC̄=6.1
+  prev CC̄=6.1 → now CC̄=7.0

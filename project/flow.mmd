@@ -1,4 +1,13 @@
 flowchart TD
+    subgraph examples_custom_analysis
+        examples__custom_analysis__main{{main CC=33}}
+    end
+    subgraph examples_scan_org
+        examples__scan_org__main("main CC=9")
+    end
+    subgraph examples_scan_single
+        examples__scan_single__main{{main CC=25}}
+    end
     subgraph todocs_analyzers
         todocs____init__["__init__"]
         todocs___should_skip["_should_skip"]
@@ -7,12 +16,20 @@ flowchart TD
         todocs__detect_tech_stack{{detect_tech_stack CC=19}}
         todocs___read_deps_text["_read_deps_text"]
         todocs____init__["__init__"]
+        todocs__analyzers__maturity__MaturityScorer__score("score CC=14")
+        todocs____init__["__init__"]
         todocs___load_pyproject["_load_pyproject"]
         todocs___parse_dep_name["_parse_dep_name"]
         todocs__get_runtime_deps{{get_runtime_deps CC=17}}
         todocs__get_dev_deps{{get_dev_deps CC=18}}
         todocs____init__["__init__"]
-        todocs__analyzers__maturity__MaturityScorer__score("score CC=14")
+        todocs___should_skip["_should_skip"]
+        todocs___iter_py_files["_iter_py_files"]
+        todocs___module_name["_module_name"]
+        todocs__build_graph{{build_graph CC=15}}
+        todocs___detect_internal_packages("_detect_internal_packages CC=9")
+        todocs___detect_cycles["_detect_cycles"]
+        todocs__get_hub_modules["get_hub_modules"]
         todocs____init__["__init__"]
         todocs___should_skip["_should_skip"]
         todocs___is_test["_is_test"]
@@ -21,11 +38,22 @@ flowchart TD
         todocs__analyze{{analyze CC=16}}
         todocs___ast_complexity["_ast_complexity"]
         todocs__get_key_modules{{get_key_modules CC=21}}
+        todocs____init__["__init__"]
+        todocs__analyze["analyze"]
+        todocs___should_skip["_should_skip"]
+        todocs___detect_entry_points["_detect_entry_points"]
+        todocs___detect_cli_commands("_detect_cli_commands CC=11")
+        todocs___decorator_name["_decorator_name"]
+        todocs___scan_public_symbols{{_scan_public_symbols CC=27}}
+        todocs___extract_all("_extract_all CC=10")
+        todocs___detect_rest_endpoints["_detect_rest_endpoints"]
     end
     subgraph todocs_cli
         todocs__cli__main["main"]
         todocs__cli__generate("generate CC=12")
         todocs__cli__inspect["inspect"]
+        todocs__cli__compare["compare"]
+        todocs__cli__health["health"]
     end
     subgraph todocs_core
         todocs__core__ProjectProfile__to_dict["to_dict"]
@@ -39,6 +67,19 @@ flowchart TD
     subgraph todocs_extractors
         todocs____init__["__init__"]
         todocs__parse["parse"]
+        todocs___parse_makefile{{_parse_makefile CC=19}}
+        todocs___parse_taskfile("_parse_taskfile CC=10")
+        todocs__get_target_names["get_target_names"]
+        todocs____init__["__init__"]
+        todocs__find_toon_files["find_toon_files"]
+        todocs__parse_all["parse_all"]
+        todocs__parse_map{{parse_map CC=24}}
+        todocs__parse_analysis{{parse_analysis CC=25}}
+        todocs__parse_flow("parse_flow CC=11")
+        todocs__parse_functions["parse_functions"]
+        todocs__extractors__toon_parser__ToonParser___read["_read"]
+        todocs____init__["__init__"]
+        todocs__parse["parse"]
         todocs___find_readme["_find_readme"]
         todocs___parse_sections{{_parse_sections CC=22}}
         todocs__get_first_paragraph["get_first_paragraph"]
@@ -47,6 +88,12 @@ flowchart TD
         todocs___find_changelog["_find_changelog"]
         todocs___parse_entries["_parse_entries"]
         todocs___summarize_entry("_summarize_entry CC=9")
+        todocs____init__["__init__"]
+        todocs__parse["parse"]
+        todocs___find_dockerfiles("_find_dockerfiles CC=8")
+        todocs___find_compose_files["_find_compose_files"]
+        todocs___parse_dockerfile("_parse_dockerfile CC=10")
+        todocs___parse_compose("_parse_compose CC=13")
         todocs____init__["__init__"]
         todocs__extract("extract CC=9")
         todocs___merge["_merge"]
@@ -59,6 +106,19 @@ flowchart TD
     end
     subgraph todocs_generators
         todocs____init__["__init__"]
+        todocs__generate_comparison["generate_comparison"]
+        todocs__generate_category_articles["generate_category_articles"]
+        todocs__generate_health_report["generate_health_report"]
+        todocs___render_comparison["_render_comparison"]
+        todocs___size_comparison["_size_comparison"]
+        todocs___maturity_leaderboard["_maturity_leaderboard"]
+        todocs___complexity_comparison["_complexity_comparison"]
+        todocs___tech_stack_overview("_tech_stack_overview CC=11")
+        todocs___dependency_overlap("_dependency_overlap CC=8")
+        todocs___render_category("_render_category CC=14")
+        todocs___render_health_report{{_render_health_report CC=18}}
+        todocs___footer["_footer"]
+        todocs____init__["__init__"]
         todocs__generate["generate"]
         todocs__generate_index["generate_index"]
         todocs___render_article["_render_article"]
@@ -70,15 +130,23 @@ flowchart TD
         todocs___metrics_section["_metrics_section"]
         todocs___maturity_section["_maturity_section"]
         todocs___dependencies_section("_dependencies_section CC=8")
+        todocs___api_surface_section{{_api_surface_section CC=17}}
+        todocs___build_targets_section["_build_targets_section"]
+        todocs___docker_section("_docker_section CC=12")
         todocs___changelog_section["_changelog_section"]
         todocs___usage_section("_usage_section CC=11")
         todocs___footer["_footer"]
         todocs___render_index("_render_index CC=13")
     end
+    examples__scan_org__main --> todocs__core__scan_organization
+    examples__scan_org__main --> todocs__core__generate_articles
+    examples__scan_single__main --> todocs__core__scan_project
     todocs__cli__inspect --> todocs__core__scan_project
+    todocs__cli__compare --> todocs__core__scan_organization
+    todocs__cli__health --> todocs__core__scan_organization
     todocs__core__scan_organization --> todocs__core__scan_project
 
     classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
-    class todocs___parse_sections,todocs__detect_tech_stack,todocs__get_runtime_deps,todocs__get_dev_deps,todocs__analyze,todocs__get_key_modules highCC
-    class todocs__cli__generate,todocs___summarize_entry,todocs___tech_stack_section,todocs___architecture_section,todocs___dependencies_section,todocs___usage_section,todocs___render_index,todocs__analyzers__maturity__MaturityScorer__score,todocs___scan,todocs__core__scan_organization,todocs__core___categorize,todocs__core___generate_summary,todocs__extract,todocs___from_pyproject,todocs___from_setup_py,todocs___from_package_json medCC
+    class examples__scan_single__main,examples__custom_analysis__main,todocs___parse_makefile,todocs__parse_map,todocs__parse_analysis,todocs___parse_sections,todocs___render_health_report,todocs___api_surface_section,todocs__detect_tech_stack,todocs__get_runtime_deps,todocs__get_dev_deps,todocs__build_graph,todocs__analyze,todocs__get_key_modules,todocs___scan_public_symbols highCC
+    class examples__scan_org__main,todocs__cli__generate,todocs___parse_taskfile,todocs__parse_flow,todocs___summarize_entry,todocs___find_dockerfiles,todocs___parse_dockerfile,todocs___parse_compose,todocs___tech_stack_overview,todocs___dependency_overlap,todocs___render_category,todocs___tech_stack_section,todocs___architecture_section,todocs___dependencies_section,todocs___docker_section,todocs___usage_section,todocs___render_index,todocs__analyzers__maturity__MaturityScorer__score,todocs___detect_internal_packages,todocs___scan,todocs___detect_cli_commands,todocs___extract_all,todocs__core__scan_organization,todocs__core___categorize,todocs__core___generate_summary,todocs__extract,todocs___from_pyproject,todocs___from_setup_py,todocs___from_package_json medCC

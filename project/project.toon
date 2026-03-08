@@ -1,22 +1,71 @@
-# todocs | 15f 2359L | python:15
+# todocs | 28f 5632L | python:28
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[15]:
+M[28]:
+  examples/custom_analysis.py,129
+  examples/scan_org.py,44
+  examples/scan_single.py,74
+  tests/conftest.py,344
+  tests/test_analyzers.py,164
+  tests/test_extractors.py,201
+  tests/test_integration.py,246
   tests/test_todocs.py,224
   todocs/__init__.py,7
   todocs/analyzers/__init__.py,1
+  todocs/analyzers/api_surface.py,204
   todocs/analyzers/code_metrics.py,180
   todocs/analyzers/dependencies.py,116
+  todocs/analyzers/import_graph.py,158
   todocs/analyzers/maturity.py,82
   todocs/analyzers/structure.py,169
-  todocs/cli.py,139
-  todocs/core.py,200
+  todocs/cli.py,176
+  todocs/core.py,241
   todocs/extractors/__init__.py,1
   todocs/extractors/changelog_parser.py,73
+  todocs/extractors/docker_parser.py,130
+  todocs/extractors/makefile_parser.py,105
   todocs/extractors/metadata.py,167
   todocs/extractors/readme_parser.py,108
+  todocs/extractors/toon_parser.py,253
   todocs/generators/__init__.py,1
-  todocs/generators/article.py,326
+  todocs/generators/article.py,413
+  todocs/generators/comparison.py,294
 D:
+  examples/custom_analysis.py:
+    i: json,sys,pathlib.Path,todocs.analyzers.api_surface.APISurfaceAnalyzer,todocs.analyzers.code_metrics.CodeMetricsAnalyzer,todocs.analyzers.import_graph.ImportGraphAnalyzer,todocs.analyzers.structure.StructureAnalyzer,todocs.extractors.docker_parser.DockerParser,todocs.extractors.makefile_parser.MakefileParser,todocs.extractors.toon_parser.ToonParser
+    e: main
+    main()
+  examples/scan_org.py:
+    i: sys,pathlib.Path,todocs.core.{generate_articles,scan_organization}
+    e: main
+    main()
+  examples/scan_single.py:
+    i: sys,pathlib.Path,todocs.core.scan_project
+    e: main
+    main()
+  tests/conftest.py:
+    i: pytest,pathlib.Path
+    e: sample_project,js_project,empty_project,multi_org
+    sample_project(tmp_path)
+    js_project(tmp_path)
+    empty_project(tmp_path)
+    multi_org(tmp_path)
+  tests/test_analyzers.py:
+    i: pytest,pathlib.Path,todocs.analyzers.api_surface.APISurfaceAnalyzer,todocs.analyzers.import_graph.ImportGraphAnalyzer
+    e: TestImportGraphAnalyzer,TestAPISurfaceAnalyzer
+    TestImportGraphAnalyzer: test_build_graph(1),test_graph_separates_tests(1),test_hub_modules(1),test_empty_project(1),test_cycle_detection(1)
+    TestAPISurfaceAnalyzer: test_analyze(1),test_detect_cli_commands(1),test_detect_entry_points(1),test_detect_public_classes(1),test_detect_public_functions(1)
+  tests/test_extractors.py:
+    i: pytest,pathlib.Path,todocs.extractors.docker_parser.DockerParser,todocs.extractors.makefile_parser.MakefileParser,todocs.extractors.toon_parser.ToonParser
+    e: TestToonParser,TestMakefileParser,TestDockerParser
+    TestToonParser: test_find_toon_files_empty(1),test_find_toon_files(1),test_parse_map_basic(1),test_parse_analysis(1),test_parse_flow(1)
+    TestMakefileParser: test_parse_makefile(1),test_parse_empty(1),test_parse_taskfile(1),test_get_target_names(1)
+    TestDockerParser: test_parse_full(1),test_parse_no_docker(1),test_parse_dockerfile_only(1),test_parse_multistage_dockerfile(1)
+  tests/test_integration.py:
+    i: json,pytest,click.testing.CliRunner,pathlib.Path,todocs.cli.main,todocs.core.{generate_articles,scan_organization,scan_project},todocs.generators.comparison.ComparisonGenerator
+    e: TestComparisonGenerator,TestCLI,TestIntegration
+    TestComparisonGenerator: test_generate_comparison(2),test_generate_category_articles(2),test_generate_health_report(2),test_shared_dependencies(2)
+    TestCLI: test_help(0),test_version(0),test_inspect_json(1),test_inspect_markdown(1),test_inspect_to_file(2)
+    TestIntegration: test_full_pipeline_python(2),test_full_pipeline_js(2),test_full_pipeline_empty(2),test_organization_scan(2),test_profile_serialization_roundtrip(1)
   tests/test_todocs.py:
     i: json,pytest,pathlib.Path,todocs.core.{ProjectProfile,generate_articles,scan_organization,scan_project},todocs.extractors.changelog_parser.ChangelogParser,todocs.extractors.metadata.MetadataExtractor,todocs.extractors.readme_parser.ReadmeParser
     e: sample_project,TestMetadataExtractor,TestReadmeParser,TestChangelogParser,TestStructureAnalyzer,TestCodeMetrics,TestDependencyAnalyzer,TestScanProject
@@ -26,6 +75,10 @@ D:
     TestStructureAnalyzer: test_analyze(1),test_detect_tech_stack(1)
     TestCodeMetrics: test_analyze(1),test_key_modules(1)
     sample_project(tmp_path)
+  todocs/analyzers/api_surface.py:
+    i: ast,re,pathlib.Path,typing.{Any,Dict,List}
+    e: _SKIP_DIRS,APISurfaceAnalyzer
+    APISurfaceAnalyzer: __init__(1),analyze(0),_should_skip(1),_detect_entry_points(0),_detect_cli_commands(0)  # Detect public API surface of a project.
   todocs/analyzers/code_metrics.py:
     i: ast,os,collections.defaultdict,pathlib.Path,radon.complexity.{cc_rank,cc_visit},typing.{Any,Dict,List,Optional}
     e: _SKIP_DIRS,_SOURCE_EXTENSIONS,_TEST_PATTERNS,CodeMetricsAnalyzer
@@ -34,6 +87,10 @@ D:
     i: json,re,tomli,pathlib.Path,typing.{List,Optional}
     e: DependencyAnalyzer
     DependencyAnalyzer: __init__(1),_load_pyproject(0),_parse_dep_name(1),get_runtime_deps(0),get_dev_deps(0)  # Extract project dependencies without...
+  todocs/analyzers/import_graph.py:
+    i: ast,collections.defaultdict,pathlib.Path,typing.{Any,Dict,List,Set,Tuple}
+    e: _SKIP_DIRS,ImportGraphAnalyzer
+    ImportGraphAnalyzer: __init__(1),_should_skip(1),_iter_py_files(0),_module_name(1),build_graph(0)  # Analyze import relationships between...
   todocs/analyzers/maturity.py:
     i: pathlib.Path,typing.TYPE_CHECKING
     e: _GRADE_THRESHOLDS,MaturityScorer
@@ -44,10 +101,12 @@ D:
     StructureAnalyzer: __init__(1),_should_skip(1),_iter_files(0),analyze(0),detect_tech_stack(0)  # Analyze project directory structure.
   todocs/cli.py:
     i: json,sys,click,pathlib.Path,rich.console.Console,rich.progress.{Progress,SpinnerColumn,TextColumn},rich.table.Table,typing.Optional
-    e: main,generate,inspect
+    e: main,generate,inspect,compare,health
     main()
     generate(root_dir:str;output_dir:str;org_name:str;org_url:str;exclude:tuple;json_report:Optional[str];...+1)
     inspect(project_dir:str;output:Optional[str];fmt:str)
+    compare(root_dir:str;output_path:str;org_name:str;exclude:tuple)
+    health(root_dir:str;output_path:str;org_name:str;exclude:tuple)
   todocs/core.py:
     i: json,datetime,dataclasses.{asdict,dataclass,field},pathlib.Path,typing.{Any,Dict,List,Optional}
     e: TechStack,CodeStats,ProjectMetadata,MaturityProfile,ProjectProfile,scan_project,scan_organization,generate_articles
@@ -58,13 +117,21 @@ D:
     ProjectProfile: to_dict(0),to_json(1)  # Complete project profile for article...
     scan_project(project_path:Path)->ProjectProfile
     scan_organization(root_path:Path;exclude:Optional[List[str]]=None)->List[ProjectProfile]
-    generate_articles(profiles:List[ProjectProfile];output_dir:Path;org_name:str='WronAI';org_url:str='https://github.com/wronai')->List[Path]
+    generate_articles(profiles:List[ProjectProfile];output_dir:Path;org_name:str='WronAI';org_url:str='https://github.com/wronai';include_comparison:bool=True;include_categories:bool=True;...+1)->List[Path]
     _categorize(profile:ProjectProfile)->str
     _generate_summary(profile:ProjectProfile)->str
   todocs/extractors/changelog_parser.py:
     i: re,pathlib.Path,typing.{Dict,List,Optional}
     e: ChangelogParser
     ChangelogParser: __init__(1),parse(1),_find_changelog(0),_parse_entries(2),_summarize_entry(2)  # Extract structured entries from CHANG...
+  todocs/extractors/docker_parser.py:
+    i: re,yaml,pathlib.Path,typing.{Any,Dict,List}
+    e: DockerParser
+    DockerParser: __init__(1),parse(0),_find_dockerfiles(0),_find_compose_files(0),_parse_dockerfile(1)  # Extract Docker infrastructure from Do...
+  todocs/extractors/makefile_parser.py:
+    i: re,yaml,pathlib.Path,typing.{Any,Dict,List,Optional}
+    e: MakefileParser
+    MakefileParser: __init__(1),parse(0),_parse_makefile(1),_parse_taskfile(1),get_target_names(0)  # Extract targets and structure from Ma...
   todocs/extractors/metadata.py:
     i: ast,configparser,json,re,tomli,pathlib.Path,typing.{Dict,List,Optional}
     e: MetadataExtractor
@@ -73,7 +140,15 @@ D:
     i: re,pathlib.Path,typing.{Dict,Optional}
     e: _SECTION_ALIASES,ReadmeParser
     ReadmeParser: __init__(1),parse(0),_find_readme(0),_parse_sections(1),get_first_paragraph(0)  # Extract structured sections from a RE...
+  todocs/extractors/toon_parser.py:
+    i: re,pathlib.Path,typing.{Any,Dict,List,Optional}
+    e: ToonParser
+    ToonParser: __init__(1),find_toon_files(0),parse_all(0),parse_map(1),parse_analysis(1)  # Parse .toon files into structured data.
   todocs/generators/article.py:
     i: datetime,pathlib.Path,typing.{List,TYPE_CHECKING}
     e: ArticleGenerator
     ArticleGenerator: __init__(2),generate(2),generate_index(2),_render_article(1),_frontmatter(1)  # Generate markdown articles for WordPr...
+  todocs/generators/comparison.py:
+    i: datetime,pathlib.Path,typing.{Dict,List,TYPE_CHECKING}
+    e: ComparisonGenerator
+    ComparisonGenerator: __init__(2),generate_comparison(3),generate_category_articles(2),generate_health_report(2),_render_comparison(2)  # Generate comparative analysis article...

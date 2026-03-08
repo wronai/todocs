@@ -12,9 +12,14 @@ from todocs.analyzers.structure import StructureAnalyzer
 from todocs.analyzers.code_metrics import CodeMetricsAnalyzer
 from todocs.analyzers.dependencies import DependencyAnalyzer
 from todocs.analyzers.maturity import MaturityScorer
+from todocs.analyzers.import_graph import ImportGraphAnalyzer
+from todocs.analyzers.api_surface import APISurfaceAnalyzer
 from todocs.extractors.metadata import MetadataExtractor
 from todocs.extractors.readme_parser import ReadmeParser
 from todocs.extractors.changelog_parser import ChangelogParser
+from todocs.extractors.toon_parser import ToonParser
+from todocs.extractors.makefile_parser import MakefileParser
+from todocs.extractors.docker_parser import DockerParser
 from todocs.generators.article import ArticleGenerator
 
 
@@ -96,6 +101,12 @@ class ProjectProfile:
     category: str = "uncategorized"
     summary: str = ""
     analyzed_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    # New v0.2 fields
+    toon_data: Dict[str, Any] = field(default_factory=dict)
+    makefile_targets: List[Dict[str, str]] = field(default_factory=list)
+    docker_info: Dict[str, Any] = field(default_factory=dict)
+    import_graph: Dict[str, Any] = field(default_factory=dict)
+    api_surface: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         d = asdict(self)
@@ -137,14 +148,38 @@ def scan_project(project_path: Path) -> ProjectProfile:
     cl_parser = ChangelogParser(project_path)
     profile.changelog_entries = cl_parser.parse(max_entries=5)
 
-    # 7. Maturity scoring
+    # 7. Parse .toon files (if present)
+    toon_parser = ToonParser(project_path)
+    toon_files = toon_parser.find_toon_files()
+    if toon_files:
+        profile.toon_data = toon_parser.parse_all()
+
+    # 8. Parse Makefile / Taskfile
+    mk_parser = MakefileParser(project_path)
+    mk_data = mk_parser.parse()
+    profile.makefile_targets = mk_data.get("targets", [])
+
+    # 9. Parse Docker infrastructure
+    docker_parser = DockerParser(project_path)
+    profile.docker_info = docker_parser.parse()
+
+    # 10. Import graph (Python projects only)
+    if profile.tech_stack.primary_language == "python":
+        ig = ImportGraphAnalyzer(project_path)
+        profile.import_graph = ig.build_graph()
+
+    # 11. API surface detection
+    api_analyzer = APISurfaceAnalyzer(project_path)
+    profile.api_surface = api_analyzer.analyze()
+
+    # 12. Maturity scoring (after all data collected)
     scorer = MaturityScorer(project_path, profile)
     profile.maturity = scorer.score()
 
-    # 8. Auto-categorize
+    # 13. Auto-categorize
     profile.category = _categorize(profile)
 
-    # 9. Generate summary sentence
+    # 14. Generate summary sentence
     profile.summary = _generate_summary(profile)
 
     return profile
@@ -185,6 +220,9 @@ def generate_articles(
     output_dir: Path,
     org_name: str = "WronAI",
     org_url: str = "https://github.com/wronai",
+    include_comparison: bool = True,
+    include_categories: bool = True,
+    include_health: bool = True,
 ) -> List[Path]:
     """Generate WordPress-ready markdown articles for each project."""
     output_dir = Path(output_dir)
@@ -198,10 +236,29 @@ def generate_articles(
         generator.generate(profile, article_path)
         paths.append(article_path)
 
-    # Also generate index article
+    # Index article
     index_path = output_dir / "_index.md"
     generator.generate_index(profiles, index_path)
     paths.insert(0, index_path)
+
+    # Comparison, category, and health articles
+    if len(profiles) >= 2:
+        from todocs.generators.comparison import ComparisonGenerator
+        comp_gen = ComparisonGenerator(org_name=org_name, org_url=org_url)
+
+        if include_comparison:
+            comp_path = output_dir / "_comparison.md"
+            comp_gen.generate_comparison(profiles, comp_path)
+            paths.append(comp_path)
+
+        if include_categories:
+            cat_paths = comp_gen.generate_category_articles(profiles, output_dir)
+            paths.extend(cat_paths)
+
+        if include_health:
+            health_path = output_dir / "_health-report.md"
+            comp_gen.generate_health_report(profiles, health_path)
+            paths.append(health_path)
 
     return paths
 

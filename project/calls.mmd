@@ -1,10 +1,24 @@
 flowchart LR
+    subgraph examples_scan_org
+        examples__scan_org__main["main"]
+    end
+    subgraph examples_scan_single
+        examples__scan_single__main["main"]
+    end
     subgraph todocs_cli
         todocs__cli__inspect["inspect"]
+        todocs__cli__health["health"]
+        todocs__cli__compare["compare"]
     end
     subgraph todocs_core
-        todocs__core__scan_organization["scan_organization"]
         todocs__core__scan_project["scan_project"]
+        todocs__core__generate_articles["generate_articles"]
+        todocs__core__scan_organization["scan_organization"]
     end
+    examples__scan_org__main --> todocs__core__scan_organization
+    examples__scan_org__main --> todocs__core__generate_articles
+    examples__scan_single__main --> todocs__core__scan_project
     todocs__cli__inspect --> todocs__core__scan_project
+    todocs__cli__compare --> todocs__core__scan_organization
+    todocs__cli__health --> todocs__core__scan_organization
     todocs__core__scan_organization --> todocs__core__scan_project
