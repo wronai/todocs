@@ -4,10 +4,10 @@
 
 - **Project**: /home/tom/github/wronai/todocs
 - **Analysis Mode**: static
-- **Total Functions**: 186
+- **Total Functions**: 189
 - **Total Classes**: 20
-- **Modules**: 30
-- **Entry Points**: 141
+- **Modules**: 32
+- **Entry Points**: 144
 
 ## Architecture by Module
 
@@ -16,28 +16,28 @@
 - **Classes**: 1
 - **File**: `toon_parser.py`
 
+### todocs.generators.comparison
+- **Functions**: 15
+- **Classes**: 1
+- **File**: `comparison.py`
+
 ### todocs.generators.article_sections
 - **Functions**: 14
 - **File**: `article_sections.py`
-
-### todocs.generators.comparison
-- **Functions**: 13
-- **Classes**: 1
-- **File**: `comparison.py`
 
 ### todocs.analyzers.api_surface
 - **Functions**: 13
 - **Classes**: 1
 - **File**: `api_surface.py`
 
+### todocs.cli
+- **Functions**: 12
+- **File**: `cli.py`
+
 ### todocs.analyzers.structure
 - **Functions**: 12
 - **Classes**: 1
 - **File**: `structure.py`
-
-### todocs.cli
-- **Functions**: 11
-- **File**: `cli.py`
 
 ### todocs.analyzers.code_metrics
 - **Functions**: 10
@@ -125,6 +125,10 @@ Returns:
         "edges": [{"from":
 - **Calls**: self._detect_internal_packages, defaultdict, defaultdict, self._iter_py_files, defaultdict, defaultdict, edges.items, self._detect_cycles
 
+### todocs.generators.comparison.ComparisonGenerator._render_readme_list
+> Render a compact README with project list and 5-line descriptions.
+- **Calls**: sections.append, sections.append, sections.append, sections.append, sections.append, sections.append, sections.append, sections.append
+
 ### todocs.generators.comparison.ComparisonGenerator._render_health_report
 - **Calls**: sections.append, sections.append, len, sum, sum, sum, sections.append, sections.append
 
@@ -193,6 +197,15 @@ ROOT_DIR is the directory containing project subdirectories.
 ROOT_DIR is the directory containing project subdirectories.
 - **Calls**: main.command, click.argument, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization, ComparisonGenerator
 
+### todocs.cli.readme
+> Generate a single README.md with project list and 5-line descriptions.
+
+ROOT_DIR is the directory containing project subdirectories.
+
+Example:
+    tod
+- **Calls**: main.command, click.argument, click.option, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization
+
 ### todocs.generators.comparison.ComparisonGenerator._render_comparison
 - **Calls**: sections.append, sections.append, sections.append, sections.append, sections.append, sections.append, sections.append, sections.append
 
@@ -223,16 +236,6 @@ Returns: (classes, functions, imports, docstring)
 > Parse all Docker-related files.
 - **Calls**: self._find_dockerfiles, self._find_compose_files, list, list, self._parse_dockerfile, None.extend, None.extend, self._parse_compose
 
-### todocs.cli.health
-> Generate organization health report.
-
-ROOT_DIR is the directory containing project subdirectories.
-- **Calls**: main.command, click.argument, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization, ComparisonGenerator
-
-### todocs.extractors.makefile_parser.MakefileParser._parse_taskfile
-> Parse Taskfile.yml (go-task format).
-- **Calls**: data.get, tasks.items, yaml.safe_load, isinstance, isinstance, path.read_text, task_def.get, task_def.get
-
 ## Process Flows
 
 Key execution flows identified:
@@ -249,44 +252,44 @@ main [examples.article_sections_demo]
 build_graph [todocs.analyzers.import_graph.ImportGraphAnalyzer]
 ```
 
-### Flow 3: _render_health_report
+### Flow 3: _render_readme_list
+```
+_render_readme_list [todocs.generators.comparison.ComparisonGenerator]
+```
+
+### Flow 4: _render_health_report
 ```
 _render_health_report [todocs.generators.comparison.ComparisonGenerator]
 ```
 
-### Flow 4: get_dev_deps
+### Flow 5: get_dev_deps
 ```
 get_dev_deps [todocs.analyzers.dependencies.DependencyAnalyzer]
 ```
 
-### Flow 5: _render_index
+### Flow 6: _render_index
 ```
 _render_index [todocs.generators.article.ArticleGenerator]
 ```
 
-### Flow 6: analyze
+### Flow 7: analyze
 ```
 analyze [todocs.analyzers.code_metrics.CodeMetricsAnalyzer]
 ```
 
-### Flow 7: _parse_compose
+### Flow 8: _parse_compose
 ```
 _parse_compose [todocs.extractors.docker_parser.DockerParser]
 ```
 
-### Flow 8: _render_category
+### Flow 9: _render_category
 ```
 _render_category [todocs.generators.comparison.ComparisonGenerator]
 ```
 
-### Flow 9: score
+### Flow 10: score
 ```
 score [todocs.analyzers.maturity.MaturityScorer]
-```
-
-### Flow 10: get_runtime_deps
-```
-get_runtime_deps [todocs.analyzers.dependencies.DependencyAnalyzer]
 ```
 
 ## Key Classes
@@ -298,7 +301,7 @@ get_runtime_deps [todocs.analyzers.dependencies.DependencyAnalyzer]
 
 ### todocs.generators.comparison.ComparisonGenerator
 > Generate comparative analysis articles across projects.
-- **Methods**: 13
+- **Methods**: 15
 - **Key Methods**: todocs.generators.comparison.ComparisonGenerator.__init__, todocs.generators.comparison.ComparisonGenerator.generate_comparison, todocs.generators.comparison.ComparisonGenerator.generate_category_articles, todocs.generators.comparison.ComparisonGenerator.generate_health_report, todocs.generators.comparison.ComparisonGenerator._render_comparison, todocs.generators.comparison.ComparisonGenerator._size_comparison, todocs.generators.comparison.ComparisonGenerator._maturity_leaderboard, todocs.generators.comparison.ComparisonGenerator._complexity_comparison, todocs.generators.comparison.ComparisonGenerator._tech_stack_overview, todocs.generators.comparison.ComparisonGenerator._dependency_overlap
 
 ### todocs.analyzers.api_surface.APISurfaceAnalyzer
@@ -517,6 +520,7 @@ Functions exposed as public API (no underscore prefix):
 - `todocs.generators.article_sections.render_usage` - 19 calls
 - `todocs.analyzers.structure.StructureAnalyzer.detect_tech_stack` - 19 calls
 - `todocs.cli.compare` - 18 calls
+- `todocs.cli.readme` - 18 calls
 - `todocs.cli.inspect` - 17 calls
 - `todocs.extractors.docker_parser.DockerParser.parse` - 16 calls
 - `todocs.generators.article_sections.render_tech_stack` - 16 calls
@@ -532,9 +536,8 @@ Functions exposed as public API (no underscore prefix):
 - `examples.organization_health_report.analyze_tech_stacks` - 11 calls
 - `todocs.analyzers.structure.StructureAnalyzer.analyze` - 11 calls
 - `todocs.analyzers.import_graph.ImportGraphAnalyzer.get_hub_modules` - 11 calls
-- `todocs.generators.comparison.ComparisonGenerator.generate_category_articles` - 10 calls
 - `todocs.utils.create_scan_filter` - 10 calls
-- `todocs.extractors.toon_parser.ToonParser.parse_functions` - 9 calls
+- `todocs.generators.comparison.ComparisonGenerator.generate_category_articles` - 10 calls
 
 ## System Interactions
 
@@ -549,6 +552,7 @@ graph TD
     build_graph --> _detect_internal_pac
     build_graph --> defaultdict
     build_graph --> _iter_py_files
+    _render_readme_list --> append
     _render_health_repor --> append
     _render_health_repor --> len
     _render_health_repor --> sum
@@ -571,7 +575,6 @@ graph TD
     get_runtime_deps --> get
     get_runtime_deps --> extend
     get_runtime_deps --> exists
-    _from_pyproject --> get
 ```
 
 ## Reverse Engineering Guidelines

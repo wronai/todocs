@@ -1,10 +1,10 @@
 # todocs — Docstring Coverage
 
-🟡 **Overall coverage: 74.2%**
+🟡 **Overall coverage: 74.6%**
 
 | Category | Documented | Total | Coverage |
 |----------|-----------|-------|----------|
-| Functions | 115 | 162 | 71.0% |
+| Functions | 118 | 165 | 71.5% |
 | Classes | 20 | 20 | 100.0% |
 
 ## Per-Module Breakdown
@@ -18,7 +18,7 @@
 | `analyzers.import_graph` | 0/0 | 1/1 | 🟢 100% |
 | `analyzers.maturity` | 0/0 | 1/1 | 🟢 100% |
 | `analyzers.structure` | 0/0 | 1/1 | 🟢 100% |
-| `cli` | 11/11 | 0/0 | 🟢 100% |
+| `cli` | 12/12 | 0/0 | 🟢 100% |
 | `core` | 5/6 | 5/5 | 🟢 91% |
 | `examples.advanced_usage` | 0/0 | 0/0 | 🟢 100% |
 | `examples.quickstart` | 0/0 | 0/0 | 🟢 100% |

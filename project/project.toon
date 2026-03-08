@@ -1,6 +1,9 @@
-# todocs | 35f 6626L | python:35
+# todocs | 38f 7134L | python:38
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[35]:
+M[38]:
+  docs/examples/advanced_usage.py,6
+  docs/examples/quickstart.py,7
+  tests/test_cli_e2e.py,275
   examples/api_surface_deep.py,132
   examples/article_sections_demo.py,94
   examples/custom_analysis.py,143
@@ -20,7 +23,7 @@ M[35]:
   todocs/analyzers/import_graph.py,162
   todocs/analyzers/maturity.py,82
   todocs/analyzers/structure.py,200
-  todocs/cli.py,237
+  todocs/cli.py,260
   todocs/core.py,286
   todocs/examples/advanced_usage.py,6
   todocs/examples/quickstart.py,7
@@ -34,9 +37,19 @@ M[35]:
   todocs/generators/__init__.py,1
   todocs/generators/article.py,117
   todocs/generators/article_sections.py,337
-  todocs/generators/comparison.py,294
+  todocs/generators/comparison.py,364
   todocs/utils/__init__.py,107
 D:
+  tests/test_cli_e2e.py:
+    i: subprocess,sys,tempfile,pytest,pathlib.Path
+    e: sample_project,sample_organization,TestCLIInspect,TestCLIGenerate,TestCLICompare,TestCLIHealth,TestCLIReadme,TestCLIHelp
+    TestCLIInspect: test_inspect_markdown_output(2),test_inspect_json_output(2),test_inspect_stdout(1)  # E2E tests for 'todocs inspect' command.
+    TestCLIGenerate: test_generate_articles(2),test_generate_with_json_report(2)  # E2E tests for 'todocs generate' command.
+    TestCLICompare: test_compare_multiple_projects(2),test_compare_insufficient_projects(2)  # E2E tests for 'todocs compare' command.
+    TestCLIHealth: test_health_report(2)  # E2E tests for 'todocs health' command.
+    TestCLIReadme: test_readme_generation(2),test_readme_no_projects(1)  # E2E tests for 'todocs readme' command.
+    sample_project(tmp_path)
+    sample_organization(tmp_path;sample_project)
   examples/api_surface_deep.py:
     i: sys,pathlib.Path,todocs.analyzers.api_surface.APISurfaceAnalyzer
     e: print_section,analyze_entry_points,analyze_cli_commands,analyze_public_symbols,analyze_rest_endpoints,analyze_symbol_sources,main
@@ -138,7 +151,7 @@ D:
     StructureAnalyzer: __init__(2),_should_skip(1),_iter_files(0),analyze(0),detect_tech_stack(0)  # Analyze project directory structure.
   todocs/cli.py:
     i: json,sys,click,pathlib.Path,rich.console.Console,rich.progress.{Progress,SpinnerColumn,TextColumn},rich.table.Table,typing.Optional
-    e: main,generate,inspect,compare,health
+    e: main,generate,inspect,compare,health,readme
     main()
     generate(root_dir:str;output_dir:str;org_name:str;org_url:str;exclude:tuple;json_report:Optional[str];...+1)
     _discover_and_show_progress(root:Path;exclude:tuple;console)->list

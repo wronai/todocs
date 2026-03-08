@@ -11,6 +11,7 @@
 | `output` | `str` | ./docs/ | Output directory for generated docs |
 | `readme_output` | `str` | ./README.md | Path for the generated README file |
 | `repo_url` | `str` | "" |  |
+| `org_name` | `str` | "" |  |
 | `readme` | `ReadmeConfig` | *see `readme` section* |  |
 | `docs` | `DocsConfig` | *see `docs` section* |  |
 | `examples` | `ExamplesConfig` | *see `examples` section* |  |

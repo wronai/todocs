@@ -1,6 +1,8 @@
-# todocs | 30f 5031L | python:30
+# todocs | 32f 5181L | python:32
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[30]:
+M[32]:
+  docs/examples/advanced_usage.py,9
+  docs/examples/quickstart.py,16
   examples/api_surface_deep.py,176
   examples/article_sections_demo.py,119
   examples/custom_analysis.py,187
@@ -15,7 +17,7 @@ M[30]:
   todocs/analyzers/import_graph.py,201
   todocs/analyzers/maturity.py,103
   todocs/analyzers/structure.py,234
-  todocs/cli.py,307
+  todocs/cli.py,337
   todocs/core.py,387
   todocs/examples/advanced_usage.py,9
   todocs/examples/quickstart.py,16
@@ -29,7 +31,7 @@ M[30]:
   todocs/generators/__init__.py,1
   todocs/generators/article.py,145
   todocs/generators/article_sections.py,431
-  todocs/generators/comparison.py,380
+  todocs/generators/comparison.py,475
   todocs/utils/__init__.py,150
 D:
   examples/scan_single.py:
@@ -37,7 +39,7 @@ D:
     main()
   todocs/generators/comparison.py:
     e: ComparisonGenerator
-    ComparisonGenerator: __init__(2),generate_comparison(3),generate_category_articles(2),generate_health_report(2),_render_comparison(2),_size_comparison(1),_maturity_leaderboard(1),_complexity_comparison(1),_tech_stack_overview(1),_dependency_overlap(1),_render_category(2),_render_health_report(1),_footer(0)  # Generate comparative analysis articles across projects...
+    ComparisonGenerator: __init__(2),generate_comparison(3),generate_category_articles(2),generate_health_report(2),_render_comparison(2),_size_comparison(1),_maturity_leaderboard(1),_complexity_comparison(1),_tech_stack_overview(1),_dependency_overlap(1),_render_category(2),_render_health_report(1),generate_readme_list(3),_render_readme_list(2),_footer(0)  # Generate comparative analysis articles across projects...
   todocs/analyzers/dependencies.py:
     e: DependencyAnalyzer
     DependencyAnalyzer: __init__(1),_load_pyproject(0),_parse_dep_name(1),get_runtime_deps(0),get_dev_deps(0)  # Extract project dependencies without executing anything...
@@ -107,6 +109,9 @@ D:
   todocs/extractors/metadata.py:
     e: MetadataExtractor
     MetadataExtractor: __init__(1),extract(0),_merge(2),_from_pyproject(0),_from_setup_cfg(0),_from_setup_py(0),_extract_setup_kwargs(1),_from_package_json(0),_extract_license(1)  # Extract structured metadata from project config files...
+  examples/scan_org.py:
+    e: main
+    main()
   examples/organization_health_report.py:
     e: analyze_maturity_distribution,analyze_code_metrics,analyze_tech_stacks,find_critical_projects,print_health_summary,main
     analyze_maturity_distribution(profiles)
@@ -114,9 +119,6 @@ D:
     analyze_tech_stacks(profiles)
     find_critical_projects(profiles;threshold)
     print_health_summary(profiles;org_name)
-    main()
-  examples/scan_org.py:
-    e: main
     main()
   todocs/extractors/changelog_parser.py:
     e: ChangelogParser
@@ -138,7 +140,7 @@ D:
     analyze_symbol_sources(analyzer)
     main()
   todocs/cli.py:
-    e: main,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health
+    e: main,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health,readme
     main()
     generate(root_dir;output_dir;org_name;org_url;exclude;json_report;verbose)
     _discover_and_show_progress(root;exclude;console)
@@ -150,6 +152,7 @@ D:
     inspect(project_dir;output;fmt)
     compare(root_dir;output_path;org_name;exclude)
     health(root_dir;output_path;org_name;exclude)
+    readme(root_dir;output_path;org_name;exclude;title)
   todocs/analyzers/structure.py:
     e: StructureAnalyzer
     StructureAnalyzer: __init__(2),_should_skip(1),_iter_files(0),analyze(0),detect_tech_stack(0),_detect_languages(0),_detect_build_tools(0),_detect_test_frameworks(0),_detect_ci_cd(0),_detect_containers(0),_detect_frameworks(0),_read_deps_text(0)  # Analyze project directory structure...
@@ -159,6 +162,8 @@ D:
   todocs/__init__.py:
   todocs/extractors/__init__.py:
   todocs/examples/quickstart.py:
-  todocs/generators/__init__.py:
   todocs/examples/advanced_usage.py:
+  todocs/generators/__init__.py:
   todocs/analyzers/__init__.py:
+  docs/examples/quickstart.py:
+  docs/examples/advanced_usage.py:

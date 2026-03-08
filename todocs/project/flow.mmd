@@ -73,6 +73,7 @@ flowchart TD
         cli__inspect["inspect"]
         cli__compare["compare"]
         cli__health["health"]
+        cli__readme["readme"]
     end
     subgraph core
         core__scan_project["scan_project"]
@@ -189,6 +190,8 @@ flowchart TD
         generators___dependency_overlap("_dependency_overlap CC=8")
         generators___render_category("_render_category CC=14")
         generators___render_health_report{{_render_health_report CC=18}}
+        generators__generate_readme_list["generate_readme_list"]
+        generators___render_readme_list{{_render_readme_list CC=16}}
         generators___footer["_footer"]
     end
     subgraph utils
@@ -212,6 +215,7 @@ flowchart TD
     cli__inspect --> core__scan_project
     cli__compare --> core__scan_organization
     cli__health --> core__scan_organization
+    cli__readme --> core__scan_organization
     generators___render_article --> generators__article_sections__render_frontmatter
     generators___render_article --> generators__article_sections__render_header
     generators___render_article --> generators__article_sections__render_overview
@@ -231,5 +235,5 @@ flowchart TD
 
     classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
-    class generators__article_sections__render_api_surface,generators___render_health_report,analyzers__get_runtime_deps,analyzers__get_dev_deps,analyzers__build_graph,analyzers__analyze,analyzers___parse_module_ast highCC
-    class extractors___parse_modules_section,extractors___parse_layers_section,extractors__toon_parser__ToonParser__parse_flow,extractors___parse_taskfile,extractors___extract_post_h1,extractors___summarize_entry,extractors___find_dockerfiles,extractors___parse_dockerfile,extractors___parse_compose,generators___render_index,generators__article_sections__render_tech_stack,generators__article_sections__render_architecture,generators__article_sections__render_dependencies,generators__article_sections__render_docker,generators__article_sections__render_usage,utils__GitignoreParser___match_pattern,generators___tech_stack_overview,generators___dependency_overlap,generators___render_category,analyzers__maturity__MaturityScorer__score,analyzers___detect_internal_packages,analyzers___scan,analyzers___detect_cli_commands,analyzers___collect_target_files,analyzers___extract_class,analyzers___extract_all,core___discover_projects,core__scan_organization,core___categorize,core___generate_summary medCC
+    class generators__article_sections__render_api_surface,generators___render_health_report,generators___render_readme_list,analyzers__get_runtime_deps,analyzers__get_dev_deps,analyzers__build_graph,analyzers__analyze,analyzers___parse_module_ast highCC
+    class extractors___parse_taskfile,extractors___parse_modules_section,extractors___parse_layers_section,extractors__toon_parser__ToonParser__parse_flow,extractors___extract_post_h1,extractors___find_dockerfiles,extractors___parse_dockerfile,extractors___parse_compose,extractors___summarize_entry,generators___render_index,generators__article_sections__render_tech_stack,generators__article_sections__render_architecture,generators__article_sections__render_dependencies,generators__article_sections__render_docker,generators__article_sections__render_usage,utils__GitignoreParser___match_pattern,generators___tech_stack_overview,generators___dependency_overlap,generators___render_category,analyzers__maturity__MaturityScorer__score,analyzers___detect_internal_packages,analyzers___scan,analyzers___detect_cli_commands,analyzers___collect_target_files,analyzers___extract_class,analyzers___extract_all,core___discover_projects,core__scan_organization,core___categorize,core___generate_summary medCC

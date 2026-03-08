@@ -1,6 +1,6 @@
 # todocs — API Reference
 
-> 24 modules | 162 functions | 20 classes
+> 24 modules | 165 functions | 20 classes
 
 ## Contents
 
@@ -51,6 +51,7 @@
 | `health` | `health(root_dir, output_path, org_name, exclude)` | 1 | Generate organization health report. | [source](https://github.com/wronai/todocs/blob/main/todocs/cli.py#L290) |
 | `inspect` | `inspect(project_dir, output, fmt)` | 3 | Inspect a single project and show its profile. | [source](https://github.com/wronai/todocs/blob/main/todocs/cli.py#L234) |
 | `main` | `main()` | 1 | todocs — Static-analysis documentation generator for project portfolios. | [source](https://github.com/wronai/todocs/blob/main/todocs/cli.py#L28) |
+| `readme` | `readme(root_dir, output_path, org_name, exclude, ...)` | 2 | Generate a single README.md with project list and 5-line descriptions. | [source](https://github.com/wronai/todocs/blob/main/todocs/cli.py#L313) |
 
 ### `core` [source](https://github.com/wronai/todocs/blob/main/todocs/core.py)
 
@@ -108,7 +109,7 @@
 | Class | Methods | Description | Source |
 |-------|---------|-------------|--------|
 | `ArticleGenerator` | 2 | Generate markdown articles for WordPress from analyzed project profiles. | [source](https://github.com/wronai/todocs/blob/main/todocs/generators/article.py#L30) |
-| `ComparisonGenerator` | 3 | Generate comparative analysis articles across projects. | [source](https://github.com/wronai/todocs/blob/main/todocs/generators/comparison.py#L13) |
+| `ComparisonGenerator` | 4 | Generate comparative analysis articles across projects. | [source](https://github.com/wronai/todocs/blob/main/todocs/generators/comparison.py#L13) |
 
 **`ArticleGenerator` methods:**
 
@@ -120,6 +121,7 @@
 - `generate_comparison(profiles, output_path, title)` — Generate a comparison table article for a set of projects.
 - `generate_category_articles(profiles, output_dir)` — Generate one article per category.
 - `generate_health_report(profiles, output_path)` — Generate a health/quality overview report.
+- `generate_readme_list(profiles, output_path, title)` — Generate a single README.md with a list of all projects and brief descriptions.
 
 | Function | Signature | CC | Description | Source |
 |----------|-----------|----|-----------  |--------|
@@ -299,10 +301,11 @@
 
 | Class | Methods | Description | Source |
 |-------|---------|-------------|--------|
-| `ComparisonGenerator` | 3 | Generate comparative analysis articles across projects. | [source](https://github.com/wronai/todocs/blob/main/todocs/generators/comparison.py#L13) |
+| `ComparisonGenerator` | 4 | Generate comparative analysis articles across projects. | [source](https://github.com/wronai/todocs/blob/main/todocs/generators/comparison.py#L13) |
 
 **`ComparisonGenerator` methods:**
 
 - `generate_comparison(profiles, output_path, title)` — Generate a comparison table article for a set of projects.
 - `generate_category_articles(profiles, output_dir)` — Generate one article per category.
 - `generate_health_report(profiles, output_path)` — Generate a health/quality overview report.
+- `generate_readme_list(profiles, output_path, title)` — Generate a single README.md with a list of all projects and brief descriptions.

@@ -1,9 +1,9 @@
 flowchart TD
-    cli["cli<br/>11 funcs"]
+    cli["cli<br/>12 funcs"]
     core["core<br/>6 funcs"]
     generators_article["generators.article<br/>5 funcs"]
     generators_article_sections["generators.article_sections<br/>14 funcs"]
     utils["utils<br/>1 funcs"]
     generators_article ==>|14| generators_article_sections
-    cli ==>|9| core
+    cli ==>|10| core
     core -->|1| utils

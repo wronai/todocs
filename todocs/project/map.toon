@@ -1,4 +1,4 @@
-# todocs | 24f 4194L | python:24
+# todocs | 24f 4319L | python:24
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[24]:
   analyzers/__init__.py,1
@@ -8,7 +8,7 @@ M[24]:
   analyzers/import_graph.py,201
   analyzers/maturity.py,103
   analyzers/structure.py,234
-  cli.py,307
+  cli.py,337
   core.py,387
   examples/advanced_usage.py,9
   examples/quickstart.py,16
@@ -22,13 +22,13 @@ M[24]:
   generators/__init__.py,1
   generators/article.py,145
   generators/article_sections.py,431
-  generators/comparison.py,380
+  generators/comparison.py,475
   __init__.py,10
   utils/__init__.py,150
 D:
   generators/comparison.py:
     e: ComparisonGenerator
-    ComparisonGenerator: __init__(2),generate_comparison(3),generate_category_articles(2),generate_health_report(2),_render_comparison(2),_size_comparison(1),_maturity_leaderboard(1),_complexity_comparison(1),_tech_stack_overview(1),_dependency_overlap(1),_render_category(2),_render_health_report(1),_footer(0)  # Generate comparative analysis articles across projects...
+    ComparisonGenerator: __init__(2),generate_comparison(3),generate_category_articles(2),generate_health_report(2),_render_comparison(2),_size_comparison(1),_maturity_leaderboard(1),_complexity_comparison(1),_tech_stack_overview(1),_dependency_overlap(1),_render_category(2),_render_health_report(1),generate_readme_list(3),_render_readme_list(2),_footer(0)  # Generate comparative analysis articles across projects...
   analyzers/dependencies.py:
     e: DependencyAnalyzer
     DependencyAnalyzer: __init__(1),_load_pyproject(0),_parse_dep_name(1),get_runtime_deps(0),get_dev_deps(0)  # Extract project dependencies without executing anything...
@@ -99,7 +99,7 @@ D:
     GitignoreParser: __init__(2),_load_gitignore(0),_parse_patterns(1),_match_pattern(3),is_ignored(2)  # Parse and match .gitignore patterns...
     create_scan_filter(project_path;max_depth;extra_excludes)
   cli.py:
-    e: main,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health
+    e: main,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health,readme
     main()
     generate(root_dir;output_dir;org_name;org_url;exclude;json_report;verbose)
     _discover_and_show_progress(root;exclude;console)
@@ -111,6 +111,7 @@ D:
     inspect(project_dir;output;fmt)
     compare(root_dir;output_path;org_name;exclude)
     health(root_dir;output_path;org_name;exclude)
+    readme(root_dir;output_path;org_name;exclude;title)
   analyzers/structure.py:
     e: StructureAnalyzer
     StructureAnalyzer: __init__(2),_should_skip(1),_iter_files(0),analyze(0),detect_tech_stack(0),_detect_languages(0),_detect_build_tools(0),_detect_test_frameworks(0),_detect_ci_cd(0),_detect_containers(0),_detect_frameworks(0),_read_deps_text(0)  # Analyze project directory structure...

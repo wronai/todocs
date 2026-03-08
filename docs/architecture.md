@@ -1,6 +1,6 @@
 # todocs — Architecture
 
-> 24 modules | 162 functions | 20 classes
+> 24 modules | 165 functions | 20 classes
 
 ## How It Works
 
@@ -114,7 +114,7 @@ classDiagram
         -_size_comparison(self, profiles) None
         -_maturity_leaderboard(self, profiles) None
         -_complexity_comparison(self, profiles) None
-        ... +5 more
+        ... +7 more
     }
     class APISurfaceAnalyzer {
         -__init__(self, project_path, filter_func) None
@@ -241,15 +241,16 @@ classDiagram
 - `cli.inspect` — Inspect a single project and show its profile.
 - `cli.compare` — Generate cross-project comparison report.
 - `cli.health` — Generate organization health report.
+- `cli.readme` — Generate a single README.md with project list and 5-line descriptions.
 
 ## Metrics Summary
 
 | Metric | Value |
 |--------|-------|
 | Modules | 24 |
-| Functions | 162 |
+| Functions | 165 |
 | Classes | 20 |
-| CFG Nodes | 1270 |
+| CFG Nodes | 1295 |
 | Patterns | 0 |
 | Avg Complexity | 5.5 |
-| Analysis Time | 1.02s |
+| Analysis Time | 1.15s |

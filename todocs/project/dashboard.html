@@ -61,11 +61,11 @@
 
 <div class="grid">
   <div class="card"><div class="value">5.5</div><div class="label">Avg CC</div></div>
-  <div class="card"><div class="value">25</div><div class="label">Critical (CC≥10)</div></div>
-  <div class="card"><div class="value">162</div><div class="label">Functions</div></div>
+  <div class="card"><div class="value">26</div><div class="label">Critical (CC≥10)</div></div>
+  <div class="card"><div class="value">165</div><div class="label">Functions</div></div>
   <div class="card"><div class="value">20</div><div class="label">Classes</div></div>
   <div class="card"><div class="value">18</div><div class="label">Files</div></div>
-  <div class="card"><div class="value">4169</div><div class="label">Lines</div></div>
+  <div class="card"><div class="value">4294</div><div class="label">Lines</div></div>
   <div class="card"><div class="value">0</div><div class="label">Duplicates</div></div>
   <div class="card"><div class="value">0</div><div class="label">Cycles</div></div>
 </div>
@@ -75,8 +75,8 @@
     <h2 style="border:none;margin:0 0 .5rem;">Evolution (2026-03-08)</h2>
     <div class="evo-cards">
       <div class="card"><div class="value">5.5</div><div class="label">CC̄ →</div></div>
-      <div class="card"><div class="value">25</div><div class="label">Critical →</div></div>
-      <div class="card"><div class="value">4169</div><div class="label">Lines</div></div>
+      <div class="card"><div class="value">26</div><div class="label">Critical →</div></div>
+      <div class="card"><div class="value">4294</div><div class="label">Lines</div></div>
     </div>
     <p class="trend" style="margin-top:.5rem;">Run analysis multiple times to build a trend chart (≥3 data points needed).</p>
   </div>
@@ -191,7 +191,7 @@
             </tr>
             <tr class="warning">
                 <td><span class="badge warning">warning</span></td>
-                <td>CodeMetricsAnalyzer.analyze</td>
+                <td>ComparisonGenerator._render_readme_list</td>
                 <td>cc_exceeded</td>
                 <td>16</td>
                 <td>15</td>
@@ -273,7 +273,7 @@ ROOT_DIR is the directo</td>
 </div>
 
 <div>
-<h2>Refactoring Priorities (10)</h2>
+<h2>Refactoring Priorities (11)</h2>
 <div class="card"><div class="table-wrap">
 <table>
   <thead><tr><th>#</th><th>Action</th><th>Impact</th><th>Effort</th></tr></thead>
@@ -292,49 +292,49 @@ ROOT_DIR is the directo</td>
             </tr>
             <tr>
                 <td>3</td>
-                <td>Split DependencyAnalyzer.get_runtime_deps (CC=17 → target CC<10)</td>
+                <td>Split ComparisonGenerator._render_readme_list (CC=16 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>low</td>
             </tr>
             <tr>
                 <td>4</td>
-                <td>Split DependencyAnalyzer.get_dev_deps (CC=18 → target CC<10)</td>
+                <td>Split DependencyAnalyzer.get_runtime_deps (CC=17 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>low</td>
             </tr>
             <tr>
                 <td>5</td>
-                <td>Split ImportGraphAnalyzer.build_graph (CC=15 → target CC<10)</td>
+                <td>Split DependencyAnalyzer.get_dev_deps (CC=18 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>low</td>
             </tr>
             <tr>
                 <td>6</td>
-                <td>Split CodeMetricsAnalyzer.analyze (CC=16 → target CC<10)</td>
+                <td>Split ImportGraphAnalyzer.build_graph (CC=15 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>low</td>
             </tr>
             <tr>
                 <td>7</td>
-                <td>Split CodeMetricsAnalyzer._parse_module_ast (CC=17 → target CC<10)</td>
+                <td>Split CodeMetricsAnalyzer.analyze (CC=16 → target CC<10)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>low</td>
             </tr>
             <tr>
                 <td>8</td>
+                <td>Split CodeMetricsAnalyzer._parse_module_ast (CC=17 → target CC<10)</td>
+                <td><span class="badge medium">medium</span></td>
+                <td>low</td>
+            </tr>
+            <tr>
+                <td>9</td>
                 <td>Reduce scan_project fan-out (currently 33)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
             </tr>
             <tr>
-                <td>9</td>
-                <td>Reduce ImportGraphAnalyzer.build_graph fan-out (currently 26)</td>
-                <td><span class="badge medium">medium</span></td>
-                <td>medium</td>
-            </tr>
-            <tr>
                 <td>10</td>
-                <td>Reduce CodeMetricsAnalyzer.analyze fan-out (currently 22)</td>
+                <td>Reduce ImportGraphAnalyzer.build_graph fan-out (currently 26)</td>
                 <td><span class="badge medium">medium</span></td>
                 <td>medium</td>
             </tr></tbody>
@@ -343,7 +343,7 @@ ROOT_DIR is the directo</td>
 </div>
 </div>
 
-<footer>Generated by code2llm on 2026-03-08 08:46</footer>
+<footer>Generated by code2llm on 2026-03-08 14:27</footer>
 
 <script>
 // Evolution chart disabled — fewer than 3 data points

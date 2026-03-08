@@ -1,7 +1,7 @@
 <!-- code2docs:start --># todocs
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.9-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-162-green)
-> **162** functions | **20** classes | **24** files | CC̄ = 5.5
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.9-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-165-green)
+> **165** functions | **20** classes | **24** files | CC̄ = 5.5
 
 > Auto-generated project documentation from source code analysis.
 
@@ -139,25 +139,62 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ## Architecture
 
+todocs is organized into modular components:
+
+- **CLI** — Command-line interface with Click
+- **Core** — Project scanning and profile generation
+- **Analyzers** — Code analysis (structure, metrics, imports, API surface, maturity)
+- **Extractors** — Parse config files (Makefile, Docker, README, CHANGELOG, TOON)
+- **Generators** — Article and documentation generators
+- **Utils** — Gitignore parsing and scanning utilities
+
+### Directory Structure
+
 ```
 todocs/
-    ├── toon_parser├── cli├── todocs/    ├── makefile_parser├── extractors/    ├── readme_parser    ├── changelog_parser    ├── quickstart    ├── docker_parser    ├── advanced_usage├── generators/    ├── article    ├── article_sections    ├── comparison├── utils/├── analyzers/    ├── structure    ├── dependencies    ├── maturity    ├── import_graph    ├── code_metrics    ├── api_surface├── core    ├── metadata```
+├── todocs/
+│   ├── cli.py              # CLI entry points
+│   ├── core.py             # Project/organization scanning
+│   ├── analyzers/          # Analysis modules
+│   │   ├── api_surface.py
+│   │   ├── code_metrics.py
+│   │   ├── dependencies.py
+│   │   ├── import_graph.py
+│   │   ├── maturity.py
+│   │   └── structure.py
+│   ├── extractors/         # File parsers
+│   │   ├── changelog_parser.py
+│   │   ├── docker_parser.py
+│   │   ├── makefile_parser.py
+│   │   ├── metadata.py
+│   │   ├── readme_parser.py
+│   │   └── toon_parser.py
+│   ├── generators/         # Documentation generators
+│   │   ├── article.py
+│   │   ├── article_sections.py
+│   │   └── comparison.py
+│   └── utils/              # Utilities
+│       └── __init__.py
+├── tests/                  # Test suite
+├── examples/               # Usage examples
+└── docs/                   # Generated documentation
+```
 
 ## API Overview
 
 ### Classes
 
-- **`ToonParser`** — Parse .toon files into structured data.
 - **`MakefileParser`** — Extract targets and structure from Makefile or Taskfile.yml.
+- **`ToonParser`** — Parse .toon files into structured data.
 - **`ReadmeParser`** — Extract structured sections from a README.md file.
 - **`ChangelogParser`** — Extract structured entries from CHANGELOG.md.
 - **`DockerParser`** — Extract Docker infrastructure from Dockerfile and docker-compose.yml.
 - **`ArticleGenerator`** — Generate markdown articles for WordPress from analyzed project profiles.
-- **`ComparisonGenerator`** — Generate comparative analysis articles across projects.
 - **`GitignoreParser`** — Parse and match .gitignore patterns.
+- **`ComparisonGenerator`** — Generate comparative analysis articles across projects.
 - **`StructureAnalyzer`** — Analyze project directory structure.
-- **`DependencyAnalyzer`** — Extract project dependencies without executing anything.
 - **`MaturityScorer`** — Compute a maturity score (0-100) for a project.
+- **`DependencyAnalyzer`** — Extract project dependencies without executing anything.
 - **`ImportGraphAnalyzer`** — Analyze import relationships between project modules.
 - **`CodeMetricsAnalyzer`** — Analyze code metrics: lines, complexity, maintainability.
 - **`APISurfaceAnalyzer`** — Detect public API surface of a project.
@@ -175,6 +212,7 @@ todocs/
 - `inspect(project_dir, output, fmt)` — Inspect a single project and show its profile.
 - `compare(root_dir, output_path, org_name, exclude)` — Generate cross-project comparison report.
 - `health(root_dir, output_path, org_name, exclude)` — Generate organization health report.
+- `readme(root_dir, output_path, org_name, exclude)` — Generate a single README.md with project list and 5-line descriptions.
 - `render_frontmatter(p, org_name, generated_at)` — Render WordPress YAML frontmatter.
 - `render_header(p, org_url)` — Render title and badges section.
 - `render_overview(p, org_name)` — Render overview/description section.
@@ -204,7 +242,7 @@ todocs/
 📄 `analyzers.import_graph` (8 functions, 1 classes)
 📄 `analyzers.maturity` (2 functions, 1 classes)
 📄 `analyzers.structure` (12 functions, 1 classes)
-📄 `cli` (11 functions)
+📄 `cli` (12 functions)
 📄 `core` (8 functions, 5 classes)
 📄 `examples.advanced_usage`
 📄 `examples.quickstart`
@@ -218,7 +256,7 @@ todocs/
 📦 `generators`
 📄 `generators.article` (5 functions, 1 classes)
 📄 `generators.article_sections` (14 functions)
-📄 `generators.comparison` (13 functions, 1 classes)
+📄 `generators.comparison` (15 functions, 1 classes)
 📦 `todocs`
 📦 `utils` (6 functions, 1 classes)
 

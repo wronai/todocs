@@ -1,6 +1,6 @@
-# todocs/flow | 186 func | 12 pipelines | 5 hub-types | 2026-03-08
+# todocs/flow | 189 func | 12 pipelines | 5 hub-types | 2026-03-08
 
-PIPELINES[12] (Analysis:4, Core:5, Export:1, IO:2):
+PIPELINES[12] (Analysis:3, Core:6, Export:1, IO:2):
   Todocs [Core]: str → str
               → generate(root_dir:str, output_dir:str, org_name:str, org_url:str, exclude:tuple, json_report:Optional[str], verbose:bool) CC=5    IO ▶
               → _scan_with_progress(root:Path, exclude:tuple, console, project_dirs:list) → list CC=1    mutation
@@ -26,14 +26,14 @@ PIPELINES[12] (Analysis:4, Core:5, Export:1, IO:2):
               PURITY: 2/5 pure  BOTTLENECK: _extract_post_h1(CC=8)
 
   Todocs [Core]: ? → str
-              → main()                                  CC=4    IO ▶
+              → main()                                  CC=9    IO ▶
               → scan_organization(root_path:Path, exclude:Optional[List[str]], max_depth:int, progress_callback) → List[ProjectProfile] CC=11   IO
               → scan_project(project_path:Path, max_depth:int) → ProjectProfile CC=3    pure
               → _generate_summary(profile:ProjectProfile) → str CC=8    mutation ■
               PURITY: 1/4 pure  BOTTLENECK: scan_organization(CC=11)
 
   Todocs [Core]: ? → str
-              → main()                                  CC=9    IO ▶
+              → main()                                  CC=4    IO ▶
               → scan_organization(root_path:Path, exclude:Optional[List[str]], max_depth:int, progress_callback) → List[ProjectProfile] CC=11   IO
               → scan_project(project_path:Path, max_depth:int) → ProjectProfile CC=3    pure
               → _generate_summary(profile:ProjectProfile) → str CC=8    mutation ■
@@ -48,6 +48,13 @@ PIPELINES[12] (Analysis:4, Core:5, Export:1, IO:2):
 
   Todocs [Core]: str → str
               → health(root_dir:str, output_path:str, org_name:str, exclude:tuple) CC=1    pure ▶
+              → scan_organization(root_path:Path, exclude:Optional[List[str]], max_depth:int, progress_callback) → List[ProjectProfile] CC=11   IO
+              → scan_project(project_path:Path, max_depth:int) → ProjectProfile CC=3    pure
+              → _generate_summary(profile:ProjectProfile) → str CC=8    mutation ■
+              PURITY: 2/4 pure  BOTTLENECK: scan_organization(CC=11)
+
+  Todocs [Core]: str → str
+              → readme(root_dir:str, output_path:str, org_name:str, exclude:tuple, title:str) CC=2    pure ▶
               → scan_organization(root_path:Path, exclude:Optional[List[str]], max_depth:int, progress_callback) → List[ProjectProfile] CC=11   IO
               → scan_project(project_path:Path, max_depth:int) → ProjectProfile CC=3    pure
               → _generate_summary(profile:ProjectProfile) → str CC=8    mutation ■
@@ -81,13 +88,6 @@ PIPELINES[12] (Analysis:4, Core:5, Export:1, IO:2):
               → _extract_function(node:ast.FunctionDef | ast.AsyncFunctionDef, rel_path:str, all_names:set, seen:set) → Dict[str, Any] | None CC=7    mutation ■
               PURITY: 1/4 pure  BOTTLENECK: _extract_from_file(CC=7)
 
-  Todocs [Analysis]: ? → bool
-              → analyze() → Dict[str, Any]              CC=1    pure ▶
-              → _scan_public_symbols()                  CC=2    mutation
-              → _collect_target_files() → List[Path]    CC=11   mutation
-              → _should_skip(path:Path) → bool          CC=4    pure ■
-              PURITY: 2/4 pure  BOTTLENECK: _collect_target_files(CC=11)
-
 
 TRANSFORMS (fan-out ≥10):
   scan_project(project_path:Path, max_depth:int) → ProjectProfile fan=33   !! mutation-heavy
@@ -104,7 +104,7 @@ TRANSFORMS (fan-out ≥10):
   _parse_compose(path:Path) → Dict[str, Any]              fan=14   PIPELINE:DockerParser.entry
   inspect(project_dir:str, output:Optional[str], fmt:str) fan=13   fan=13
   compare(root_dir:str, output_path:str, org_name:str, exclude:tuple) fan=13   fan=13
-  parse_flow(path:Path) → Dict[str, Any]                  fan=13   PIPELINE:ToonParser.entry
+  readme(root_dir:str, output_path:str, org_name:str, exclude:tuple, title:str) fan=13   fan=13
 
 CONTRACTS:
   Pipeline: Todocs
@@ -258,6 +258,25 @@ CONTRACTS:
       SIDE-EFFECT: pure
 
   Pipeline: Todocs
+    readme(root_dir:str, output_path:str, org_name:str, exclude:tuple, title:str)
+      IN:  root_dir:str, output_path:str, org_name:str, exclude:tuple, title:str
+      OUT: None
+
+    scan_organization(root_path:Path, exclude:Optional[List[str]], max_depth:int, progress_callback) → List[ProjectProfile]
+      IN:  root_path:Path, exclude:Optional[List[str]], max_depth:int, progress_callback
+      OUT: List[ProjectProfile]
+      SIDE-EFFECT: IO(print)
+
+    scan_project(project_path:Path, max_depth:int) → ProjectProfile
+      IN:  project_path:Path, max_depth:int
+      OUT: ProjectProfile
+
+    _generate_summary(profile:ProjectProfile) → str
+      IN:  profile:ProjectProfile
+      OUT: str
+      SIDE-EFFECT: pure
+
+  Pipeline: Todocs
     parse_all() → Dict[str, Any]
       IN:  ()
       OUT: Dict[str, Any]
@@ -333,54 +352,35 @@ CONTRACTS:
       OUT: Dict[str, Any] | None
       SIDE-EFFECT: pure
 
-  Pipeline: Todocs
-    analyze() → Dict[str, Any]
-      IN:  ()
-      OUT: Dict[str, Any]
 
-    _scan_public_symbols()
-      IN:  ()
-      OUT: None
-      SIDE-EFFECT: pure
-
-    _collect_target_files() → List[Path]
-      IN:  ()
-      OUT: List[Path]
-      SIDE-EFFECT: pure
-
-    _should_skip(path:Path) → bool
-      IN:  path:Path
-      OUT: bool
-
-
-DATA_TYPES (by cross-function usage) [172 annotated, 0 inferred / 186 functions]:
-  str                  consumed:64  produced:49   !! HUB-TYPE → split interface
-  Path                 consumed:53  produced:8    !! HUB-TYPE → split interface
-  ProjectProfile       consumed:32  produced:2    !! HUB-TYPE → split interface
+DATA_TYPES (by cross-function usage) [175 annotated, 0 inferred / 189 functions]:
+  str                  consumed:70  produced:50   !! HUB-TYPE → split interface
+  Path                 consumed:54  produced:8    !! HUB-TYPE → split interface
+  ProjectProfile       consumed:34  produced:2    !! HUB-TYPE → split interface
   list                 consumed:14  produced:7    !! HUB-TYPE → split interface
   str, Any             consumed:0   produced:20   output-heavy
   int                  consumed:14  produced:2    !! HUB-TYPE → split interface
   bool                 consumed:7   produced:7  
+  tuple                consumed:7   produced:4  
   str, str             consumed:0   produced:10   output-heavy
   set                  consumed:8   produced:2  
-  tuple                consumed:6   produced:4  
-  Dict[str, Any] | None consumed:0   produced:6    output-heavy
   Dict                 consumed:1   produced:5    output-heavy
+  Dict[str, Any] | None consumed:0   produced:6    output-heavy
   APISurfaceAnalyzer   consumed:5   produced:0    input-heavy (read-only flow)
   dict                 consumed:0   produced:4    narrow scope
   AnalysisResult       consumed:0   produced:3    narrow scope
   ast.AST              consumed:2   produced:0    narrow scope
+  ast.FunctionDef | ast.AsyncFunctionDef consumed:1   produced:0    narrow scope
   str, Path            consumed:0   produced:1    narrow scope
   Tuple[str, str], int consumed:1   produced:0    narrow scope
-  ast.FunctionDef | ast.AsyncFunctionDef consumed:1   produced:0    narrow scope
-  List[str]            consumed:0   produced:1    narrow scope
+  MaturityProfile      consumed:0   produced:1    narrow scope
 
   HUB TYPES (consumed ≥10):
-    str → 64 consumers → split into:
+    str → 70 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
-    Path → 53 consumers → split into:
+    Path → 54 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
-    ProjectProfile → 32 consumers → split into:
+    ProjectProfile → 34 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
     list → 14 consumers → split into:
       - (analyze consumers to suggest sub-interfaces)
@@ -390,7 +390,7 @@ DATA_TYPES (by cross-function usage) [172 annotated, 0 inferred / 186 functions]
 SIDE_EFFECTS:
   IO:        main, main, _print_section_header, _analyze_import_graph, _analyze_api_surface, _analyze_toon_files, _analyze_makefile, _analyze_docker, _analyze_code_metrics, main
   Mutation:  analyze_maturity_distribution, analyze_tech_stacks, find_critical_projects, _discover_and_show_progress, _scan_with_progress, _generate_articles_with_progress, MakefileParser.__init__, MakefileParser._collect_phony_targets, MakefileParser._collect_commands, ToonParser.__init__
-  Pure:      analyze_code_metrics, main, compare, health, MakefileParser.parse, MakefileParser._parse_target_line, MakefileParser._extract_help_text, MakefileParser.get_target_names, ToonParser.parse_all, ToonParser._parse_map_header
+  Pure:      analyze_code_metrics, main, compare, health, readme, MakefileParser.parse, MakefileParser._parse_target_line, MakefileParser._extract_help_text, MakefileParser.get_target_names, ToonParser.parse_all
 
   PIPELINE PURITY:
     Todocs          ░░░░ 20% pure
@@ -401,7 +401,7 @@ SIDE_EFFECTS:
     Todocs          ██░░ 50% pure
     Todocs          ██░░ 50% pure
     Todocs          ██░░ 50% pure
+    Todocs          ██░░ 50% pure
     Todocs          ████ 100% pure
     Todocs          ██░░ 50% pure
     Todocs          █░░░ 25% pure
-    Todocs          ██░░ 50% pure

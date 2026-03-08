@@ -3,7 +3,7 @@
 ## Development Setup
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/wronai/todocs
 cd todocs
 python -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows

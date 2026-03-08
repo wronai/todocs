@@ -1,9 +1,10 @@
-# code2llm | 22f 4169L | py:22 | 2026-03-08
-# CC̄=5.5 | critical:25/162 | dups:0 | cycles:0
+# code2llm | 22f 4294L | py:22 | 2026-03-08
+# CC̄=5.5 | critical:26/165 | dups:0 | cycles:0
 
-HEALTH[7]:
+HEALTH[8]:
   🟡 CC    render_api_surface CC=17 (limit:15)
   🟡 CC    _render_health_report CC=18 (limit:15)
+  🟡 CC    _render_readme_list CC=16 (limit:15)
   🟡 CC    get_runtime_deps CC=17 (limit:15)
   🟡 CC    get_dev_deps CC=18 (limit:15)
   🟡 CC    build_graph CC=15 (limit:15)
@@ -11,21 +12,21 @@ HEALTH[7]:
   🟡 CC    _parse_module_ast CC=17 (limit:15)
 
 REFACTOR[1]:
-  1. split 7 high-CC methods  (CC>15)
+  1. split 8 high-CC methods  (CC>15)
 
 COUPLING:
            core     cli   utils
-   core      ──      ←9       1  hub
-    cli       9      ──          !! fan-out
+   core      ──     ←10       1  hub
+    cli      10      ──          !! fan-out
   utils      ←1              ──
   CYCLES: none
-  HUB: core/ (fan-in=9)
-  SMELL: cli/ fan-out=9 → split needed
+  HUB: core/ (fan-in=10)
+  SMELL: cli/ fan-out=10 → split needed
 
 LAYERS:
-  generators/                     CC̄=6.2    ←in:0  →out:0
+  generators/                     CC̄=6.3    ←in:0  →out:0
+  │ !! comparison                 475L  1C   15m  CC=18     ←0
   │ !! article_sections           431L  0C   14m  CC=17     ←1
-  │ !! comparison                 380L  1C   13m  CC=18     ←0
   │ !  article                    145L  1C    5m  CC=13     ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │
@@ -50,20 +51,21 @@ LAYERS:
   utils/                          CC̄=4.7    ←in:1  →out:0
   │ __init__                   150L  1C    6m  CC=8      ←1
   │
-  ./                              CC̄=4.2    ←in:0  →out:0
+  ./                              CC̄=4.0    ←in:0  →out:0
   │ !  core                       387L  5C    8m  CC=11     ←1
-  │ cli                        307L  0C   11m  CC=7      ←0
+  │ cli                        337L  0C   12m  CC=7      ←0
   │ __init__                    10L  0C    0m  CC=0.0    ←0
   │
 
 DUPLICATES[0]: none
 
-FUNCTIONS (CC≥10, 25 of 162):
+FUNCTIONS (CC≥10, 26 of 165):
    18.0  ComparisonGenerator._render_health_report   19n   2exit  loops+cond+ret  !! split
    18.0  DependencyAnalyzer.get_dev_deps            15n   2exit  loops+cond+ret  !! split
    17.0  render_api_surface                         20n   4exit  loops+cond+ret  !! split
    17.0  DependencyAnalyzer.get_runtime_deps        13n   2exit  loops+cond+ret  !! split
    17.0  CodeMetricsAnalyzer._parse_module_ast       3n   2exit  ret  !! split
+   16.0  ComparisonGenerator._render_readme_list    19n   2exit  loops+cond+ret  !! split
    16.0  CodeMetricsAnalyzer.analyze                 8n   2exit  loops+cond+ret  !! split
    15.0  ImportGraphAnalyzer.build_graph             9n   2exit  loops+cond+ret  !! split
    14.0  ComparisonGenerator._render_category        6n   2exit  loops+cond+ret
@@ -77,8 +79,8 @@ FUNCTIONS (CC≥10, 25 of 162):
    11.0  ComparisonGenerator._tech_stack_overview   15n   2exit  loops+cond+ret
    11.0  APISurfaceAnalyzer._collect_target_files   17n   2exit  loops+cond+ret
    11.0  scan_organization                          13n   2exit  loops+cond+ret
-   10.0  ToonParser._parse_modules_section          16n   2exit  loops+cond+ret
    10.0  MakefileParser._parse_taskfile             13n   4exit  loops+cond+ret
+   10.0  ToonParser._parse_modules_section          16n   2exit  loops+cond+ret
    10.0  DockerParser._parse_dockerfile             15n   2exit  loops+cond+ret
    10.0  CodeMetricsAnalyzer._scan                  18n   2exit  loops+cond+ret
    10.0  APISurfaceAnalyzer._extract_class           9n   4exit  cond+ret
@@ -86,8 +88,8 @@ FUNCTIONS (CC≥10, 25 of 162):
    10.0  MetadataExtractor._from_pyproject          13n   3exit  loops+cond+ret
 
   summary:
-    critical(≥10): 25 | high(5-10): 58 | medium(2-5): 50 | low(<2): 29
-    15% CC≥10  51% CC≥5
+    critical(≥10): 26 | high(5-10): 58 | medium(2-5): 51 | low(<2): 30
+    16% CC≥10  51% CC≥5
 
 HOTSPOTS:
   #1  scan_project                         fan=33   "calls 33 functions"
@@ -103,7 +105,7 @@ HOTSPOTS:
 
 CLASSES:
   ToonParser                     ████████████████████████  17m  CC̄=5.4   max=11  
-  ComparisonGenerator            ██████████████████        13m  CC̄=5.9   max=18    !!
+  ComparisonGenerator            █████████████████████     15m  CC̄=6.3   max=18    !!
   APISurfaceAnalyzer             ██████████████████        13m  CC̄=6.5   max=13  
   StructureAnalyzer              ████████████████          12m  CC̄=3.9   max=7   
   CodeMetricsAnalyzer            ██████████████            10m  CC̄=6.4   max=17    !!
@@ -214,7 +216,7 @@ D:
         → _parse_patterns(1)  CC=7.0
     create_scan_filter(project_path,max_depth,extra_excludes)
   cli.py:
-    e: main,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health
+    e: main,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health,readme
     main()
     generate(root_dir,output_dir,org_name,org_url,exclude,json_report,verbose)
     _discover_and_show_progress(root,exclude,console)
@@ -226,6 +228,7 @@ D:
     inspect(project_dir,output,fmt)
     compare(root_dir,output_path,org_name,exclude)
     health(root_dir,output_path,org_name,exclude)
+    readme(root_dir,output_path,org_name,exclude,title)
   analyzers/structure.py:
     e: StructureAnalyzer
     StructureAnalyzer  # Analyze project directory structure....

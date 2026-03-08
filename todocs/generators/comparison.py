@@ -372,6 +372,101 @@ class ComparisonGenerator:
         sections.append(self._footer())
         return "\n\n".join(sections)
 
+    def generate_readme_list(
+        self,
+        profiles: List["ProjectProfile"],
+        output_path: Path,
+        title: str = "Project Portfolio",
+    ) -> None:
+        """Generate a single README.md with a list of all projects and brief descriptions."""
+        md = self._render_readme_list(profiles, title)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(md, encoding="utf-8")
+
+    def _render_readme_list(self, profiles: List["ProjectProfile"], title: str) -> str:
+        """Render a compact README with project list and 5-line descriptions."""
+        sections = []
+
+        # Header
+        sections.append(f"# {title}")
+        sections.append("")
+        sections.append(f"**Organization:** {self.org_name}  ")
+        sections.append(f"**URL:** {self.org_url}  ")
+        sections.append(f"**Generated:** {self.generated_at}  ")
+        sections.append(f"**Projects:** {len(profiles)}")
+        sections.append("")
+
+        # Summary table
+        sections.append("## Summary")
+        sections.append("")
+        sections.append("| Project | Version | Language | SLOC | Grade | Tests | CI |")
+        sections.append("|---------|---------|----------|-----:|:-----:|:----:|:-:|")
+
+        for p in sorted(profiles, key=lambda x: x.name):
+            tests = "✓" if p.maturity.has_tests else "✗"
+            ci = "✓" if p.maturity.has_ci else "✗"
+            sections.append(
+                f"| [{p.name}](#{p.name.lower()}) "
+                f"| {p.metadata.version or '—'} "
+                f"| {p.tech_stack.primary_language} "
+                f"| {p.code_stats.source_lines:,} "
+                f"| {p.maturity.grade} "
+                f"| {tests} "
+                f"| {ci} |"
+            )
+
+        sections.append("")
+
+        # Individual project sections (5-line descriptions)
+        sections.append("## Projects")
+        sections.append("")
+
+        for p in sorted(profiles, key=lambda x: x.name):
+            sections.append(f"### {p.name}")
+            sections.append("")
+
+            # Line 1: Version and language
+            lang = p.tech_stack.primary_language
+            version = p.metadata.version or "unversioned"
+            sections.append(f"**{lang}** project, version **{version}** — Grade **{p.maturity.grade}** ({p.maturity.score:.0f}/100)")
+
+            # Line 2: Size
+            sections.append(f"- **Size:** {p.code_stats.source_lines:,} lines ({p.code_stats.source_files} files)")
+
+            # Line 3: Description (truncated to ~100 chars)
+            desc = p.metadata.description or "No description available."
+            if len(desc) > 100:
+                desc = desc[:97] + "..."
+            sections.append(f"- **Description:** {desc}")
+
+            # Line 4: Key features (tests, CI, docker)
+            features = []
+            if p.maturity.has_tests:
+                features.append(f"tests ({p.code_stats.test_files} files)")
+            if p.maturity.has_ci:
+                features.append("CI/CD")
+            if p.maturity.has_docker:
+                features.append("Docker")
+            if p.maturity.has_docs:
+                features.append("docs")
+            if not features:
+                features.append("no special features detected")
+            sections.append(f"- **Features:** {', '.join(features)}")
+
+            # Line 5: Dependencies summary
+            deps = p.dependencies[:5]
+            deps_str = ", ".join(deps) if deps else "none major"
+            if len(p.dependencies) > 5:
+                deps_str += f" +{len(p.dependencies) - 5} more"
+            sections.append(f"- **Dependencies:** {deps_str}")
+
+            sections.append("")
+
+        # Footer
+        sections.append(self._footer())
+
+        return "\n".join(sections)
+
     def _footer(self) -> str:
         return "\n".join([
             "---",

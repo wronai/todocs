@@ -3,16 +3,16 @@ project:
   name: todocs
   repo: /home/tom/github/wronai/todocs
   language: python
-  analyzed_at: '2026-03-08T08:46:58Z'
+  analyzed_at: '2026-03-08T14:27:43Z'
   tool: code2llm
   stats:
     files: 18
-    lines: 5729
-    functions: 162
+    lines: 6209
+    functions: 165
     classes: 20
 health:
   cc_avg: 5.5
-  critical_count: 25
+  critical_count: 26
   critical_limit: 10
   duplicates: 0
   cycles: 0
@@ -88,6 +88,11 @@ health:
     limit: 15
     severity: warning
   - type: cc_exceeded
+    target: ComparisonGenerator._render_readme_list
+    value: 16
+    limit: 15
+    severity: warning
+  - type: cc_exceeded
     target: CodeMetricsAnalyzer.analyze
     value: 16
     limit: 15
@@ -112,11 +117,6 @@ health:
     value: 13
     limit: 10
     severity: warning
-  - type: high_fan_out
-    target: ToonParser.parse_flow
-    value: 13
-    limit: 10
-    severity: warning
 modules:
 - path: todocs/analyzers/dependencies.py
   lines: 151
@@ -138,15 +138,15 @@ modules:
       flag: split
       fan_out: 20
 - path: todocs/generators/comparison.py
-  lines: 380
+  lines: 475
   classes: 1
-  methods: 13
+  methods: 15
   cc_max: 18
   inbound_deps: 0
   exports:
   - name: ComparisonGenerator
     type: class
-    cc_avg: 5.9
+    cc_avg: 6.3
     methods:
     - name: _tech_stack_overview
       cc: 11
@@ -156,6 +156,9 @@ modules:
       cc: 18
       flag: split
       fan_out: 13
+    - name: _render_readme_list
+      cc: 16
+      flag: split
 - path: todocs/analyzers/code_metrics.py
   lines: 240
   classes: 1
@@ -454,9 +457,9 @@ modules:
       cc: 2
       fan_out: 11
 - path: todocs/cli.py
-  lines: 307
+  lines: 337
   classes: 0
-  methods: 11
+  methods: 12
   cc_max: 7
   inbound_deps: 0
   exports:
@@ -479,6 +482,10 @@ modules:
     type: function
     cc: 1
     fan_out: 12
+  - name: readme
+    type: function
+    cc: 2
+    fan_out: 13
 - path: todocs/__init__.py
   lines: 10
   classes: 0
@@ -550,6 +557,10 @@ refactoring:
     impact: medium
     effort: low
     module: comparison.py
+  - action: Split ComparisonGenerator._render_readme_list (CC=16 → target CC<10)
+    impact: medium
+    effort: low
+    module: comparison.py
   - action: Split DependencyAnalyzer.get_runtime_deps (CC=17 → target CC<10)
     impact: medium
     effort: low
@@ -582,6 +593,6 @@ refactoring:
 evolution:
 - date: '2026-03-08'
   cc_avg: 5.5
-  critical: 25
-  lines: 5729
+  critical: 26
+  lines: 6209
   note: Automated analysis

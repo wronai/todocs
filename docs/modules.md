@@ -1,6 +1,6 @@
 # todocs — Module Reference
 
-> 24 modules | 162 functions | 20 classes
+> 24 modules | 165 functions | 20 classes
 
 ## Module Overview
 
@@ -12,7 +12,7 @@
 | `analyzers.import_graph` | 201 | 0 | 1 | 5.6 | Build import dependency graph between project modules using  | [source](https://github.com/wronai/todocs/blob/main/todocs/analyzers/import_graph.py) |
 | `analyzers.maturity` | 103 | 0 | 1 | 7.5 | Score project maturity based on structural and metric indica | [source](https://github.com/wronai/todocs/blob/main/todocs/analyzers/maturity.py) |
 | `analyzers.structure` | 234 | 0 | 1 | 3.9 | Analyze project directory structure and detect technology st | [source](https://github.com/wronai/todocs/blob/main/todocs/analyzers/structure.py) |
-| `cli` | 307 | 11 | 0 | 2.9 | CLI interface for todocs — generate project documentation ar | [source](https://github.com/wronai/todocs/blob/main/todocs/cli.py) |
+| `cli` | 337 | 12 | 0 | 2.8 | CLI interface for todocs — generate project documentation ar | [source](https://github.com/wronai/todocs/blob/main/todocs/cli.py) |
 | `core` | 387 | 6 | 5 | 5.9 | Core data models and orchestration for todocs. | [source](https://github.com/wronai/todocs/blob/main/todocs/core.py) |
 | `extractors.changelog_parser` | 103 | 0 | 1 | 4.4 | Parse CHANGELOG.md to extract recent version entries. | [source](https://github.com/wronai/todocs/blob/main/todocs/extractors/changelog_parser.py) |
 | `extractors.docker_parser` | 174 | 0 | 1 | 6.3 | Parse Docker files to extract service topology and base imag | [source](https://github.com/wronai/todocs/blob/main/todocs/extractors/docker_parser.py) |
@@ -22,7 +22,7 @@
 | `extractors.toon_parser` | 343 | 0 | 1 | 5.4 | Parse .toon (Token-Oriented Object Notation) files. | [source](https://github.com/wronai/todocs/blob/main/todocs/extractors/toon_parser.py) |
 | `generators.article` | 145 | 0 | 1 | 3.8 | Generate WordPress-ready markdown articles from ProjectProfi | [source](https://github.com/wronai/todocs/blob/main/todocs/generators/article.py) |
 | `generators.article_sections` | 431 | 14 | 0 | 7.3 | Section renderer helpers for ArticleGenerator. | [source](https://github.com/wronai/todocs/blob/main/todocs/generators/article_sections.py) |
-| `generators.comparison` | 380 | 0 | 1 | 5.9 | Generate cross-project comparison and category summary artic | [source](https://github.com/wronai/todocs/blob/main/todocs/generators/comparison.py) |
+| `generators.comparison` | 475 | 0 | 1 | 6.3 | Generate cross-project comparison and category summary artic | [source](https://github.com/wronai/todocs/blob/main/todocs/generators/comparison.py) |
 | `utils` | 150 | 1 | 1 | 4.7 | Gitignore pattern matching utility for todocs. | [source](https://github.com/wronai/todocs/blob/main/todocs/utils/__init__.py) |
 
 ## Core
@@ -36,6 +36,7 @@ CLI interface for todocs — generate project documentation articles.
 - `health(root_dir, output_path, org_name, exclude)` — Generate organization health report. [source](https://github.com/wronai/todocs/blob/main/todocs/cli.py#L290)
 - `inspect(project_dir, output, fmt)` — Inspect a single project and show its profile. [source](https://github.com/wronai/todocs/blob/main/todocs/cli.py#L234)
 - `main()` — todocs — Static-analysis documentation generator for project portfolios. [source](https://github.com/wronai/todocs/blob/main/todocs/cli.py#L28)
+- `readme(root_dir, output_path, org_name, exclude, title)` — Generate a single README.md with project list and 5-line descriptions. [source](https://github.com/wronai/todocs/blob/main/todocs/cli.py#L313)
 
 ### `core` [source](https://github.com/wronai/todocs/blob/main/todocs/core.py)
 
@@ -270,3 +271,4 @@ Generate cross-project comparison and category summary articles.
 | `generate_comparison` | `profiles, output_path, title` | `—` | 1 |
 | `generate_category_articles` | `profiles, output_dir` | `—` | 3 |
 | `generate_health_report` | `profiles, output_path` | `—` | 1 |
+| `generate_readme_list` | `profiles, output_path, title` | `—` | 1 |

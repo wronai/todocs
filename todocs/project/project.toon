@@ -1,7 +1,7 @@
-# todocs | 24f 4218L | python:24
+# todocs | 24f 4343L | python:24
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
 M[24]:
-  cli.py,237
+  cli.py,260
   __init__.py,7
   core.py,286
   extractors/toon_parser.py,288
@@ -16,7 +16,7 @@ M[24]:
   generators/__init__.py,1
   generators/article_sections.py,337
   generators/article.py,117
-  generators/comparison.py,294
+  generators/comparison.py,364
   utils/__init__.py,107
   analyzers/structure.py,200
   analyzers/__init__.py,1
@@ -28,7 +28,7 @@ M[24]:
 D:
   cli.py:
     i: json,sys,click,pathlib.Path,rich.console.Console,rich.progress.{Progress,SpinnerColumn,TextColumn},rich.table.Table,typing.Optional
-    e: main,generate,inspect,compare,health
+    e: main,generate,inspect,compare,health,readme
     main()
     generate(root_dir:str;output_dir:str;org_name:str;org_url:str;exclude:tuple;json_report:Optional[str];...+1)
     _discover_and_show_progress(root:Path;exclude:tuple;console)->list

@@ -1,6 +1,6 @@
 # todocs
 
-[![Version](https://img.shields.io/badge/version-0.1.7-blue)](https://github.com/wronai/todocs)
+[![Version](https://img.shields.io/badge/version-0.1.8-blue)](https://github.com/wronai/todocs)
 [![Python](https://img.shields.io/badge/python-3.10+-3776AB)](https://python.org)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Tests](https://img.shields.io/badge/tests-63%20passed-brightgreen)](tests/)

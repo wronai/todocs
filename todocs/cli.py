@@ -24,7 +24,7 @@ except ImportError:
 
 
 @click.group()
-@click.version_option(version="0.1.0", prog_name="todocs")
+@click.version_option(version="0.1.7", prog_name="todocs")
 def main():
     """todocs — Static-analysis documentation generator for project portfolios.
 
@@ -301,6 +301,36 @@ def health(root_dir: str, output_path: str, org_name: str, exclude: tuple):
     gen = ComparisonGenerator(org_name=org_name)
     gen.generate_health_report(profiles, Path(output_path))
     click.echo(f"Health report written to {output_path} ({len(profiles)} projects)")
+
+
+@main.command()
+@click.argument("root_dir", type=click.Path(exists=True, file_okay=False))
+@click.option("-o", "--output", "output_path", default="README.md",
+              help="Output file path")
+@click.option("--org-name", default="WronAI", help="Organization name")
+@click.option("--exclude", multiple=True, help="Directory names to exclude")
+@click.option("--title", default="Project Portfolio", help="README title")
+def readme(root_dir: str, output_path: str, org_name: str, exclude: tuple, title: str):
+    """Generate a single README.md with project list and 5-line descriptions.
+
+    ROOT_DIR is the directory containing project subdirectories.
+
+    Example:
+        todocs readme /home/tom/github/wronai --output README.md --org-name WronAI
+    """
+    from todocs.core import scan_organization
+    from todocs.generators.comparison import ComparisonGenerator
+
+    root = Path(root_dir).resolve()
+    profiles = scan_organization(root, exclude=list(exclude))
+
+    if not profiles:
+        click.echo("No projects found.", err=True)
+        raise SystemExit(1)
+
+    gen = ComparisonGenerator(org_name=org_name)
+    gen.generate_readme_list(profiles, Path(output_path), title=title)
+    click.echo(f"README written to {output_path} ({len(profiles)} projects)")
 
 
 if __name__ == "__main__":
