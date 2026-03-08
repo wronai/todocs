@@ -1,0 +1,235 @@
+flowchart TD
+    subgraph analyzers_api_surface
+        analyzers____init__["__init__"]
+        analyzers__analyze["analyze"]
+        analyzers___should_skip["_should_skip"]
+        analyzers___detect_entry_points["_detect_entry_points"]
+        analyzers___detect_cli_commands("_detect_cli_commands CC=13")
+        analyzers___decorator_name["_decorator_name"]
+        analyzers___scan_public_symbols["_scan_public_symbols"]
+        analyzers___collect_target_files("_collect_target_files CC=11")
+        analyzers___extract_from_file["_extract_from_file"]
+        analyzers___extract_class("_extract_class CC=10")
+        analyzers___extract_function["_extract_function"]
+        analyzers___extract_all("_extract_all CC=10")
+        analyzers___detect_rest_endpoints["_detect_rest_endpoints"]
+    end
+    subgraph analyzers_code_metrics
+        analyzers____init__["__init__"]
+        analyzers___should_skip["_should_skip"]
+        analyzers___is_test["_is_test"]
+        analyzers___scan("_scan CC=10")
+        analyzers___count_lines["_count_lines"]
+        analyzers__analyze{{analyze CC=16}}
+        analyzers___ast_complexity["_ast_complexity"]
+        analyzers___parse_module_ast{{_parse_module_ast CC=17}}
+        analyzers___extract_module_info["_extract_module_info"]
+        analyzers__get_key_modules["get_key_modules"]
+    end
+    subgraph analyzers_dependencies
+        analyzers____init__["__init__"]
+        analyzers___load_pyproject["_load_pyproject"]
+        analyzers___parse_dep_name["_parse_dep_name"]
+        analyzers__get_runtime_deps{{get_runtime_deps CC=17}}
+        analyzers__get_dev_deps{{get_dev_deps CC=18}}
+    end
+    subgraph analyzers_import_graph
+        analyzers____init__["__init__"]
+        analyzers___should_skip["_should_skip"]
+        analyzers___iter_py_files["_iter_py_files"]
+        analyzers___module_name["_module_name"]
+        analyzers__build_graph{{build_graph CC=15}}
+        analyzers___detect_internal_packages("_detect_internal_packages CC=9")
+        analyzers___detect_cycles["_detect_cycles"]
+        analyzers__get_hub_modules["get_hub_modules"]
+    end
+    subgraph analyzers_maturity
+        analyzers__maturity__MaturityScorer____init__["__init__"]
+        analyzers__maturity__MaturityScorer__score("score CC=14")
+    end
+    subgraph analyzers_structure
+        analyzers__structure__StructureAnalyzer____init__["__init__"]
+        analyzers___should_skip["_should_skip"]
+        analyzers___iter_files["_iter_files"]
+        analyzers__structure__StructureAnalyzer__analyze["analyze"]
+        analyzers__detect_tech_stack["detect_tech_stack"]
+        analyzers___detect_languages["_detect_languages"]
+        analyzers___detect_build_tools["_detect_build_tools"]
+        analyzers___detect_test_frameworks["_detect_test_frameworks"]
+        analyzers___detect_ci_cd["_detect_ci_cd"]
+        analyzers___detect_containers["_detect_containers"]
+        analyzers___detect_frameworks["_detect_frameworks"]
+        analyzers___read_deps_text["_read_deps_text"]
+    end
+    subgraph cli
+        cli__main["main"]
+        cli__generate["generate"]
+        cli___discover_and_show_progress["_discover_and_show_progress"]
+        cli___scan_with_progress["_scan_with_progress"]
+        cli___print_project_summary["_print_project_summary"]
+        cli___generate_articles_with_progress["_generate_articles_with_progress"]
+        cli___generate_without_rich["_generate_without_rich"]
+        cli___write_json_report["_write_json_report"]
+        cli__inspect["inspect"]
+        cli__compare["compare"]
+        cli__health["health"]
+    end
+    subgraph core
+        core__scan_project["scan_project"]
+        core___discover_projects("_discover_projects CC=8")
+        core__scan_organization("scan_organization CC=11")
+        core__generate_articles["generate_articles"]
+        core___categorize("_categorize CC=9")
+        core___generate_summary("_generate_summary CC=8")
+    end
+    subgraph core_ProjectProfile
+        core__ProjectProfile__to_dict["to_dict"]
+        core__ProjectProfile__to_json["to_json"]
+    end
+    subgraph extractors_changelog_parser
+        extractors____init__["__init__"]
+        extractors__parse["parse"]
+        extractors___find_changelog["_find_changelog"]
+        extractors___parse_entries["_parse_entries"]
+        extractors___summarize_entry("_summarize_entry CC=9")
+    end
+    subgraph extractors_docker_parser
+        extractors__docker_parser__DockerParser____init__["__init__"]
+        extractors__docker_parser__DockerParser__parse["parse"]
+        extractors___find_dockerfiles("_find_dockerfiles CC=8")
+        extractors___find_compose_files["_find_compose_files"]
+        extractors___parse_dockerfile("_parse_dockerfile CC=10")
+        extractors___parse_compose("_parse_compose CC=13")
+    end
+    subgraph extractors_makefile_parser
+        extractors____init__["__init__"]
+        extractors__makefile_parser__MakefileParser__parse["parse"]
+        extractors___parse_makefile["_parse_makefile"]
+        extractors___collect_phony_targets["_collect_phony_targets"]
+        extractors___parse_target_line["_parse_target_line"]
+        extractors___extract_help_text["_extract_help_text"]
+        extractors___collect_commands["_collect_commands"]
+        extractors___parse_taskfile("_parse_taskfile CC=10")
+        extractors__get_target_names["get_target_names"]
+    end
+    subgraph extractors_metadata
+        extractors__metadata__MetadataExtractor____init__["__init__"]
+        extractors__metadata__MetadataExtractor__extract("extract CC=9")
+        extractors__metadata__MetadataExtractor___merge["_merge"]
+        extractors___from_pyproject("_from_pyproject CC=10")
+        extractors___from_setup_cfg["_from_setup_cfg"]
+        extractors___from_setup_py("_from_setup_py CC=8")
+        extractors___extract_setup_kwargs["_extract_setup_kwargs"]
+        extractors___from_package_json("_from_package_json CC=8")
+        extractors___extract_license["_extract_license"]
+    end
+    subgraph extractors_readme_parser
+        extractors__readme_parser__ReadmeParser____init__["__init__"]
+        extractors__readme_parser__ReadmeParser__parse["parse"]
+        extractors___find_readme["_find_readme"]
+        extractors___parse_sections["_parse_sections"]
+        extractors___extract_description["_extract_description"]
+        extractors___extract_preamble["_extract_preamble"]
+        extractors___extract_post_h1("_extract_post_h1 CC=8")
+        extractors___extract_heading_sections["_extract_heading_sections"]
+        extractors__get_first_paragraph["get_first_paragraph"]
+    end
+    subgraph extractors_toon_parser
+        extractors__toon_parser__ToonParser____init__["__init__"]
+        extractors__find_toon_files["find_toon_files"]
+        extractors__toon_parser__ToonParser__parse_all["parse_all"]
+        extractors__toon_parser__ToonParser__parse_map["parse_map"]
+        extractors___parse_map_header["_parse_map_header"]
+        extractors___parse_modules_section("_parse_modules_section CC=10")
+        extractors___parse_details_section["_parse_details_section"]
+        extractors___parse_class_line["_parse_class_line"]
+        extractors___parse_function_line["_parse_function_line"]
+        extractors__parse_analysis["parse_analysis"]
+        extractors___parse_analysis_header["_parse_analysis_header"]
+        extractors___parse_health_section["_parse_health_section"]
+        extractors___parse_refactor_section["_parse_refactor_section"]
+        extractors___parse_layers_section("_parse_layers_section CC=8")
+        extractors__toon_parser__ToonParser__parse_flow("parse_flow CC=11")
+        extractors__parse_functions["parse_functions"]
+        extractors__toon_parser__ToonParser___read["_read"]
+    end
+    subgraph generators_article
+        generators__article__ArticleGenerator____init__["__init__"]
+        generators__article__ArticleGenerator__generate["generate"]
+        generators__generate_index["generate_index"]
+        generators___render_article["_render_article"]
+        generators___render_index("_render_index CC=13")
+    end
+    subgraph generators_article_sections
+        generators__article_sections__render_frontmatter["render_frontmatter"]
+        generators__article_sections__render_header["render_header"]
+        generators__article_sections__render_overview["render_overview"]
+        generators__article_sections__render_tech_stack("render_tech_stack CC=8")
+        generators__article_sections__render_architecture("render_architecture CC=8")
+        generators__article_sections__render_metrics["render_metrics"]
+        generators__article_sections__render_maturity["render_maturity"]
+        generators__article_sections__render_dependencies("render_dependencies CC=8")
+        generators__article_sections__render_api_surface{{render_api_surface CC=17}}
+        generators__article_sections__render_build_targets["render_build_targets"]
+        generators__article_sections__render_docker("render_docker CC=12")
+        generators__article_sections__render_changelog["render_changelog"]
+        generators__article_sections__render_usage("render_usage CC=11")
+        generators__article_sections__render_footer["render_footer"]
+    end
+    subgraph generators_comparison
+        generators____init__["__init__"]
+        generators__generate_comparison["generate_comparison"]
+        generators__generate_category_articles["generate_category_articles"]
+        generators__generate_health_report["generate_health_report"]
+        generators___render_comparison["_render_comparison"]
+        generators___size_comparison["_size_comparison"]
+        generators___maturity_leaderboard["_maturity_leaderboard"]
+        generators___complexity_comparison["_complexity_comparison"]
+        generators___tech_stack_overview("_tech_stack_overview CC=11")
+        generators___dependency_overlap("_dependency_overlap CC=8")
+        generators___render_category("_render_category CC=14")
+        generators___render_health_report{{_render_health_report CC=18}}
+        generators___footer["_footer"]
+    end
+    subgraph utils
+        utils__create_scan_filter["create_scan_filter"]
+    end
+    subgraph utils_GitignoreParser
+        utils__GitignoreParser____init__["__init__"]
+        utils__GitignoreParser___load_gitignore["_load_gitignore"]
+        utils__GitignoreParser___parse_patterns["_parse_patterns"]
+        utils__GitignoreParser___match_pattern("_match_pattern CC=8")
+        utils__GitignoreParser__is_ignored["is_ignored"]
+    end
+    cli__generate --> cli___write_json_report
+    cli__generate --> cli___discover_and_show_progress
+    cli___discover_and_show_progress --> core___discover_projects
+    cli___scan_with_progress --> core__scan_organization
+    cli___generate_articles_with_progress --> core__generate_articles
+    cli___generate_without_rich --> core___discover_projects
+    cli___generate_without_rich --> core__generate_articles
+    cli___generate_without_rich --> core__scan_project
+    cli__inspect --> core__scan_project
+    cli__compare --> core__scan_organization
+    cli__health --> core__scan_organization
+    generators___render_article --> generators__article_sections__render_frontmatter
+    generators___render_article --> generators__article_sections__render_header
+    generators___render_article --> generators__article_sections__render_overview
+    generators___render_article --> generators__article_sections__render_tech_stack
+    generators___render_article --> generators__article_sections__render_architecture
+    generators___render_article --> generators__article_sections__render_metrics
+    generators___render_article --> generators__article_sections__render_maturity
+    generators___render_article --> generators__article_sections__render_dependencies
+    generators___render_article --> generators__article_sections__render_api_surface
+    generators___render_article --> generators__article_sections__render_build_targets
+    generators___render_article --> generators__article_sections__render_docker
+    generators___render_article --> generators__article_sections__render_changelog
+    generators___render_article --> generators__article_sections__render_usage
+    generators___render_article --> generators__article_sections__render_footer
+    core__scan_project --> utils__create_scan_filter
+    core__scan_organization --> core__scan_project
+
+    classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
+    class generators__article_sections__render_api_surface,generators___render_health_report,analyzers__get_runtime_deps,analyzers__get_dev_deps,analyzers__build_graph,analyzers__analyze,analyzers___parse_module_ast highCC
+    class extractors___parse_taskfile,extractors___parse_modules_section,extractors___parse_layers_section,extractors__toon_parser__ToonParser__parse_flow,extractors___extract_post_h1,extractors___find_dockerfiles,extractors___parse_dockerfile,extractors___parse_compose,extractors___summarize_entry,generators___render_index,generators__article_sections__render_tech_stack,generators__article_sections__render_architecture,generators__article_sections__render_dependencies,generators__article_sections__render_docker,generators__article_sections__render_usage,generators___tech_stack_overview,generators___dependency_overlap,generators___render_category,utils__GitignoreParser___match_pattern,analyzers__maturity__MaturityScorer__score,analyzers___detect_internal_packages,analyzers___scan,analyzers___detect_cli_commands,analyzers___collect_target_files,analyzers___extract_class,analyzers___extract_all,core___discover_projects,core__scan_organization,core___categorize,core___generate_summary medCC

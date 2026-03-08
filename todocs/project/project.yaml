@@ -1,13 +1,13 @@
 version: '1'
 project:
   name: todocs
-  repo: /home/tom/github/wronai/todocs
+  repo: /home/tom/github/wronai/todocs/todocs
   language: python
-  analyzed_at: '2026-03-08T08:39:59Z'
+  analyzed_at: '2026-03-08T08:40:30Z'
   tool: code2llm
   stats:
     files: 18
-    lines: 5729
+    lines: 4169
     functions: 162
     classes: 20
 health:
@@ -118,7 +118,7 @@ health:
     limit: 10
     severity: warning
 modules:
-- path: todocs/analyzers/dependencies.py
+- path: analyzers/dependencies.py
   lines: 151
   classes: 1
   methods: 5
@@ -137,7 +137,7 @@ modules:
       cc: 18
       flag: split
       fan_out: 20
-- path: todocs/generators/comparison.py
+- path: generators/comparison.py
   lines: 380
   classes: 1
   methods: 13
@@ -156,7 +156,7 @@ modules:
       cc: 18
       flag: split
       fan_out: 13
-- path: todocs/analyzers/code_metrics.py
+- path: analyzers/code_metrics.py
   lines: 240
   classes: 1
   methods: 10
@@ -177,12 +177,12 @@ modules:
     - name: _parse_module_ast
       cc: 17
       flag: split
-- path: todocs/generators/article_sections.py
+- path: generators/article_sections.py
   lines: 431
   classes: 0
   methods: 14
   cc_max: 17
-  inbound_deps: 2
+  inbound_deps: 1
   exports:
   - name: render_frontmatter
     type: function
@@ -227,7 +227,7 @@ modules:
   - name: render_footer
     type: function
     cc: 1
-- path: todocs/analyzers/import_graph.py
+- path: analyzers/import_graph.py
   lines: 201
   classes: 1
   methods: 8
@@ -242,7 +242,7 @@ modules:
       cc: 15
       flag: split
       fan_out: 26
-- path: todocs/analyzers/maturity.py
+- path: analyzers/maturity.py
   lines: 103
   classes: 1
   methods: 2
@@ -255,7 +255,7 @@ modules:
     methods:
     - name: score
       cc: 14
-- path: todocs/analyzers/api_surface.py
+- path: analyzers/api_surface.py
   lines: 290
   classes: 1
   methods: 13
@@ -281,7 +281,7 @@ modules:
     - name: _detect_rest_endpoints
       cc: 7
       fan_out: 11
-- path: todocs/extractors/docker_parser.py
+- path: extractors/docker_parser.py
   lines: 174
   classes: 1
   methods: 6
@@ -298,7 +298,7 @@ modules:
     - name: _parse_compose
       cc: 13
       fan_out: 14
-- path: todocs/generators/article.py
+- path: generators/article.py
   lines: 145
   classes: 1
   methods: 5
@@ -315,12 +315,12 @@ modules:
     - name: _render_index
       cc: 13
       fan_out: 12
-- path: todocs/core.py
+- path: core.py
   lines: 387
   classes: 5
   methods: 8
   cc_max: 11
-  inbound_deps: 5
+  inbound_deps: 1
   exports:
   - name: TechStack
     type: class
@@ -349,7 +349,7 @@ modules:
     type: function
     cc: 6
     fan_out: 13
-- path: todocs/extractors/toon_parser.py
+- path: extractors/toon_parser.py
   lines: 343
   classes: 1
   methods: 17
@@ -365,7 +365,7 @@ modules:
     - name: parse_flow
       cc: 11
       fan_out: 13
-- path: todocs/extractors/makefile_parser.py
+- path: extractors/makefile_parser.py
   lines: 153
   classes: 1
   methods: 9
@@ -378,7 +378,7 @@ modules:
     methods:
     - name: _parse_taskfile
       cc: 10
-- path: todocs/extractors/metadata.py
+- path: extractors/metadata.py
   lines: 211
   classes: 1
   methods: 9
@@ -392,7 +392,7 @@ modules:
     - name: _from_pyproject
       cc: 10
       fan_out: 12
-- path: todocs/extractors/changelog_parser.py
+- path: extractors/changelog_parser.py
   lines: 103
   classes: 1
   methods: 5
@@ -409,7 +409,7 @@ modules:
     - name: _summarize_entry
       cc: 9
       fan_out: 11
-- path: todocs/extractors/readme_parser.py
+- path: extractors/readme_parser.py
   lines: 153
   classes: 1
   methods: 9
@@ -423,7 +423,7 @@ modules:
     - name: _extract_heading_sections
       cc: 7
       fan_out: 12
-- path: todocs/utils/__init__.py
+- path: utils/__init__.py
   lines: 150
   classes: 1
   methods: 6
@@ -436,7 +436,7 @@ modules:
   - name: create_scan_filter
     type: function
     cc: 2
-- path: todocs/analyzers/structure.py
+- path: analyzers/structure.py
   lines: 234
   classes: 1
   methods: 12
@@ -453,7 +453,7 @@ modules:
     - name: detect_tech_stack
       cc: 2
       fan_out: 11
-- path: todocs/cli.py
+- path: cli.py
   lines: 307
   classes: 0
   methods: 11
@@ -479,25 +479,25 @@ modules:
     type: function
     cc: 1
     fan_out: 12
-- path: todocs/__init__.py
+- path: __init__.py
   lines: 10
   classes: 0
   methods: 0
   cc_max: 0
   inbound_deps: 0
-- path: todocs/analyzers/__init__.py
+- path: analyzers/__init__.py
   lines: 1
   classes: 0
   methods: 0
   cc_max: 0
   inbound_deps: 0
-- path: todocs/extractors/__init__.py
+- path: extractors/__init__.py
   lines: 1
   classes: 0
   methods: 0
   cc_max: 0
   inbound_deps: 0
-- path: todocs/generators/__init__.py
+- path: generators/__init__.py
   lines: 1
   classes: 0
   methods: 0
@@ -583,5 +583,5 @@ evolution:
 - date: '2026-03-08'
   cc_avg: 5.5
   critical: 25
-  lines: 5729
+  lines: 4169
   note: Automated analysis

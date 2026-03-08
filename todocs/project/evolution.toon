@@ -1,6 +1,6 @@
-# code2llm/evolution | 186 func | 24f | 2026-03-08
+# code2llm/evolution | 162 func | 18f | 2026-03-08
 
-NEXT[8] (ranked by impact):
+NEXT[7] (ranked by impact):
   [1] !  SPLIT-FUNC      ImportGraphAnalyzer.build_graph  CC=15  fan=26
       WHY: CC=15 exceeds 15
       EFFORT: ~1h  IMPACT: 390
@@ -17,19 +17,15 @@ NEXT[8] (ranked by impact):
       WHY: CC=17 exceeds 15
       EFFORT: ~1h  IMPACT: 340
 
-  [5] !! SPLIT-FUNC      main  CC=25  fan=12
-      WHY: CC=25 exceeds 15
-      EFFORT: ~1h  IMPACT: 300
-
-  [6] !  SPLIT-FUNC      ComparisonGenerator._render_health_report  CC=18  fan=13
+  [5] !  SPLIT-FUNC      ComparisonGenerator._render_health_report  CC=18  fan=13
       WHY: CC=18 exceeds 15
       EFFORT: ~1h  IMPACT: 234
 
-  [7] !  SPLIT-FUNC      CodeMetricsAnalyzer._parse_module_ast  CC=17  fan=9
+  [6] !  SPLIT-FUNC      CodeMetricsAnalyzer._parse_module_ast  CC=17  fan=9
       WHY: CC=17 exceeds 15
       EFFORT: ~1h  IMPACT: 153
 
-  [8] !  SPLIT-FUNC      render_api_surface  CC=17  fan=7
+  [7] !  SPLIT-FUNC      render_api_surface  CC=17  fan=7
       WHY: CC=17 exceeds 15
       EFFORT: ~1h  IMPACT: 119
 
@@ -38,10 +34,10 @@ RISKS[0]: none
 
 METRICS-TARGET:
   CC̄:          5.5 → ≤3.8
-  max-CC:      25 → ≤12
+  max-CC:      18 → ≤9
   god-modules: 0 → 0
-  high-CC(≥15): 8 → ≤4
+  high-CC(≥15): 7 → ≤3
   hub-types:   0 → ≤0
 
 HISTORY:
-  prev CC̄=5.5 → now CC̄=5.5
+  (first run — no previous data)

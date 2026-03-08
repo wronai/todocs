@@ -161,62 +161,79 @@ class CodeMetricsAnalyzer:
                 cc += len(node.values) - 1
         return cc
 
+    def _parse_module_ast(self, code: str) -> tuple:
+        """Parse AST and extract classes, functions, imports, and docstring.
+
+        Returns: (classes, functions, imports, docstring)
+        """
+        classes = []
+        functions = []
+        imports = []
+        docstring = ""
+
+        try:
+            tree = ast.parse(code)
+
+            # Module docstring
+            if (tree.body and isinstance(tree.body[0], ast.Expr)
+                    and isinstance(tree.body[0].value, ast.Constant)):
+                val = tree.body[0].value
+                docstring = str(getattr(val, "value", ""))
+
+            for node in ast.walk(tree):
+                if isinstance(node, ast.ClassDef):
+                    methods = [n.name for n in node.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
+                    classes.append({"name": node.name, "methods": methods, "line": node.lineno})
+                elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    # Only top-level functions
+                    if hasattr(node, "col_offset") and node.col_offset == 0:
+                        functions.append({"name": node.name, "line": node.lineno})
+                elif isinstance(node, (ast.Import, ast.ImportFrom)):
+                    if isinstance(node, ast.ImportFrom) and node.module:
+                        imports.append(node.module)
+                    elif isinstance(node, ast.Import):
+                        for alias in node.names:
+                            imports.append(alias.name)
+        except SyntaxError:
+            pass
+
+        return classes, functions, imports, docstring
+
+    def _extract_module_info(self, pyf: Path) -> Dict[str, Any] | None:
+        """Extract information from a single Python file.
+
+        Returns module dict or None if extraction fails.
+        """
+        if self._is_test(pyf):
+            return None
+
+        try:
+            code = pyf.read_text(errors="replace")
+            lines = code.count("\n") + 1
+        except Exception:
+            return None
+
+        classes, functions, imports, docstring = self._parse_module_ast(code)
+
+        rel_path = str(pyf.relative_to(self.root))
+        return {
+            "path": rel_path,
+            "lines": lines,
+            "classes": classes,
+            "functions": functions,
+            "imports": imports[:20],
+            "docstring": (docstring[:200] + "...") if len(docstring) > 200 else docstring,
+        }
+
     def get_key_modules(self, top_n: int = 10) -> List[Dict[str, Any]]:
         """Return the top N most significant Python modules by size and complexity."""
         self._scan()
         modules = []
 
         for pyf in self._py_files:
-            if self._is_test(pyf):
-                continue
-
-            try:
-                code = pyf.read_text(errors="replace")
-                lines = code.count("\n") + 1
-            except Exception:
-                continue
-
-            # Parse AST for classes, functions
-            classes = []
-            functions = []
-            imports = []
-            docstring = ""
-
-            try:
-                tree = ast.parse(code)
-
-                # Module docstring
-                if (tree.body and isinstance(tree.body[0], ast.Expr)
-                        and isinstance(tree.body[0].value, ast.Constant)):
-                    val = tree.body[0].value
-                    docstring = str(getattr(val, "value", ""))
-
-                for node in ast.walk(tree):
-                    if isinstance(node, ast.ClassDef):
-                        methods = [n.name for n in node.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
-                        classes.append({"name": node.name, "methods": methods, "line": node.lineno})
-                    elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                        # Only top-level functions
-                        if hasattr(node, "col_offset") and node.col_offset == 0:
-                            functions.append({"name": node.name, "line": node.lineno})
-                    elif isinstance(node, (ast.Import, ast.ImportFrom)):
-                        if isinstance(node, ast.ImportFrom) and node.module:
-                            imports.append(node.module)
-                        elif isinstance(node, ast.Import):
-                            for alias in node.names:
-                                imports.append(alias.name)
-            except SyntaxError:
-                pass
-
-            rel_path = str(pyf.relative_to(self.root))
-            modules.append({
-                "path": rel_path,
-                "lines": lines,
-                "classes": classes,
-                "functions": functions,
-                "imports": imports[:20],
-                "docstring": (docstring[:200] + "...") if len(docstring) > 200 else docstring,
-            })
+            module_info = self._extract_module_info(pyf)
+            if module_info:
+                modules.append(module_info)
 
         # Sort by lines descending
         modules.sort(key=lambda m: m["lines"], reverse=True)

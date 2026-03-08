@@ -57,136 +57,172 @@ def generate(
 
     ROOT_DIR is the directory containing project subdirectories.
     """
-    from todocs.core import scan_organization, generate_articles
-
     root = Path(root_dir).resolve()
     out = Path(output_dir)
-    scanned_projects = []
 
     if HAS_RICH:
         console = Console()
         console.print(f"[bold]todocs[/bold] — Scanning [cyan]{root}[/cyan]")
 
-        # Discover projects first
-        with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            console=console,
-        ) as progress:
-            task = progress.add_task("Discovering projects...", total=None)
-            # Quick discovery to show count
-            from todocs.core import _discover_projects
-            project_dirs = _discover_projects(root, exclude=list(exclude))
-            progress.update(task, description=f"Found {len(project_dirs)} projects")
+        # Discover projects
+        project_dirs = _discover_and_show_progress(root, exclude, console)
 
+        # Scan projects
         if project_dirs:
             console.print()
-            # Scan each project with real-time feedback
-            with Progress(
-                SpinnerColumn(),
-                TextColumn("[progress.description]{task.description}"),
-                console=console,
-            ) as progress:
-                task = progress.add_task("Analyzing...", total=len(project_dirs))
-
-                def on_project_scanned(project_name: str, idx: int, total: int):
-                    progress.update(task, description=f"Analyzing [cyan]{project_name}[/cyan] ({idx}/{total})")
-
-                profiles = scan_organization(
-                    root,
-                    exclude=list(exclude),
-                    progress_callback=on_project_scanned
-                )
-                progress.update(task, completed=len(project_dirs))
+            profiles = _scan_with_progress(root, exclude, console, project_dirs)
         else:
             profiles = []
 
         console.print(f"\n[green]✓[/green] Analyzed [bold]{len(profiles)}[/bold] projects")
 
-        # Summary table
-        if profiles:
-            table = Table(title="Project Summary")
-            table.add_column("Project", style="cyan")
-            table.add_column("Version")
-            table.add_column("Grade", justify="center")
-            table.add_column("Language")
-            table.add_column("SLOC", justify="right")
-            table.add_column("Tests", justify="center")
-
-            for p in sorted(profiles, key=lambda x: x.name):
-                grade_style = (
-                    "green" if p.maturity.score >= 70
-                    else "yellow" if p.maturity.score >= 40
-                    else "red"
-                )
-                table.add_row(
-                    p.name,
-                    p.metadata.version or "—",
-                    f"[{grade_style}]{p.maturity.grade}[/{grade_style}]",
-                    p.tech_stack.primary_language,
-                    f"{p.code_stats.source_lines:,}",
-                    "✓" if p.maturity.has_tests else "✗",
-                )
-
-            console.print(table)
+        # Print summary table
+        _print_project_summary(console, profiles)
 
         # Generate articles
         if profiles:
-            with Progress(
-                SpinnerColumn(),
-                TextColumn("[progress.description]{task.description}"),
-                console=console,
-            ) as progress:
-                task = progress.add_task("Generating articles...", total=None)
-                paths = generate_articles(profiles, out, org_name=org_name, org_url=org_url)
-                progress.update(task, description=f"Generated {len(paths)} articles")
-
+            paths = _generate_articles_with_progress(profiles, out, org_name, org_url, console)
             console.print(f"\n[green]✓[/green] Generated [bold]{len(paths)}[/bold] articles in [cyan]{out}[/cyan]")
-
     else:
-        # No rich — plain output with verbose progress
-        print(f"todocs — Scanning {root}")
-
-        # Quick discovery
-        from todocs.core import _discover_projects
-        project_dirs = _discover_projects(root, exclude=list(exclude))
-        print(f"Found {len(project_dirs)} projects")
-
-        if project_dirs:
-            print()
-            profiles = []
-            for i, proj_dir in enumerate(project_dirs, 1):
-                from todocs.core import scan_project
-                print(f"  [{i}/{len(project_dirs)}] Analyzing {proj_dir.name}...", end=" ")
-                try:
-                    profile = scan_project(proj_dir)
-                    profiles.append(profile)
-                    print(f"✓ ({profile.maturity.grade}, {profile.code_stats.source_lines:,} SLOC)")
-                except Exception as e:
-                    print(f"✗ Error: {e}")
-
-            print()
-            for p in sorted(profiles, key=lambda x: x.name):
-                print(f"  {p.name:30s}  v{p.metadata.version or '?':10s}  "
-                      f"Grade:{p.maturity.grade:3s}  {p.tech_stack.primary_language:12s}  "
-                      f"{p.code_stats.source_lines:>6,} SLOC")
-
-            paths = generate_articles(profiles, out, org_name=org_name, org_url=org_url)
-            print(f"\nGenerated {len(paths)} articles in {out}")
-        else:
-            profiles = []
-            print("No projects found.")
+        # Plain output without Rich
+        profiles = _generate_without_rich(root, out, exclude, org_name, org_url)
 
     # Optional JSON report
-    if json_report:
-        report_data = [p.to_dict() for p in profiles]
-        Path(json_report).write_text(
-            json.dumps(report_data, indent=2, default=str), encoding="utf-8"
+    _write_json_report(profiles, json_report, console if HAS_RICH else None, HAS_RICH)
+
+def _discover_and_show_progress(root: Path, exclude: tuple, console) -> list:
+    """Discover projects and show progress. Returns list of project directories."""
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        console=console,
+    ) as progress:
+        task = progress.add_task("Discovering projects...", total=None)
+        from todocs.core import _discover_projects
+        project_dirs = _discover_projects(root, exclude=list(exclude))
+        progress.update(task, description=f"Found {len(project_dirs)} projects")
+    return project_dirs
+
+
+def _scan_with_progress(root: Path, exclude: tuple, console, project_dirs: list) -> list:
+    """Scan projects with real-time progress feedback."""
+    from todocs.core import scan_organization
+
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        console=console,
+    ) as progress:
+        task = progress.add_task("Analyzing...", total=len(project_dirs))
+
+        def on_project_scanned(project_name: str, idx: int, total: int):
+            progress.update(task, description=f"Analyzing [cyan]{project_name}[/cyan] ({idx}/{total})")
+
+        profiles = scan_organization(
+            root,
+            exclude=list(exclude),
+            progress_callback=on_project_scanned
         )
-        if HAS_RICH:
-            console.print(f"[green]✓[/green] JSON report written to [cyan]{json_report}[/cyan]")
-        else:
-            print(f"JSON report written to {json_report}")
+        progress.update(task, completed=len(project_dirs))
+    return profiles
+
+
+def _print_project_summary(console, profiles: list):
+    """Print a formatted summary table of analyzed projects."""
+    if not profiles:
+        return
+
+    table = Table(title="Project Summary")
+    table.add_column("Project", style="cyan")
+    table.add_column("Version")
+    table.add_column("Grade", justify="center")
+    table.add_column("Language")
+    table.add_column("SLOC", justify="right")
+    table.add_column("Tests", justify="center")
+
+    for p in sorted(profiles, key=lambda x: x.name):
+        grade_style = (
+            "green" if p.maturity.score >= 70
+            else "yellow" if p.maturity.score >= 40
+            else "red"
+        )
+        table.add_row(
+            p.name,
+            p.metadata.version or "—",
+            f"[{grade_style}]{p.maturity.grade}[/{grade_style}]",
+            p.tech_stack.primary_language,
+            f"{p.code_stats.source_lines:,}",
+            "✓" if p.maturity.has_tests else "✗",
+        )
+
+    console.print(table)
+
+
+def _generate_articles_with_progress(profiles: list, out: Path, org_name: str, org_url: str, console) -> list:
+    """Generate articles with progress indicator."""
+    from todocs.core import generate_articles
+
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        console=console,
+    ) as progress:
+        task = progress.add_task("Generating articles...", total=None)
+        paths = generate_articles(profiles, out, org_name=org_name, org_url=org_url)
+        progress.update(task, description=f"Generated {len(paths)} articles")
+
+    return paths
+
+
+def _generate_without_rich(root: Path, out: Path, exclude: tuple, org_name: str, org_url: str) -> list:
+    """Generate articles without Rich library (plain output)."""
+    from todocs.core import _discover_projects, scan_project, generate_articles
+
+    print(f"todocs — Scanning {root}")
+
+    project_dirs = _discover_projects(root, exclude=list(exclude))
+    print(f"Found {len(project_dirs)} projects")
+
+    if not project_dirs:
+        print("No projects found.")
+        return []
+
+    print()
+    profiles = []
+    for i, proj_dir in enumerate(project_dirs, 1):
+        print(f"  [{i}/{len(project_dirs)}] Analyzing {proj_dir.name}...", end=" ")
+        try:
+            profile = scan_project(proj_dir)
+            profiles.append(profile)
+            print(f"✓ ({profile.maturity.grade}, {profile.code_stats.source_lines:,} SLOC)")
+        except Exception as e:
+            print(f"✗ Error: {e}")
+
+    print()
+    for p in sorted(profiles, key=lambda x: x.name):
+        print(f"  {p.name:30s}  v{p.metadata.version or '?':10s}  "
+              f"Grade:{p.maturity.grade:3s}  {p.tech_stack.primary_language:12s}  "
+              f"{p.code_stats.source_lines:>6,} SLOC")
+
+    paths = generate_articles(profiles, out, org_name=org_name, org_url=org_url)
+    print(f"\nGenerated {len(paths)} articles in {out}")
+
+    return profiles
+
+
+def _write_json_report(profiles: list, json_report: Optional[str], console, has_rich: bool):
+    """Write optional JSON report."""
+    if not json_report:
+        return
+
+    report_data = [p.to_dict() for p in profiles]
+    Path(json_report).write_text(
+        json.dumps(report_data, indent=2, default=str), encoding="utf-8"
+    )
+    if has_rich:
+        console.print(f"[green]✓[/green] JSON report written to [cyan]{json_report}[/cyan]")
+    else:
+        print(f"JSON report written to {json_report}")
 
 
 @main.command()

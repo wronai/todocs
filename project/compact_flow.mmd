@@ -1,8 +1,16 @@
 flowchart TD
+    examples_article_sections_demo["examples.article_sections_demo<br/>1 funcs"]
+    examples_organization_health_report["examples.organization_health_report<br/>6 funcs"]
     examples_scan_org["examples.scan_org<br/>1 funcs"]
     examples_scan_single["examples.scan_single<br/>1 funcs"]
-    todocs_cli["todocs.cli<br/>5 funcs"]
-    todocs_core["todocs.core<br/>7 funcs"]
-    todocs_cli ==>|7| todocs_core
+    todocs_cli["todocs.cli<br/>11 funcs"]
+    todocs_core["todocs.core<br/>8 funcs"]
+    todocs_generators["todocs.generators<br/>32 funcs"]
+    todocs_utils["todocs.utils<br/>6 funcs"]
+    examples_article_sections_demo ==>|22| todocs_generators
+    todocs_cli ==>|9| todocs_core
     examples_scan_org -->|2| todocs_core
     examples_scan_single -->|1| todocs_core
+    examples_article_sections_demo -->|1| todocs_core
+    examples_organization_health_report -->|1| todocs_core
+    todocs_core -->|1| todocs_utils

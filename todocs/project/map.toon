@@ -1,45 +1,38 @@
-# todocs | 28f 5006L | python:28
+# todocs | 24f 4194L | python:24
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[28]:
-  examples/api_surface_deep.py,176
-  examples/article_sections_demo.py,119
-  examples/custom_analysis.py,187
-  examples/organization_health_report.py,201
-  examples/scan_org.py,61
-  examples/scan_single.py,93
-  todocs/__init__.py,10
-  todocs/analyzers/__init__.py,1
-  todocs/analyzers/api_surface.py,290
-  todocs/analyzers/code_metrics.py,240
-  todocs/analyzers/dependencies.py,151
-  todocs/analyzers/import_graph.py,201
-  todocs/analyzers/maturity.py,103
-  todocs/analyzers/structure.py,234
-  todocs/cli.py,307
-  todocs/core.py,387
-  todocs/extractors/__init__.py,1
-  todocs/extractors/changelog_parser.py,103
-  todocs/extractors/docker_parser.py,174
-  todocs/extractors/makefile_parser.py,153
-  todocs/extractors/metadata.py,211
-  todocs/extractors/readme_parser.py,153
-  todocs/extractors/toon_parser.py,343
-  todocs/generators/__init__.py,1
-  todocs/generators/article.py,145
-  todocs/generators/article_sections.py,431
-  todocs/generators/comparison.py,380
-  todocs/utils/__init__.py,150
+M[24]:
+  analyzers/__init__.py,1
+  analyzers/api_surface.py,290
+  analyzers/code_metrics.py,240
+  analyzers/dependencies.py,151
+  analyzers/import_graph.py,201
+  analyzers/maturity.py,103
+  analyzers/structure.py,234
+  cli.py,307
+  core.py,387
+  examples/advanced_usage.py,9
+  examples/quickstart.py,16
+  extractors/__init__.py,1
+  extractors/changelog_parser.py,103
+  extractors/docker_parser.py,174
+  extractors/makefile_parser.py,153
+  extractors/metadata.py,211
+  extractors/readme_parser.py,153
+  extractors/toon_parser.py,343
+  generators/__init__.py,1
+  generators/article.py,145
+  generators/article_sections.py,431
+  generators/comparison.py,380
+  __init__.py,10
+  utils/__init__.py,150
 D:
-  examples/scan_single.py:
-    e: main
-    main()
-  todocs/generators/comparison.py:
+  generators/comparison.py:
     e: ComparisonGenerator
     ComparisonGenerator: __init__(2),generate_comparison(3),generate_category_articles(2),generate_health_report(2),_render_comparison(2),_size_comparison(1),_maturity_leaderboard(1),_complexity_comparison(1),_tech_stack_overview(1),_dependency_overlap(1),_render_category(2),_render_health_report(1),_footer(0)  # Generate comparative analysis articles across projects...
-  todocs/analyzers/dependencies.py:
+  analyzers/dependencies.py:
     e: DependencyAnalyzer
     DependencyAnalyzer: __init__(1),_load_pyproject(0),_parse_dep_name(1),get_runtime_deps(0),get_dev_deps(0)  # Extract project dependencies without executing anything...
-  todocs/generators/article_sections.py:
+  generators/article_sections.py:
     e: render_frontmatter,render_header,render_overview,render_tech_stack,render_architecture,render_metrics,render_maturity,render_dependencies,render_api_surface,render_build_targets,render_docker,render_changelog,render_usage,render_footer
     render_frontmatter(p;org_name;generated_at)
     render_header(p;org_url)
@@ -55,28 +48,28 @@ D:
     render_changelog(p)
     render_usage(p)
     render_footer(generated_at)
-  todocs/analyzers/code_metrics.py:
+  analyzers/code_metrics.py:
     e: CodeMetricsAnalyzer
     CodeMetricsAnalyzer: __init__(2),_should_skip(1),_is_test(1),_scan(0),_count_lines(1),analyze(0),_ast_complexity(1),_parse_module_ast(1),_extract_module_info(1),get_key_modules(1)  # Analyze code metrics: lines, complexity, maintainability...
-  todocs/analyzers/import_graph.py:
+  analyzers/import_graph.py:
     e: ImportGraphAnalyzer
     ImportGraphAnalyzer: __init__(2),_should_skip(1),_iter_py_files(0),_module_name(1),build_graph(0),_detect_internal_packages(0),_detect_cycles(1),get_hub_modules(1)  # Analyze import relationships between project modules...
-  todocs/analyzers/maturity.py:
+  analyzers/maturity.py:
     e: MaturityScorer
     MaturityScorer: __init__(2),score(0)  # Compute a maturity score (0-100) for a project...
-  todocs/extractors/docker_parser.py:
+  extractors/docker_parser.py:
     e: DockerParser
     DockerParser: __init__(1),parse(0),_find_dockerfiles(0),_find_compose_files(0),_parse_dockerfile(1),_parse_compose(1)  # Extract Docker infrastructure from Dockerfile and docker-com...
-  todocs/generators/article.py:
+  generators/article.py:
     e: ArticleGenerator
     ArticleGenerator: __init__(2),generate(2),generate_index(2),_render_article(1),_render_index(1)  # Generate markdown articles for WordPress from analyzed proje...
-  todocs/analyzers/api_surface.py:
+  analyzers/api_surface.py:
     e: APISurfaceAnalyzer
     APISurfaceAnalyzer: __init__(2),analyze(0),_should_skip(1),_detect_entry_points(0),_detect_cli_commands(0),_decorator_name(1),_scan_public_symbols(0),_collect_target_files(0),_extract_from_file(3),_extract_class(4),_extract_function(4),_extract_all(1),_detect_rest_endpoints(0)  # Detect public API surface of a project...
-  todocs/extractors/toon_parser.py:
+  extractors/toon_parser.py:
     e: ToonParser
     ToonParser: __init__(1),find_toon_files(0),parse_all(0),parse_map(1),_parse_map_header(1),_parse_modules_section(1),_parse_details_section(1),_parse_class_line(2),_parse_function_line(2),parse_analysis(1),_parse_analysis_header(1),_parse_health_section(1),_parse_refactor_section(1),_parse_layers_section(1),parse_flow(1),parse_functions(1),_read(1)  # Parse .toon files into structured data...
-  todocs/core.py:
+  core.py:
     e: TechStack,CodeStats,ProjectMetadata,MaturityProfile,ProjectProfile,scan_project,_discover_projects,scan_organization,generate_articles,_categorize,_generate_summary
     TechStack:  # Detected technology stack...
     CodeStats:  # Aggregated code statistics...
@@ -89,53 +82,23 @@ D:
     generate_articles(profiles;output_dir;org_name;org_url;include_comparison;include_categories;include_health)
     _categorize(profile)
     _generate_summary(profile)
-  examples/custom_analysis.py:
-    e: _print_section_header,_analyze_import_graph,_analyze_api_surface,_analyze_toon_files,_analyze_makefile,_analyze_docker,_analyze_code_metrics,main
-    _print_section_header(title)
-    _analyze_import_graph(project_path)
-    _analyze_api_surface(project_path)
-    _analyze_toon_files(project_path)
-    _analyze_makefile(project_path)
-    _analyze_docker(project_path)
-    _analyze_code_metrics(project_path)
-    main()
-  todocs/extractors/makefile_parser.py:
+  extractors/makefile_parser.py:
     e: MakefileParser
     MakefileParser: __init__(1),parse(0),_parse_makefile(1),_collect_phony_targets(1),_parse_target_line(4),_extract_help_text(3),_collect_commands(2),_parse_taskfile(1),get_target_names(0)  # Extract targets and structure from Makefile or Taskfile.yml...
-  todocs/extractors/metadata.py:
+  extractors/metadata.py:
     e: MetadataExtractor
     MetadataExtractor: __init__(1),extract(0),_merge(2),_from_pyproject(0),_from_setup_cfg(0),_from_setup_py(0),_extract_setup_kwargs(1),_from_package_json(0),_extract_license(1)  # Extract structured metadata from project config files...
-  examples/scan_org.py:
-    e: main
-    main()
-  examples/organization_health_report.py:
-    e: analyze_maturity_distribution,analyze_code_metrics,analyze_tech_stacks,find_critical_projects,print_health_summary,main
-    analyze_maturity_distribution(profiles)
-    analyze_code_metrics(profiles)
-    analyze_tech_stacks(profiles)
-    find_critical_projects(profiles;threshold)
-    print_health_summary(profiles;org_name)
-    main()
-  todocs/extractors/changelog_parser.py:
+  extractors/changelog_parser.py:
     e: ChangelogParser
     ChangelogParser: __init__(1),parse(1),_find_changelog(0),_parse_entries(2),_summarize_entry(2)  # Extract structured entries from CHANGELOG.md...
-  todocs/extractors/readme_parser.py:
+  extractors/readme_parser.py:
     e: ReadmeParser
     ReadmeParser: __init__(1),parse(0),_find_readme(0),_parse_sections(1),_extract_description(1),_extract_preamble(1),_extract_post_h1(1),_extract_heading_sections(1),get_first_paragraph(0)  # Extract structured sections from a README.md file...
-  todocs/utils/__init__.py:
+  utils/__init__.py:
     e: GitignoreParser,create_scan_filter
     GitignoreParser: __init__(2),_load_gitignore(0),_parse_patterns(1),_match_pattern(3),is_ignored(2)  # Parse and match .gitignore patterns...
     create_scan_filter(project_path;max_depth;extra_excludes)
-  examples/api_surface_deep.py:
-    e: print_section,analyze_entry_points,analyze_cli_commands,analyze_public_symbols,analyze_rest_endpoints,analyze_symbol_sources,main
-    print_section(title)
-    analyze_entry_points(analyzer)
-    analyze_cli_commands(analyzer)
-    analyze_public_symbols(analyzer)
-    analyze_rest_endpoints(analyzer)
-    analyze_symbol_sources(analyzer)
-    main()
-  todocs/cli.py:
+  cli.py:
     e: main,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health
     main()
     generate(root_dir;output_dir;org_name;org_url;exclude;json_report;verbose)
@@ -148,13 +111,12 @@ D:
     inspect(project_dir;output;fmt)
     compare(root_dir;output_path;org_name;exclude)
     health(root_dir;output_path;org_name;exclude)
-  todocs/analyzers/structure.py:
+  analyzers/structure.py:
     e: StructureAnalyzer
     StructureAnalyzer: __init__(2),_should_skip(1),_iter_files(0),analyze(0),detect_tech_stack(0),_detect_languages(0),_detect_build_tools(0),_detect_test_frameworks(0),_detect_ci_cd(0),_detect_containers(0),_detect_frameworks(0),_read_deps_text(0)  # Analyze project directory structure...
-  examples/article_sections_demo.py:
-    e: main
-    main()
-  todocs/__init__.py:
-  todocs/extractors/__init__.py:
-  todocs/generators/__init__.py:
-  todocs/analyzers/__init__.py:
+  __init__.py:
+  extractors/__init__.py:
+  examples/quickstart.py:
+  generators/__init__.py:
+  examples/advanced_usage.py:
+  analyzers/__init__.py:
