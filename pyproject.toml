@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "todocs"
+version = "0.1.1"
+description = "Static-analysis documentation generator for project portfolios — WordPress-ready markdown articles without LLM"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [
+    {name = "Softreck", email = "info@softreck.dev"},
+    "Tom Sapletta <tom@sapletta.com>",
+]
+keywords = ["documentation", "static-analysis", "code-metrics", "wordpress", "markdown"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Documentation",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "tomli>=2.0; python_version<'3.11'",
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "radon>=6.0",
+    "rich>=13.0",
+    "click>=8.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-cov", "black", "ruff"]
+nlp = ["nltk>=3.8"]
+
+[project.scripts]
+todocs = "todocs.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/wronai/todocs"
+Repository = "https://github.com/wronai/todocs"
+
+[tool.setuptools.packages.find]
+include = ["todocs*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
