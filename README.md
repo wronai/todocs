@@ -1,6 +1,6 @@
 # todocs
 
-[![Version](https://img.shields.io/badge/version-0.1.4-blue)](https://github.com/wronai/todocs)
+[![Version](https://img.shields.io/badge/version-0.1.5-blue)](https://github.com/wronai/todocs)
 [![Python](https://img.shields.io/badge/python-3.10+-3776AB)](https://python.org)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Tests](https://img.shields.io/badge/tests-63%20passed-brightgreen)](tests/)
@@ -80,6 +80,55 @@ todocs generate /path/to/org \
   --exclude venv --exclude node_modules \
   --json-report report.json \
   --verbose
+```
+
+### Controlling Scan Depth (max_depth)
+
+By default, todocs scans **3 levels deep** into project directories. This prevents scanning deep dependency folders while capturing all relevant source code.
+
+#### Adjusting Depth via Python API
+
+```python
+from todocs import scan_project, scan_organization
+
+# Scan only top-level files (depth = 1)
+profile = scan_project("/path/to/project", max_depth=1)
+
+# Scan deeper (depth = 5) for large monorepos
+profile = scan_project("/path/to/project", max_depth=5)
+
+# Apply to organization scan
+profiles = scan_organization("/path/to/org", max_depth=4)
+```
+
+#### How Depth Works
+
+```
+project_root/          # depth 0 (always scanned)
+├── src/               # depth 1 (always scanned)
+│   ├── core/          # depth 2 (scanned with default max_depth=3)
+│   │   ├── models.py  # depth 3 (scanned with default)
+│   │   └── utils/     # depth 3 (scanned with default)
+│   │       └── helper.py  # depth 4 (skipped with default, scanned with max_depth=4+)
+│   └── api/           # depth 2
+├── tests/             # depth 1
+└── vendor/            # depth 1 (skipped — in skip list)
+    └── deep_lib/      # depth 2 (skipped — in skip list)
+```
+
+#### What Gets Skipped Automatically
+
+Regardless of depth, these are always excluded:
+- `.git/`, `__pycache__/`, `.venv/`, `venv/`, `node_modules/`
+- `dist/`, `build/`, `target/`, `.eggs/`
+- Paths matching your `.gitignore` patterns
+- Hidden directories (starting with `.`)
+
+#### CLI Depth Control
+
+Coming in v0.2.0: `--max-depth` CLI flag
+```bash
+todocs generate /path/to/org --max-depth 5
 ```
 
 ## Output Structure

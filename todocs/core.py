@@ -194,17 +194,11 @@ def scan_project(project_path: Path, max_depth: int = 3) -> ProjectProfile:
     return profile
 
 
-def scan_organization(
-    root_path: Path,
-    exclude: Optional[List[str]] = None,
-    max_depth: int = 3
-) -> List[ProjectProfile]:
-    """Scan all projects under root_path and return profiles.
+def _discover_projects(root_path: Path, exclude: Optional[List[str]] = None) -> List[Path]:
+    """Discover project directories without scanning them.
 
-    Args:
-        root_path: Root directory containing project subdirectories
-        exclude: Additional directory names to exclude
-        max_depth: Maximum directory depth to scan within each project
+    Returns a list of project directory paths that look like valid projects
+    (have README.md, pyproject.toml, etc.)
     """
     exclude = set(exclude or [])
     exclude.update({
@@ -212,7 +206,7 @@ def scan_organization(
         "sandbox", "comparison_output", "recordings",
     })
 
-    profiles = []
+    project_dirs = []
     root = Path(root_path)
 
     for child in sorted(root.iterdir()):
@@ -224,6 +218,54 @@ def scan_organization(
         markers = {"README.md", "pyproject.toml", "setup.py", "Makefile", "package.json", "Cargo.toml"}
         if not any((child / m).exists() for m in markers):
             continue
+
+        project_dirs.append(child)
+
+    return project_dirs
+
+
+def scan_organization(
+    root_path: Path,
+    exclude: Optional[List[str]] = None,
+    max_depth: int = 3,
+    progress_callback = None
+) -> List[ProjectProfile]:
+    """Scan all projects under root_path and return profiles.
+
+    Args:
+        root_path: Root directory containing project subdirectories
+        exclude: Additional directory names to exclude
+        max_depth: Maximum directory depth to scan within each project
+        progress_callback: Optional callback(project_name, index, total) called for each project
+    """
+    exclude = set(exclude or [])
+    exclude.update({
+        "venv", ".venv", "node_modules", "__pycache__", ".git",
+        "sandbox", "comparison_output", "recordings",
+    })
+
+    profiles = []
+    root = Path(root_path)
+
+    # Collect project directories first
+    project_dirs = []
+    for child in sorted(root.iterdir()):
+        if not child.is_dir():
+            continue
+        if child.name.startswith(".") or child.name in exclude:
+            continue
+        # Heuristic: a project directory has README.md or pyproject.toml or Makefile
+        markers = {"README.md", "pyproject.toml", "setup.py", "Makefile", "package.json", "Cargo.toml"}
+        if not any((child / m).exists() for m in markers):
+            continue
+
+        project_dirs.append(child)
+
+    # Scan each project with progress callback
+    total = len(project_dirs)
+    for idx, child in enumerate(project_dirs, 1):
+        if progress_callback:
+            progress_callback(child.name, idx, total)
 
         try:
             profile = scan_project(child, max_depth=max_depth)
