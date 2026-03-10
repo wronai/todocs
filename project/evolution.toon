@@ -1,51 +1,19 @@
-# code2llm/evolution | 189 func | 24f | 2026-03-08
+# code2llm/evolution | 272 func | 31f | 2026-03-10
 
-NEXT[9] (ranked by impact):
-  [1] !  SPLIT-FUNC      ImportGraphAnalyzer.build_graph  CC=15  fan=26
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 390
-
-  [2] !  SPLIT-FUNC      DependencyAnalyzer.get_dev_deps  CC=18  fan=20
-      WHY: CC=18 exceeds 15
-      EFFORT: ~1h  IMPACT: 360
-
-  [3] !  SPLIT-FUNC      CodeMetricsAnalyzer.analyze  CC=16  fan=22
-      WHY: CC=16 exceeds 15
-      EFFORT: ~1h  IMPACT: 352
-
-  [4] !  SPLIT-FUNC      DependencyAnalyzer.get_runtime_deps  CC=17  fan=20
-      WHY: CC=17 exceeds 15
-      EFFORT: ~1h  IMPACT: 340
-
-  [5] !! SPLIT-FUNC      main  CC=25  fan=12
+NEXT[1] (ranked by impact):
+  [1] !! SPLIT-FUNC      main  CC=25  fan=12
       WHY: CC=25 exceeds 15
       EFFORT: ~1h  IMPACT: 300
-
-  [6] !  SPLIT-FUNC      ComparisonGenerator._render_health_report  CC=18  fan=13
-      WHY: CC=18 exceeds 15
-      EFFORT: ~1h  IMPACT: 234
-
-  [7] !  SPLIT-FUNC      CodeMetricsAnalyzer._parse_module_ast  CC=17  fan=9
-      WHY: CC=17 exceeds 15
-      EFFORT: ~1h  IMPACT: 153
-
-  [8] !  SPLIT-FUNC      render_api_surface  CC=17  fan=7
-      WHY: CC=17 exceeds 15
-      EFFORT: ~1h  IMPACT: 119
-
-  [9] !  SPLIT-FUNC      ComparisonGenerator._render_readme_list  CC=16  fan=7
-      WHY: CC=16 exceeds 15
-      EFFORT: ~1h  IMPACT: 112
 
 
 RISKS[0]: none
 
 METRICS-TARGET:
-  CC̄:          5.6 → ≤3.9
+  CC̄:          4.7 → ≤3.3
   max-CC:      25 → ≤12
   god-modules: 0 → 0
-  high-CC(≥15): 9 → ≤4
+  high-CC(≥15): 3 → ≤1
   hub-types:   0 → ≤0
 
 HISTORY:
-  prev CC̄=5.6 → now CC̄=5.6
+  prev CC̄=5.6 → now CC̄=4.7

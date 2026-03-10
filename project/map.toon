@@ -1,6 +1,6 @@
-# todocs | 32f 5181L | python:32
+# todocs | 42f 6335L | python:41,shell:1
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[32]:
+M[42]:
   docs/examples/advanced_usage.py,9
   docs/examples/quickstart.py,16
   examples/api_surface_deep.py,176
@@ -9,15 +9,16 @@ M[32]:
   examples/organization_health_report.py,201
   examples/scan_org.py,61
   examples/scan_single.py,93
+  project.sh,18
   todocs/__init__.py,10
   todocs/analyzers/__init__.py,1
   todocs/analyzers/api_surface.py,290
-  todocs/analyzers/code_metrics.py,240
-  todocs/analyzers/dependencies.py,151
-  todocs/analyzers/import_graph.py,201
+  todocs/analyzers/code_metrics.py,265
+  todocs/analyzers/dependencies.py,133
+  todocs/analyzers/import_graph.py,204
   todocs/analyzers/maturity.py,103
   todocs/analyzers/structure.py,234
-  todocs/cli.py,337
+  todocs/cli.py,483
   todocs/core.py,387
   todocs/examples/advanced_usage.py,9
   todocs/examples/quickstart.py,16
@@ -28,43 +29,33 @@ M[32]:
   todocs/extractors/metadata.py,211
   todocs/extractors/readme_parser.py,153
   todocs/extractors/toon_parser.py,343
+  todocs/formatters/__init__.py,1
+  todocs/formatters/table_formatter.py,145
   todocs/generators/__init__.py,1
   todocs/generators/article.py,145
-  todocs/generators/article_sections.py,431
-  todocs/generators/comparison.py,475
+  todocs/generators/article_sections.py,460
+  todocs/generators/comparison.py,482
+  todocs/generators/org_index_gen.py,118
+  todocs/generators/project_card_gen.py,135
+  todocs/generators/status_report_gen.py,195
+  todocs/outputs/__init__.py,1
+  todocs/outputs/html.py,164
+  todocs/outputs/json.py,104
+  todocs/outputs/markdown.py,81
   todocs/utils/__init__.py,150
 D:
   examples/scan_single.py:
     e: main
     main()
+  todocs/generators/status_report_gen.py:
+    e: StatusReportGenerator
+    StatusReportGenerator: __init__(2),generate(2),render(1),_frontmatter(1),_header(1),_kpi_dashboard(1),_grade_breakdown(1),_language_distribution(1),_quality_gaps(1),_largest_projects(1),_recent_activity(1),_recommendations(1),_footer(0)  # Generate a comprehensive organization status report...
+  todocs/outputs/json.py:
+    e: JSONOutput
+    JSONOutput: __init__(2),write(2),render(1),_meta(1),_summary(1),_project_entry(0)  # Write project profiles as structured JSON for APIs and dashb...
   todocs/generators/comparison.py:
     e: ComparisonGenerator
-    ComparisonGenerator: __init__(2),generate_comparison(3),generate_category_articles(2),generate_health_report(2),_render_comparison(2),_size_comparison(1),_maturity_leaderboard(1),_complexity_comparison(1),_tech_stack_overview(1),_dependency_overlap(1),_render_category(2),_render_health_report(1),generate_readme_list(3),_render_readme_list(2),_footer(0)  # Generate comparative analysis articles across projects...
-  todocs/analyzers/dependencies.py:
-    e: DependencyAnalyzer
-    DependencyAnalyzer: __init__(1),_load_pyproject(0),_parse_dep_name(1),get_runtime_deps(0),get_dev_deps(0)  # Extract project dependencies without executing anything...
-  todocs/generators/article_sections.py:
-    e: render_frontmatter,render_header,render_overview,render_tech_stack,render_architecture,render_metrics,render_maturity,render_dependencies,render_api_surface,render_build_targets,render_docker,render_changelog,render_usage,render_footer
-    render_frontmatter(p;org_name;generated_at)
-    render_header(p;org_url)
-    render_overview(p;org_name)
-    render_tech_stack(p)
-    render_architecture(p)
-    render_metrics(p)
-    render_maturity(p)
-    render_dependencies(p)
-    render_api_surface(p)
-    render_build_targets(p)
-    render_docker(p)
-    render_changelog(p)
-    render_usage(p)
-    render_footer(generated_at)
-  todocs/analyzers/code_metrics.py:
-    e: CodeMetricsAnalyzer
-    CodeMetricsAnalyzer: __init__(2),_should_skip(1),_is_test(1),_scan(0),_count_lines(1),analyze(0),_ast_complexity(1),_parse_module_ast(1),_extract_module_info(1),get_key_modules(1)  # Analyze code metrics: lines, complexity, maintainability...
-  todocs/analyzers/import_graph.py:
-    e: ImportGraphAnalyzer
-    ImportGraphAnalyzer: __init__(2),_should_skip(1),_iter_py_files(0),_module_name(1),build_graph(0),_detect_internal_packages(0),_detect_cycles(1),get_hub_modules(1)  # Analyze import relationships between project modules...
+    ComparisonGenerator: __init__(2),generate_comparison(3),generate_category_articles(2),generate_health_report(2),_render_comparison(2),_size_comparison(1),_maturity_leaderboard(1),_complexity_comparison(1),_tech_stack_overview(1),_dependency_overlap(1),_render_category(2),_render_health_report(1),_health_executive_summary(1),_health_grade_distribution(1),_missing_features(0),_health_projects_needing_attention(1),_health_top_performers(1),generate_readme_list(3),_render_readme_list(2),_readme_summary_table(1),_project_features(0),_readme_project_section(1),_footer(0)  # Generate comparative analysis articles across projects...
   todocs/analyzers/maturity.py:
     e: MaturityScorer
     MaturityScorer: __init__(2),score(0)  # Compute a maturity score (0-100) for a project...
@@ -77,6 +68,29 @@ D:
   todocs/analyzers/api_surface.py:
     e: APISurfaceAnalyzer
     APISurfaceAnalyzer: __init__(2),analyze(0),_should_skip(1),_detect_entry_points(0),_detect_cli_commands(0),_decorator_name(1),_scan_public_symbols(0),_collect_target_files(0),_extract_from_file(3),_extract_class(4),_extract_function(4),_extract_all(1),_detect_rest_endpoints(0)  # Detect public API surface of a project...
+  todocs/outputs/html.py:
+    e: HTMLOutput
+    HTMLOutput: __init__(2),write(2),render(1),_render_row(1),_render_card(1)  # Write project profiles as a standalone HTML report...
+  todocs/generators/article_sections.py:
+    e: render_frontmatter,render_header,render_overview,render_tech_stack,render_architecture,render_metrics,render_maturity,render_dependencies,_render_entry_points,_render_cli_commands,_render_rest_endpoints,_render_public_classes,render_api_surface,render_build_targets,render_docker,render_changelog,render_usage,render_footer
+    render_frontmatter(p;org_name;generated_at)
+    render_header(p;org_url)
+    render_overview(p;org_name)
+    render_tech_stack(p)
+    render_architecture(p)
+    render_metrics(p)
+    render_maturity(p)
+    render_dependencies(p)
+    _render_entry_points(entry_pts)
+    _render_cli_commands(cli_cmds)
+    _render_rest_endpoints(endpoints)
+    _render_public_classes(pub_classes)
+    render_api_surface(p)
+    render_build_targets(p)
+    render_docker(p)
+    render_changelog(p)
+    render_usage(p)
+    render_footer(generated_at)
   todocs/extractors/toon_parser.py:
     e: ToonParser
     ToonParser: __init__(1),find_toon_files(0),parse_all(0),parse_map(1),_parse_map_header(1),_parse_modules_section(1),_parse_details_section(1),_parse_class_line(2),_parse_function_line(2),parse_analysis(1),_parse_analysis_header(1),_parse_health_section(1),_parse_refactor_section(1),_parse_layers_section(1),parse_flow(1),parse_functions(1),_read(1)  # Parse .toon files into structured data...
@@ -106,6 +120,9 @@ D:
   todocs/extractors/makefile_parser.py:
     e: MakefileParser
     MakefileParser: __init__(1),parse(0),_parse_makefile(1),_collect_phony_targets(1),_parse_target_line(4),_extract_help_text(3),_collect_commands(2),_parse_taskfile(1),get_target_names(0)  # Extract targets and structure from Makefile or Taskfile.yml...
+  todocs/analyzers/code_metrics.py:
+    e: CodeMetricsAnalyzer
+    CodeMetricsAnalyzer: __init__(2),_should_skip(1),_is_test(1),_scan(0),_count_lines(1),analyze(0),_collect_complexity_data(0),_collect_radon_metrics(5),_collect_ast_fallback(2),_ast_complexity(1),_extract_module_docstring(0),_extract_imports(0),_parse_module_ast(1),_extract_module_info(1),get_key_modules(1)  # Analyze code metrics: lines, complexity, maintainability...
   todocs/extractors/metadata.py:
     e: MetadataExtractor
     MetadataExtractor: __init__(1),extract(0),_merge(2),_from_pyproject(0),_from_setup_cfg(0),_from_setup_py(0),_extract_setup_kwargs(1),_from_package_json(0),_extract_license(1)  # Extract structured metadata from project config files...
@@ -123,13 +140,25 @@ D:
   todocs/extractors/changelog_parser.py:
     e: ChangelogParser
     ChangelogParser: __init__(1),parse(1),_find_changelog(0),_parse_entries(2),_summarize_entry(2)  # Extract structured entries from CHANGELOG.md...
+  todocs/analyzers/import_graph.py:
+    e: ImportGraphAnalyzer
+    ImportGraphAnalyzer: __init__(2),_should_skip(1),_iter_py_files(0),_module_name(1),build_graph(0),_parse_file_imports(2),_resolve_relative_import(2),_build_fan_metrics(0),_detect_internal_packages(0),_detect_cycles(1),get_hub_modules(1)  # Analyze import relationships between project modules...
   todocs/extractors/readme_parser.py:
     e: ReadmeParser
     ReadmeParser: __init__(1),parse(0),_find_readme(0),_parse_sections(1),_extract_description(1),_extract_preamble(1),_extract_post_h1(1),_extract_heading_sections(1),get_first_paragraph(0)  # Extract structured sections from a README.md file...
+  todocs/outputs/markdown.py:
+    e: MarkdownOutput
+    MarkdownOutput: __init__(2),write_all(7)  # Write project profiles as markdown files (WordPress-ready)...
+  todocs/formatters/table_formatter.py:
+    e: TableFormatter
+    TableFormatter: format_comparison(5),format_matrix(2),format_ranking(5),_default_columns(-1),_default_features(-1),_sort_profiles(2),_render_table(1)  # Generate markdown comparison tables from project profiles...
   todocs/utils/__init__.py:
     e: GitignoreParser,create_scan_filter
     GitignoreParser: __init__(2),_load_gitignore(0),_parse_patterns(1),_match_pattern(3),is_ignored(2)  # Parse and match .gitignore patterns...
     create_scan_filter(project_path;max_depth;extra_excludes)
+  todocs/analyzers/dependencies.py:
+    e: DependencyAnalyzer
+    DependencyAnalyzer: __init__(1),_load_pyproject(0),_parse_dep_name(1),_deduplicate(0),_deps_from_requirements(1),_deps_from_package_json(1),_pyproject_runtime_deps(1),_pyproject_dev_deps(1),get_runtime_deps(0),get_dev_deps(0)  # Extract project dependencies without executing anything...
   examples/api_surface_deep.py:
     e: print_section,analyze_entry_points,analyze_cli_commands,analyze_public_symbols,analyze_rest_endpoints,analyze_symbol_sources,main
     print_section(title)
@@ -140,7 +169,8 @@ D:
     analyze_symbol_sources(analyzer)
     main()
   todocs/cli.py:
-    e: main,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health,readme
+    e: _detect_org_from_git,main,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health,readme,status,cards,index,export_cmd
+    _detect_org_from_git(root_dir)
     main()
     generate(root_dir;output_dir;org_name;org_url;exclude;json_report;verbose)
     _discover_and_show_progress(root;exclude;console)
@@ -152,10 +182,20 @@ D:
     inspect(project_dir;output;fmt)
     compare(root_dir;output_path;org_name;exclude)
     health(root_dir;output_path;org_name;exclude)
-    readme(root_dir;output_path;org_name;exclude;title)
+    readme(root_dir;output_path;org_name;exclude;title;verbose)
+    status(root_dir;output_path;org_name;exclude)
+    cards(root_dir;output_dir;org_name;exclude)
+    index(root_dir;output_path;org_name;exclude)
+    export_cmd(root_dir;output_path;fmt;org_name;exclude)
   todocs/analyzers/structure.py:
     e: StructureAnalyzer
     StructureAnalyzer: __init__(2),_should_skip(1),_iter_files(0),analyze(0),detect_tech_stack(0),_detect_languages(0),_detect_build_tools(0),_detect_test_frameworks(0),_detect_ci_cd(0),_detect_containers(0),_detect_frameworks(0),_read_deps_text(0)  # Analyze project directory structure...
+  todocs/generators/org_index_gen.py:
+    e: OrgIndexGenerator
+    OrgIndexGenerator: __init__(2),generate(2),render(1),_frontmatter(1),_header(1),_quick_stats(1),_category_sections(1),_alphabetical_index(1),_footer(0)  # Generate an index.md catalog page for all projects in an org...
+  todocs/generators/project_card_gen.py:
+    e: ProjectCardGenerator
+    ProjectCardGenerator: __init__(2),generate(2),generate_all(2),render_card(1),_frontmatter(1),_badge_line(1),_description(1),_stats_table(1),_features_line(0),_deps_line(0),_footer(0)  # Generate a compact project card suitable for WordPress embed...
   examples/article_sections_demo.py:
     e: main
     main()
@@ -163,7 +203,10 @@ D:
   todocs/extractors/__init__.py:
   todocs/examples/quickstart.py:
   todocs/examples/advanced_usage.py:
+  todocs/formatters/__init__.py:
+  todocs/outputs/__init__.py:
   todocs/generators/__init__.py:
   todocs/analyzers/__init__.py:
   docs/examples/quickstart.py:
   docs/examples/advanced_usage.py:
+  project.sh:

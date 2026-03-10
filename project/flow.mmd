@@ -49,17 +49,25 @@ flowchart TD
         todocs___detect_frameworks["_detect_frameworks"]
         todocs___read_deps_text["_read_deps_text"]
         todocs____init__["__init__"]
+        todocs__analyzers__maturity__MaturityScorer__score("score CC=14")
+        todocs____init__["__init__"]
         todocs___load_pyproject["_load_pyproject"]
         todocs___parse_dep_name["_parse_dep_name"]
-        todocs__get_runtime_deps{{get_runtime_deps CC=17}}
-        todocs__get_dev_deps{{get_dev_deps CC=18}}
-        todocs____init__["__init__"]
-        todocs__analyzers__maturity__MaturityScorer__score("score CC=14")
+        todocs___deduplicate["_deduplicate"]
+        todocs___deps_from_requirements("_deps_from_requirements CC=8")
+        todocs___deps_from_package_json["_deps_from_package_json"]
+        todocs___pyproject_runtime_deps["_pyproject_runtime_deps"]
+        todocs___pyproject_dev_deps["_pyproject_dev_deps"]
+        todocs__get_runtime_deps["get_runtime_deps"]
+        todocs__get_dev_deps["get_dev_deps"]
         todocs____init__["__init__"]
         todocs___should_skip["_should_skip"]
         todocs___iter_py_files["_iter_py_files"]
         todocs___module_name["_module_name"]
-        todocs__build_graph{{build_graph CC=15}}
+        todocs__build_graph["build_graph"]
+        todocs___parse_file_imports("_parse_file_imports CC=8")
+        todocs___resolve_relative_import["_resolve_relative_import"]
+        todocs___build_fan_metrics["_build_fan_metrics"]
         todocs___detect_internal_packages("_detect_internal_packages CC=9")
         todocs___detect_cycles["_detect_cycles"]
         todocs__get_hub_modules["get_hub_modules"]
@@ -68,9 +76,14 @@ flowchart TD
         todocs___is_test["_is_test"]
         todocs___scan("_scan CC=10")
         todocs___count_lines["_count_lines"]
-        todocs__analyze{{analyze CC=16}}
+        todocs__analyze["analyze"]
+        todocs___collect_complexity_data["_collect_complexity_data"]
+        todocs___collect_radon_metrics["_collect_radon_metrics"]
+        todocs___collect_ast_fallback["_collect_ast_fallback"]
         todocs___ast_complexity["_ast_complexity"]
-        todocs___parse_module_ast{{_parse_module_ast CC=17}}
+        todocs___extract_module_docstring["_extract_module_docstring"]
+        todocs___extract_imports["_extract_imports"]
+        todocs___parse_module_ast("_parse_module_ast CC=10")
         todocs___extract_module_info["_extract_module_info"]
         todocs__get_key_modules["get_key_modules"]
         todocs____init__["__init__"]
@@ -83,11 +96,9 @@ flowchart TD
         todocs___collect_target_files("_collect_target_files CC=11")
         todocs___extract_from_file["_extract_from_file"]
         todocs___extract_class("_extract_class CC=10")
-        todocs___extract_function["_extract_function"]
-        todocs___extract_all("_extract_all CC=10")
-        todocs___detect_rest_endpoints["_detect_rest_endpoints"]
     end
     subgraph todocs_cli
+        todocs__cli___detect_org_from_git["_detect_org_from_git"]
         todocs__cli__main["main"]
         todocs__cli__generate["generate"]
         todocs__cli___discover_and_show_progress["_discover_and_show_progress"]
@@ -100,6 +111,10 @@ flowchart TD
         todocs__cli__compare["compare"]
         todocs__cli__health["health"]
         todocs__cli__readme["readme"]
+        todocs__cli__status["status"]
+        todocs__cli__cards["cards"]
+        todocs__cli__index["index"]
+        todocs__cli__export_cmd["export_cmd"]
     end
     subgraph todocs_core
         todocs__core__ProjectProfile__to_dict["to_dict"]
@@ -168,41 +183,91 @@ flowchart TD
         todocs___from_package_json("_from_package_json CC=8")
         todocs___extract_license["_extract_license"]
     end
+    subgraph todocs_formatters
+        todocs__format_comparison["format_comparison"]
+        todocs__format_matrix("format_matrix CC=8")
+        todocs__format_ranking["format_ranking"]
+        todocs___default_columns["_default_columns"]
+        todocs___default_features["_default_features"]
+        todocs___sort_profiles["_sort_profiles"]
+        todocs___render_table["_render_table"]
+    end
     subgraph todocs_generators
+        todocs____init__["__init__"]
+        todocs__generate["generate"]
+        todocs__render["render"]
+        todocs___frontmatter["_frontmatter"]
+        todocs___header["_header"]
+        todocs___quick_stats["_quick_stats"]
+        todocs___category_sections["_category_sections"]
+        todocs___alphabetical_index["_alphabetical_index"]
+        todocs___footer["_footer"]
         todocs____init__["__init__"]
         todocs__generate["generate"]
         todocs__generate_index["generate_index"]
         todocs___render_article["_render_article"]
         todocs___render_index("_render_index CC=13")
+        todocs____init__["__init__"]
+        todocs__generate["generate"]
+        todocs__generate_all["generate_all"]
+        todocs__render_card["render_card"]
+        todocs___frontmatter["_frontmatter"]
+        todocs___badge_line["_badge_line"]
+        todocs___description["_description"]
+        todocs___stats_table["_stats_table"]
+        todocs___features_line["_features_line"]
+        todocs___deps_line["_deps_line"]
+        todocs___footer["_footer"]
         todocs__render_frontmatter["render_frontmatter"]
         todocs__render_header["render_header"]
         todocs__render_overview["render_overview"]
         todocs__render_tech_stack("render_tech_stack CC=8")
-        todocs__render_architecture("render_architecture CC=8")
+        todocs__render_architecture("render_architecture CC=12")
         todocs__render_metrics["render_metrics"]
         todocs__render_maturity["render_maturity"]
         todocs__render_dependencies("render_dependencies CC=8")
-        todocs__render_api_surface{{render_api_surface CC=17}}
+        todocs___render_entry_points["_render_entry_points"]
+        todocs___render_cli_commands["_render_cli_commands"]
+        todocs___render_rest_endpoints["_render_rest_endpoints"]
+        todocs___render_public_classes["_render_public_classes"]
+        todocs__render_api_surface("render_api_surface CC=8")
         todocs__render_build_targets["render_build_targets"]
         todocs__render_docker("render_docker CC=12")
         todocs__render_changelog["render_changelog"]
         todocs__generators__article_sections__render_usage("render_usage CC=11")
         todocs__render_footer["render_footer"]
         todocs____init__["__init__"]
+        todocs__generate["generate"]
+        todocs__render["render"]
+        todocs___frontmatter["_frontmatter"]
+        todocs___header["_header"]
+        todocs___kpi_dashboard("_kpi_dashboard CC=11")
+        todocs___grade_breakdown["_grade_breakdown"]
+        todocs___language_distribution["_language_distribution"]
+        todocs___quality_gaps{{_quality_gaps CC=16}}
+        todocs___largest_projects["_largest_projects"]
+        todocs___recent_activity["_recent_activity"]
+        todocs___recommendations{{_recommendations CC=15}}
+        todocs___footer["_footer"]
+        todocs____init__["__init__"]
         todocs__generate_comparison["generate_comparison"]
         todocs__generate_category_articles["generate_category_articles"]
         todocs__generate_health_report["generate_health_report"]
-        todocs___render_comparison["_render_comparison"]
-        todocs___size_comparison["_size_comparison"]
-        todocs___maturity_leaderboard["_maturity_leaderboard"]
-        todocs___complexity_comparison["_complexity_comparison"]
-        todocs___tech_stack_overview("_tech_stack_overview CC=11")
-        todocs___dependency_overlap("_dependency_overlap CC=8")
-        todocs___render_category("_render_category CC=14")
-        todocs___render_health_report{{_render_health_report CC=18}}
-        todocs__generate_readme_list["generate_readme_list"]
-        todocs___render_readme_list{{_render_readme_list CC=16}}
-        todocs___footer["_footer"]
+    end
+    subgraph todocs_outputs
+        todocs____init__["__init__"]
+        todocs__write_all("write_all CC=8")
+        todocs__outputs__json__JSONOutput____init__["__init__"]
+        todocs__outputs__json__JSONOutput__write["write"]
+        todocs__outputs__json__JSONOutput__render["render"]
+        todocs__outputs__json__JSONOutput___meta["_meta"]
+        todocs__outputs__json__JSONOutput___summary("_summary CC=14")
+        todocs__outputs__json__JSONOutput___project_entry["_project_entry"]
+        todocs__outputs__html__HTMLOutput____init__["__init__"]
+        todocs__outputs__html__HTMLOutput__write["write"]
+        todocs__outputs__html__HTMLOutput__render["render"]
+        todocs__outputs__html__HTMLOutput___render_row["_render_row"]
+        todocs__outputs__html__HTMLOutput___render_card("_render_card CC=12")
     end
     subgraph todocs_utils
         todocs__utils__GitignoreParser____init__["__init__"]
@@ -212,11 +277,13 @@ flowchart TD
         todocs__utils__GitignoreParser__is_ignored["is_ignored"]
         todocs__utils__create_scan_filter["create_scan_filter"]
     end
-    examples__scan_single__main --> todocs__core__scan_project
+    examples__article_sections_demo__main --> todocs__core__scan_project
     examples__print_health_summary --> examples__analyze_maturity_distribution
     examples__print_health_summary --> examples__analyze_code_metrics
     examples__organization_health_report__main --> todocs__core__scan_organization
-    examples__article_sections_demo__main --> todocs__core__scan_project
+    examples__scan_org__main --> todocs__core__scan_organization
+    examples__scan_org__main --> todocs__core__generate_articles
+    examples__scan_single__main --> todocs__core__scan_project
     examples__custom_analysis___analyze_import_graph --> examples__custom_analysis___print_section_header
     examples__custom_analysis___analyze_api_surface --> examples__custom_analysis___print_section_header
     examples__custom_analysis___analyze_toon_files --> examples__custom_analysis___print_section_header
@@ -229,8 +296,6 @@ flowchart TD
     examples__custom_analysis__main --> examples__custom_analysis___analyze_makefile
     examples__custom_analysis__main --> examples__custom_analysis___analyze_docker
     examples__custom_analysis__main --> examples__custom_analysis___analyze_code_metrics
-    examples__scan_org__main --> todocs__core__scan_organization
-    examples__scan_org__main --> todocs__core__generate_articles
     examples__api_surface_deep__analyze_entry_points --> examples__api_surface_deep__print_section
     examples__api_surface_deep__analyze_cli_commands --> examples__api_surface_deep__print_section
     examples__api_surface_deep__analyze_public_symbols --> examples__api_surface_deep__print_section
@@ -253,6 +318,11 @@ flowchart TD
     todocs__cli__compare --> todocs__core__scan_organization
     todocs__cli__health --> todocs__core__scan_organization
     todocs__cli__readme --> todocs__core__scan_organization
+    todocs__cli__readme --> todocs__cli___detect_org_from_git
+    todocs__cli__status --> todocs__core__scan_organization
+    todocs__cli__cards --> todocs__core__scan_organization
+    todocs__cli__index --> todocs__core__scan_organization
+    todocs__cli__export_cmd --> todocs__core__scan_organization
     todocs___render_article --> todocs__render_frontmatter
     todocs___render_article --> todocs__render_header
     todocs___render_article --> todocs__render_overview
@@ -267,10 +337,14 @@ flowchart TD
     todocs___render_article --> todocs__render_changelog
     todocs___render_article --> todocs__generators__article_sections__render_usage
     todocs___render_article --> todocs__render_footer
+    todocs__render_api_surface --> todocs___render_entry_points
+    todocs__render_api_surface --> todocs___render_cli_commands
+    todocs__render_api_surface --> todocs___render_rest_endpoints
+    todocs__render_api_surface --> todocs___render_public_classes
     todocs__core__scan_project --> todocs__utils__create_scan_filter
     todocs__core__scan_organization --> todocs__core__scan_project
 
     classDef highCC fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef medCC fill:#ffd43b,stroke:#f08c00,color:#000
-    class examples__scan_single__main,todocs__render_api_surface,todocs___render_health_report,todocs___render_readme_list,todocs__get_runtime_deps,todocs__get_dev_deps,todocs__build_graph,todocs__analyze,todocs___parse_module_ast highCC
-    class examples__print_health_summary,examples__custom_analysis___analyze_api_surface,examples__scan_org__main,todocs___parse_taskfile,todocs___parse_modules_section,todocs___parse_layers_section,todocs__parse_flow,todocs___extract_post_h1,todocs___find_dockerfiles,todocs___parse_dockerfile,todocs___parse_compose,todocs___summarize_entry,todocs___render_index,todocs__render_tech_stack,todocs__render_architecture,todocs__render_dependencies,todocs__render_docker,todocs__generators__article_sections__render_usage,todocs__utils__GitignoreParser___match_pattern,todocs___tech_stack_overview,todocs___dependency_overlap,todocs___render_category,todocs__analyzers__maturity__MaturityScorer__score,todocs___detect_internal_packages,todocs___scan,todocs___detect_cli_commands,todocs___collect_target_files,todocs___extract_class,todocs___extract_all,todocs__core___discover_projects medCC
+    class examples__scan_single__main,todocs___quality_gaps,todocs___recommendations highCC
+    class examples__print_health_summary,examples__scan_org__main,examples__custom_analysis___analyze_api_surface,todocs___parse_taskfile,todocs___parse_modules_section,todocs___parse_layers_section,todocs__parse_flow,todocs___extract_post_h1,todocs___find_dockerfiles,todocs___parse_dockerfile,todocs___parse_compose,todocs___summarize_entry,todocs__write_all,todocs__format_matrix,todocs__outputs__json__JSONOutput___summary,todocs__outputs__html__HTMLOutput___render_card,todocs___render_index,todocs__render_tech_stack,todocs__render_architecture,todocs__render_dependencies,todocs__render_api_surface,todocs__render_docker,todocs__generators__article_sections__render_usage,todocs___kpi_dashboard,todocs__utils__GitignoreParser___match_pattern,todocs___tech_stack_overview,todocs___dependency_overlap,todocs___render_category,todocs___health_executive_summary,todocs__analyzers__maturity__MaturityScorer__score medCC

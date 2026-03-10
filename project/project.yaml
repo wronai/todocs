@@ -3,16 +3,16 @@ project:
   name: todocs
   repo: /home/tom/github/wronai/todocs
   language: python
-  analyzed_at: '2026-03-08T14:30:47Z'
+  analyzed_at: '2026-03-10T10:45:35Z'
   tool: code2llm
   stats:
-    files: 18
-    lines: 6209
-    functions: 165
-    classes: 20
+    files: 25
+    lines: 7967
+    functions: 248
+    classes: 27
 health:
-  cc_avg: 5.5
-  critical_count: 26
+  cc_avg: 4.6
+  critical_count: 25
   critical_limit: 10
   duplicates: 0
   cycles: 0
@@ -24,26 +24,21 @@ health:
     severity: critical
   - type: high_fan_out
     target: ImportGraphAnalyzer.build_graph
-    value: 26
+    value: 21
     limit: 10
     severity: critical
   - type: high_fan_out
-    target: CodeMetricsAnalyzer.analyze
-    value: 22
+    target: export_cmd
+    value: 16
     limit: 10
-    severity: critical
-  - type: high_fan_out
-    target: DependencyAnalyzer.get_runtime_deps
-    value: 20
-    limit: 10
-    severity: critical
-  - type: high_fan_out
-    target: DependencyAnalyzer.get_dev_deps
-    value: 20
-    limit: 10
-    severity: critical
+    severity: error
   - type: high_fan_out
     target: DockerParser._parse_dockerfile
+    value: 16
+    limit: 10
+    severity: error
+  - type: high_fan_out
+    target: MarkdownOutput.write_all
     value: 16
     limit: 10
     severity: error
@@ -63,44 +58,19 @@ health:
     limit: 10
     severity: error
   - type: cc_exceeded
-    target: ComparisonGenerator._render_health_report
-    value: 18
-    limit: 15
-    severity: warning
-  - type: cc_exceeded
-    target: DependencyAnalyzer.get_dev_deps
-    value: 18
-    limit: 15
-    severity: warning
-  - type: cc_exceeded
-    target: render_api_surface
-    value: 17
-    limit: 15
-    severity: warning
-  - type: cc_exceeded
-    target: DependencyAnalyzer.get_runtime_deps
-    value: 17
-    limit: 15
-    severity: warning
-  - type: cc_exceeded
-    target: CodeMetricsAnalyzer._parse_module_ast
-    value: 17
-    limit: 15
-    severity: warning
-  - type: cc_exceeded
-    target: ComparisonGenerator._render_readme_list
+    target: StatusReportGenerator._quality_gaps
     value: 16
     limit: 15
     severity: warning
   - type: cc_exceeded
-    target: CodeMetricsAnalyzer.analyze
-    value: 16
-    limit: 15
-    severity: warning
-  - type: cc_exceeded
-    target: ImportGraphAnalyzer.build_graph
+    target: StatusReportGenerator._recommendations
     value: 15
     limit: 15
+    severity: warning
+  - type: high_fan_out
+    target: readme
+    value: 14
+    limit: 10
     severity: warning
   - type: high_fan_out
     target: DockerParser._parse_compose
@@ -117,134 +87,59 @@ health:
     value: 13
     limit: 10
     severity: warning
+  - type: high_fan_out
+    target: index
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: ToonParser.parse_flow
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: APISurfaceAnalyzer._detect_cli_commands
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: generate_articles
+    value: 13
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: health
+    value: 12
+    limit: 10
+    severity: warning
+  - type: high_fan_out
+    target: status
+    value: 12
+    limit: 10
+    severity: warning
 modules:
-- path: todocs/analyzers/dependencies.py
-  lines: 151
+- path: todocs/generators/status_report_gen.py
+  lines: 195
   classes: 1
-  methods: 5
-  cc_max: 18
+  methods: 13
+  cc_max: 16
   inbound_deps: 0
   exports:
-  - name: DependencyAnalyzer
+  - name: StatusReportGenerator
     type: class
-    cc_avg: 9.0
+    cc_avg: 5.1
     methods:
-    - name: get_runtime_deps
-      cc: 17
-      flag: split
-      fan_out: 20
-    - name: get_dev_deps
-      cc: 18
-      flag: split
-      fan_out: 20
-- path: todocs/generators/comparison.py
-  lines: 475
-  classes: 1
-  methods: 15
-  cc_max: 18
-  inbound_deps: 0
-  exports:
-  - name: ComparisonGenerator
-    type: class
-    cc_avg: 6.3
-    methods:
-    - name: _tech_stack_overview
+    - name: render
+      cc: 3
+      fan_out: 12
+    - name: _kpi_dashboard
       cc: 11
-    - name: _render_category
-      cc: 14
-    - name: _render_health_report
-      cc: 18
-      flag: split
-      fan_out: 13
-    - name: _render_readme_list
+    - name: _quality_gaps
       cc: 16
       flag: split
-- path: todocs/analyzers/code_metrics.py
-  lines: 240
-  classes: 1
-  methods: 10
-  cc_max: 17
-  inbound_deps: 0
-  exports:
-  - name: CodeMetricsAnalyzer
-    type: class
-    cc_avg: 6.4
-    methods:
-    - name: _scan
-      cc: 10
-      fan_out: 10
-    - name: analyze
-      cc: 16
-      flag: split
-      fan_out: 22
-    - name: _parse_module_ast
-      cc: 17
-      flag: split
-- path: todocs/generators/article_sections.py
-  lines: 431
-  classes: 0
-  methods: 14
-  cc_max: 17
-  inbound_deps: 2
-  exports:
-  - name: render_frontmatter
-    type: function
-    cc: 6
-  - name: render_header
-    type: function
-    cc: 7
-  - name: render_overview
-    type: function
-    cc: 6
-  - name: render_tech_stack
-    type: function
-    cc: 8
-  - name: render_architecture
-    type: function
-    cc: 8
-  - name: render_metrics
-    type: function
-    cc: 4
-  - name: render_maturity
-    type: function
-    cc: 3
-  - name: render_dependencies
-    type: function
-    cc: 8
-  - name: render_api_surface
-    type: function
-    cc: 17
-    flag: split
-  - name: render_build_targets
-    type: function
-    cc: 6
-  - name: render_docker
-    type: function
-    cc: 12
-  - name: render_changelog
-    type: function
-    cc: 5
-  - name: render_usage
-    type: function
-    cc: 11
-  - name: render_footer
-    type: function
-    cc: 1
-- path: todocs/analyzers/import_graph.py
-  lines: 201
-  classes: 1
-  methods: 8
-  cc_max: 15
-  inbound_deps: 0
-  exports:
-  - name: ImportGraphAnalyzer
-    type: class
-    cc_avg: 5.6
-    methods:
-    - name: build_graph
+    - name: _recommendations
       cc: 15
       flag: split
-      fan_out: 26
 - path: todocs/analyzers/maturity.py
   lines: 103
   classes: 1
@@ -257,6 +152,34 @@ modules:
     cc_avg: 7.5
     methods:
     - name: score
+      cc: 14
+- path: todocs/generators/comparison.py
+  lines: 482
+  classes: 1
+  methods: 23
+  cc_max: 14
+  inbound_deps: 0
+  exports:
+  - name: ComparisonGenerator
+    type: class
+    cc_avg: 4.3
+    methods:
+    - name: _tech_stack_overview
+      cc: 11
+    - name: _render_category
+      cc: 14
+- path: todocs/outputs/json.py
+  lines: 104
+  classes: 1
+  methods: 6
+  cc_max: 14
+  inbound_deps: 0
+  exports:
+  - name: JSONOutput
+    type: class
+    cc_avg: 3.8
+    methods:
+    - name: _summary
       cc: 14
 - path: todocs/analyzers/api_surface.py
   lines: 290
@@ -318,6 +241,69 @@ modules:
     - name: _render_index
       cc: 13
       fan_out: 12
+- path: todocs/generators/article_sections.py
+  lines: 460
+  classes: 0
+  methods: 18
+  cc_max: 12
+  inbound_deps: 2
+  exports:
+  - name: render_frontmatter
+    type: function
+    cc: 6
+  - name: render_header
+    type: function
+    cc: 7
+  - name: render_overview
+    type: function
+    cc: 6
+  - name: render_tech_stack
+    type: function
+    cc: 8
+  - name: render_architecture
+    type: function
+    cc: 12
+    fan_out: 11
+  - name: render_metrics
+    type: function
+    cc: 4
+  - name: render_maturity
+    type: function
+    cc: 3
+  - name: render_dependencies
+    type: function
+    cc: 8
+  - name: render_api_surface
+    type: function
+    cc: 8
+  - name: render_build_targets
+    type: function
+    cc: 6
+  - name: render_docker
+    type: function
+    cc: 12
+  - name: render_changelog
+    type: function
+    cc: 5
+  - name: render_usage
+    type: function
+    cc: 11
+  - name: render_footer
+    type: function
+    cc: 1
+- path: todocs/outputs/html.py
+  lines: 164
+  classes: 1
+  methods: 5
+  cc_max: 12
+  inbound_deps: 0
+  exports:
+  - name: HTMLOutput
+    type: class
+    cc_avg: 5.2
+    methods:
+    - name: _render_card
+      cc: 12
 - path: todocs/core.py
   lines: 387
   classes: 5
@@ -368,6 +354,25 @@ modules:
     - name: parse_flow
       cc: 11
       fan_out: 13
+- path: todocs/analyzers/code_metrics.py
+  lines: 265
+  classes: 1
+  methods: 15
+  cc_max: 10
+  inbound_deps: 0
+  exports:
+  - name: CodeMetricsAnalyzer
+    type: class
+    cc_avg: 4.6
+    methods:
+    - name: _scan
+      cc: 10
+      fan_out: 10
+    - name: analyze
+      cc: 7
+      fan_out: 11
+    - name: _parse_module_ast
+      cc: 10
 - path: todocs/extractors/makefile_parser.py
   lines: 153
   classes: 1
@@ -395,6 +400,20 @@ modules:
     - name: _from_pyproject
       cc: 10
       fan_out: 12
+- path: todocs/analyzers/import_graph.py
+  lines: 204
+  classes: 1
+  methods: 11
+  cc_max: 9
+  inbound_deps: 0
+  exports:
+  - name: ImportGraphAnalyzer
+    type: class
+    cc_avg: 4.4
+    methods:
+    - name: build_graph
+      cc: 5
+      fan_out: 21
 - path: todocs/extractors/changelog_parser.py
   lines: 103
   classes: 1
@@ -412,6 +431,16 @@ modules:
     - name: _summarize_entry
       cc: 9
       fan_out: 11
+- path: todocs/analyzers/dependencies.py
+  lines: 133
+  classes: 1
+  methods: 10
+  cc_max: 8
+  inbound_deps: 0
+  exports:
+  - name: DependencyAnalyzer
+    type: class
+    cc_avg: 3.4
 - path: todocs/extractors/readme_parser.py
   lines: 153
   classes: 1
@@ -426,6 +455,30 @@ modules:
     - name: _extract_heading_sections
       cc: 7
       fan_out: 12
+- path: todocs/formatters/table_formatter.py
+  lines: 145
+  classes: 1
+  methods: 7
+  cc_max: 8
+  inbound_deps: 0
+  exports:
+  - name: TableFormatter
+    type: class
+    cc_avg: 3.3
+- path: todocs/outputs/markdown.py
+  lines: 81
+  classes: 1
+  methods: 2
+  cc_max: 8
+  inbound_deps: 0
+  exports:
+  - name: MarkdownOutput
+    type: class
+    cc_avg: 4.5
+    methods:
+    - name: write_all
+      cc: 8
+      fan_out: 16
 - path: todocs/utils/__init__.py
   lines: 150
   classes: 1
@@ -457,9 +510,9 @@ modules:
       cc: 2
       fan_out: 11
 - path: todocs/cli.py
-  lines: 337
+  lines: 483
   classes: 0
-  methods: 12
+  methods: 17
   cc_max: 7
   inbound_deps: 0
   exports:
@@ -484,8 +537,50 @@ modules:
     fan_out: 12
   - name: readme
     type: function
+    cc: 4
+    fan_out: 14
+  - name: status
+    type: function
+    cc: 1
+    fan_out: 12
+  - name: cards
+    type: function
+    cc: 1
+    fan_out: 12
+  - name: index
+    type: function
     cc: 2
     fan_out: 13
+  - name: export_cmd
+    type: function
+    cc: 4
+    fan_out: 16
+- path: todocs/generators/org_index_gen.py
+  lines: 118
+  classes: 1
+  methods: 9
+  cc_max: 6
+  inbound_deps: 0
+  exports:
+  - name: OrgIndexGenerator
+    type: class
+    cc_avg: 2.7
+- path: todocs/generators/project_card_gen.py
+  lines: 135
+  classes: 1
+  methods: 11
+  cc_max: 5
+  inbound_deps: 0
+  exports:
+  - name: ProjectCardGenerator
+    type: class
+    cc_avg: 2.5
+- path: project.sh
+  lines: 18
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
 - path: todocs/__init__.py
   lines: 10
   classes: 0
@@ -504,7 +599,19 @@ modules:
   methods: 0
   cc_max: 0
   inbound_deps: 0
+- path: todocs/formatters/__init__.py
+  lines: 1
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
 - path: todocs/generators/__init__.py
+  lines: 1
+  classes: 0
+  methods: 0
+  cc_max: 0
+  inbound_deps: 0
+- path: todocs/outputs/__init__.py
   lines: 1
   classes: 0
   methods: 0
@@ -516,21 +623,18 @@ hotspots:
   note: "Analyze a single project and return its profile.\n\nArgs:\n    project_path:\
     \ Path t"
 - name: ImportGraphAnalyzer.build_graph
-  fan_out: 26
+  fan_out: 21
   note: "Build the import dependency graph.\n\nReturns:\n    {\n        \"nodes\"\
     : [{\"name\": \"m"
-- name: CodeMetricsAnalyzer.analyze
-  fan_out: 22
-  note: Analysis pipeline, 22 stages
-- name: DependencyAnalyzer.get_runtime_deps
-  fan_out: 20
-  note: Get runtime dependencies.
-- name: DependencyAnalyzer.get_dev_deps
-  fan_out: 20
-  note: Get development dependencies.
+- name: export_cmd
+  fan_out: 16
+  note: Export with 16 outputs
 - name: DockerParser._parse_dockerfile
   fan_out: 16
   note: Extract FROM images, EXPOSE ports, ENTRYPOINT from Dockerfile.
+- name: MarkdownOutput.write_all
+  fan_out: 16
+  note: Write all markdown outputs. Returns list of written paths.
 - name: scan_organization
   fan_out: 16
   note: "Scan all projects under root_path and return profiles.\n\nArgs:\n    root_path:\
@@ -544,50 +648,32 @@ hotspots:
 - name: ArticleGenerator._render_article
   fan_out: 15
   note: Render complete article by combining all sections.
+- name: readme
+  fan_out: 14
+  note: 'Generate a single README.md with project list and 5-line descriptions.
+
+
+    ROOT_DIR'
 - name: DockerParser._parse_compose
   fan_out: 14
   note: Extract services, ports, volumes from docker-compose.yml.
 refactoring:
   priorities:
-  - action: Split render_api_surface (CC=17 → target CC<10)
+  - action: Split StatusReportGenerator._quality_gaps (CC=16 → target CC<10)
     impact: medium
     effort: low
-    module: article_sections.py
-  - action: Split ComparisonGenerator._render_health_report (CC=18 → target CC<10)
+    module: status_report_gen.py
+  - action: Split StatusReportGenerator._recommendations (CC=15 → target CC<10)
     impact: medium
     effort: low
-    module: comparison.py
-  - action: Split ComparisonGenerator._render_readme_list (CC=16 → target CC<10)
-    impact: medium
-    effort: low
-    module: comparison.py
-  - action: Split DependencyAnalyzer.get_runtime_deps (CC=17 → target CC<10)
-    impact: medium
-    effort: low
-    module: dependencies.py
-  - action: Split DependencyAnalyzer.get_dev_deps (CC=18 → target CC<10)
-    impact: medium
-    effort: low
-    module: dependencies.py
-  - action: Split ImportGraphAnalyzer.build_graph (CC=15 → target CC<10)
-    impact: medium
-    effort: low
-    module: import_graph.py
-  - action: Split CodeMetricsAnalyzer.analyze (CC=16 → target CC<10)
-    impact: medium
-    effort: low
-    module: code_metrics.py
-  - action: Split CodeMetricsAnalyzer._parse_module_ast (CC=17 → target CC<10)
-    impact: medium
-    effort: low
-    module: code_metrics.py
+    module: status_report_gen.py
   - action: Reduce scan_project fan-out (currently 33)
     impact: medium
     effort: medium
-  - action: Reduce ImportGraphAnalyzer.build_graph fan-out (currently 26)
+  - action: Reduce ImportGraphAnalyzer.build_graph fan-out (currently 21)
     impact: medium
     effort: medium
-  - action: Reduce CodeMetricsAnalyzer.analyze fan-out (currently 22)
+  - action: Reduce export_cmd fan-out (currently 16)
     impact: medium
     effort: medium
 evolution:
@@ -595,4 +681,9 @@ evolution:
   cc_avg: 5.5
   critical: 26
   lines: 6209
+  note: Automated analysis
+- date: '2026-03-10'
+  cc_avg: 4.6
+  critical: 25
+  lines: 7967
   note: Automated analysis

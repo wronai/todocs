@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
@@ -21,6 +23,31 @@ try:
     HAS_RICH = True
 except ImportError:
     HAS_RICH = False
+
+
+def _detect_org_from_git(root_dir: Path) -> tuple[str, str]:
+    """Detect organization name and URL from git remote."""
+    try:
+        result = subprocess.run(
+            ["git", "remote", "get-url", "origin"],
+            cwd=root_dir,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0:
+            url = result.stdout.strip()
+            # Parse github.com/user/repo or git@github.com:user/repo
+            match = re.search(r"github\.com[/:]([^/]+)", url)
+            if match:
+                org = match.group(1)
+                return org, f"https://github.com/{org}"
+    except (subprocess.SubprocessError, FileNotFoundError):
+        pass
+    
+    # Fallback: use parent directory name
+    org = root_dir.parent.name if root_dir.parent.name else root_dir.name
+    return org, f"https://github.com/{org}"
 
 
 @click.group()
@@ -307,10 +334,11 @@ def health(root_dir: str, output_path: str, org_name: str, exclude: tuple):
 @click.argument("root_dir", type=click.Path(exists=True, file_okay=False))
 @click.option("-o", "--output", "output_path", default="README.md",
               help="Output file path")
-@click.option("--org-name", default="WronAI", help="Organization name")
+@click.option("--org-name", default=None, help="Organization name (auto-detected from git if not provided)")
 @click.option("--exclude", multiple=True, help="Directory names to exclude")
 @click.option("--title", default="Project Portfolio", help="README title")
-def readme(root_dir: str, output_path: str, org_name: str, exclude: tuple, title: str):
+@click.option("-v", "--verbose", is_flag=True, help="Verbose output")
+def readme(root_dir: str, output_path: str, org_name: str, exclude: tuple, title: str, verbose: bool):
     """Generate a single README.md with project list and 5-line descriptions.
 
     ROOT_DIR is the directory containing project subdirectories.
@@ -328,7 +356,15 @@ def readme(root_dir: str, output_path: str, org_name: str, exclude: tuple, title
         click.echo("No projects found.", err=True)
         raise SystemExit(1)
 
-    gen = ComparisonGenerator(org_name=org_name)
+    # Auto-detect org if not provided
+    if org_name is None:
+        org_name, org_url = _detect_org_from_git(root)
+        if verbose:
+            click.echo(f"Detected organization: {org_name} ({org_url})")
+    else:
+        org_url = f"https://github.com/{org_name}"
+
+    gen = ComparisonGenerator(org_name=org_name, org_url=org_url)
     gen.generate_readme_list(profiles, Path(output_path), title=title)
     click.echo(f"README written to {output_path} ({len(profiles)} projects)")
 
