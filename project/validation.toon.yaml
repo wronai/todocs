@@ -1,7 +1,7 @@
-# vallm batch | 89f | 48✓ 3⚠ 9✗ | 2026-04-13
+# vallm batch | 94f | 53✓ 3⚠ 9✗ | 2026-04-13
 
 SUMMARY:
-  scanned: 89  passed: 48 (53.9%)  warnings: 3  errors: 9  unsupported: 32
+  scanned: 94  passed: 53 (56.4%)  warnings: 3  errors: 9  unsupported: 32
 
 WARNINGS[3]{path,score}:
   tests/test_integration.py,0.96

@@ -4,11 +4,11 @@
 
 - **Project**: /home/tom/github/wronai/todocs
 - **Primary Language**: python
-- **Languages**: python: 41, shell: 1
+- **Languages**: python: 45, shell: 1
 - **Analysis Mode**: static
 - **Total Functions**: 279
 - **Total Classes**: 27
-- **Modules**: 42
+- **Modules**: 46
 - **Entry Points**: 225
 
 ## Architecture by Module
@@ -17,10 +17,6 @@
 - **Functions**: 23
 - **Classes**: 1
 - **File**: `comparison.py`
-
-### todocs.cli
-- **Functions**: 18
-- **File**: `cli.py`
 
 ### todocs.generators.article_sections
 - **Functions**: 18
@@ -80,6 +76,10 @@
 - **Functions**: 9
 - **Classes**: 1
 - **File**: `readme_parser.py`
+
+### todocs.cli.commands
+- **Functions**: 9
+- **File**: `commands.py`
 
 ### todocs.generators.org_index_gen
 - **Functions**: 9
@@ -148,27 +148,27 @@ Main execution flows into the system:
 > Parse flow.toon — pipeline and data-flow analysis.
 - **Calls**: self._read, re.match, text.splitlines, int, int, re.match, pipelines.append, hm.group
 
-### todocs.cli.export_cmd
+### todocs.extractors.docker_parser.DockerParser._parse_dockerfile
+> Extract FROM images, EXPOSE ports, ENTRYPOINT from Dockerfile.
+- **Calls**: text.splitlines, path.read_text, line.strip, re.match, re.match, re.match, re.match, line.startswith
+
+### todocs.cli.commands.export_cmd
 > Export organization report in HTML or JSON format.
 
 ROOT_DIR is the directory containing project subdirectories.
 
 Examples:
     todocs export /path/to
-- **Calls**: main.command, click.argument, click.option, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization
+- **Calls**: click.command, click.argument, click.option, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization
 
-### todocs.extractors.docker_parser.DockerParser._parse_dockerfile
-> Extract FROM images, EXPOSE ports, ENTRYPOINT from Dockerfile.
-- **Calls**: text.splitlines, path.read_text, line.strip, re.match, re.match, re.match, re.match, line.startswith
-
-### todocs.cli.readme
+### todocs.cli.commands.readme
 > Generate a single README.md with project list and 5-line descriptions.
 
 ROOT_DIR is the directory containing project subdirectories.
 
 Example:
     tod
-- **Calls**: main.command, click.argument, click.option, click.option, click.option, click.option, click.option, None.resolve
+- **Calls**: click.command, click.argument, click.option, click.option, click.option, click.option, click.option, None.resolve
 
 ### todocs.outputs.markdown.MarkdownOutput.write_all
 > Write all markdown outputs. Returns list of written paths.
@@ -189,11 +189,11 @@ Example:
 > Return CodeStats dataclass.
 - **Calls**: self._scan, len, len, set, sum, sum, self._collect_complexity_data, hotspots.sort
 
-### todocs.cli.compare
+### todocs.cli.commands.compare
 > Generate cross-project comparison report.
 
 ROOT_DIR is the directory containing project subdirectories.
-- **Calls**: main.command, click.argument, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization, ComparisonGenerator
+- **Calls**: click.command, click.argument, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization, ComparisonGenerator
 
 ### todocs.outputs.json.JSONOutput._summary
 - **Calls**: len, sum, sum, sum, round, round, round, round
@@ -210,27 +210,27 @@ Returns:
         "edges": [{"from":
 - **Calls**: self._detect_internal_packages, self._collect_modules, self._build_import_edges, self._build_fan_metrics, self._detect_cycles, list, sorted, dict
 
-### todocs.cli.generate
-> Scan projects and generate WordPress markdown articles.
-
-ROOT_DIR is the directory containing project subdirectories.
-- **Calls**: main.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option
-
-### todocs.cli.inspect
-> Inspect a single project and show its profile.
-
-PROJECT_DIR is the path to the project directory.
-- **Calls**: main.command, click.argument, click.option, click.option, None.resolve, todocs.core.scan_project, profile.to_json, ArticleGenerator
-
-### todocs.cli.index
-> Generate organization project index / catalog page.
-
-ROOT_DIR is the directory containing project subdirectories.
-- **Calls**: main.command, click.argument, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization, OrgIndexGenerator
-
 ### todocs.extractors.toon_parser.ToonParser._parse_layers_section
 > Parse LAYERS section from analysis.toon.
 - **Calls**: text.splitlines, None.startswith, re.match, line.strip, line.strip, layers.append, line.startswith, line.startswith
+
+### todocs.cli.commands.generate
+> Scan projects and generate WordPress markdown articles.
+
+ROOT_DIR is the directory containing project subdirectories.
+- **Calls**: click.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option
+
+### todocs.cli.commands.inspect
+> Inspect a single project and show its profile.
+
+PROJECT_DIR is the path to the project directory.
+- **Calls**: click.command, click.argument, click.option, click.option, None.resolve, todocs.core.scan_project, profile.to_json, ArticleGenerator
+
+### todocs.cli.commands.index
+> Generate organization project index / catalog page.
+
+ROOT_DIR is the directory containing project subdirectories.
+- **Calls**: click.command, click.argument, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization, OrgIndexGenerator
 
 ### todocs.analyzers.dependencies.DependencyAnalyzer._pyproject_dev_deps
 > Extract dev deps from pyproject.toml optional-dependencies and poetry groups.
@@ -286,19 +286,19 @@ _from_pyproject [todocs.extractors.metadata.MetadataExtractor]
 parse_flow [todocs.extractors.toon_parser.ToonParser]
 ```
 
-### Flow 8: export_cmd
-```
-export_cmd [todocs.cli]
-```
-
-### Flow 9: _parse_dockerfile
+### Flow 8: _parse_dockerfile
 ```
 _parse_dockerfile [todocs.extractors.docker_parser.DockerParser]
 ```
 
+### Flow 9: export_cmd
+```
+export_cmd [todocs.cli.commands]
+```
+
 ### Flow 10: readme
 ```
-readme [todocs.cli]
+readme [todocs.cli.commands]
 ```
 
 ## Key Classes
@@ -487,6 +487,14 @@ Key functions that process and transform data:
 > Split markdown by headings into sections.
 - **Output to**: self._extract_description, sections.update, self._extract_heading_sections
 
+### todocs.extractors.changelog_parser.ChangelogParser.parse
+> Return list of {version, date, content} dicts for recent releases.
+- **Output to**: self._find_changelog, self._parse_entries, cl_path.read_text
+
+### todocs.extractors.changelog_parser.ChangelogParser._parse_entries
+> Parse Keep-a-Changelog or similar format.
+- **Output to**: re.compile, list, enumerate, heading_re.finditer, m.group
+
 ### todocs.extractors.docker_parser.DockerParser.parse
 > Parse all Docker-related files.
 - **Output to**: self._find_dockerfiles, self._find_compose_files, list, list, self._parse_dockerfile
@@ -498,14 +506,6 @@ Key functions that process and transform data:
 ### todocs.extractors.docker_parser.DockerParser._parse_compose
 > Extract services, ports, volumes from docker-compose.yml.
 - **Output to**: data.get, raw_services.items, list, yaml.safe_load, isinstance
-
-### todocs.extractors.changelog_parser.ChangelogParser.parse
-> Return list of {version, date, content} dicts for recent releases.
-- **Output to**: self._find_changelog, self._parse_entries, cl_path.read_text
-
-### todocs.extractors.changelog_parser.ChangelogParser._parse_entries
-> Parse Keep-a-Changelog or similar format.
-- **Output to**: re.compile, list, enumerate, heading_re.finditer, m.group
 
 ## Behavioral Patterns
 
@@ -529,25 +529,26 @@ Functions exposed as public API (no underscore prefix):
 - `examples.organization_health_report.main` - 23 calls
 - `todocs.extractors.toon_parser.ToonParser.parse_flow` - 23 calls
 - `todocs.generators.article_sections.render_docker` - 23 calls
-- `todocs.cli.export_cmd` - 22 calls
-- `todocs.cli.readme` - 21 calls
+- `todocs.cli.commands.export_cmd` - 22 calls
+- `todocs.cli.commands.readme` - 21 calls
+- `todocs.cli.progress.generate_without_rich` - 20 calls
 - `todocs.outputs.markdown.MarkdownOutput.write_all` - 20 calls
 - `todocs.generators.article_sections.render_metrics` - 19 calls
 - `todocs.generators.article_sections.render_usage` - 19 calls
 - `todocs.analyzers.structure.StructureAnalyzer.detect_tech_stack` - 19 calls
 - `todocs.analyzers.code_metrics.CodeMetricsAnalyzer.analyze` - 19 calls
-- `todocs.cli.compare` - 18 calls
+- `todocs.cli.commands.compare` - 18 calls
 - `todocs.analyzers.import_graph.ImportGraphAnalyzer.build_graph` - 18 calls
-- `todocs.cli.generate` - 17 calls
-- `todocs.cli.inspect` - 17 calls
-- `todocs.cli.index` - 17 calls
+- `todocs.cli.commands.generate` - 17 calls
+- `todocs.cli.commands.inspect` - 17 calls
+- `todocs.cli.commands.index` - 17 calls
 - `todocs.extractors.docker_parser.DockerParser.parse` - 16 calls
 - `todocs.generators.article_sections.render_tech_stack` - 16 calls
 - `todocs.core.scan_organization` - 16 calls
 - `examples.api_surface_deep.analyze_rest_endpoints` - 15 calls
-- `todocs.cli.health` - 15 calls
-- `todocs.cli.status` - 15 calls
-- `todocs.cli.cards` - 15 calls
+- `todocs.cli.commands.health` - 15 calls
+- `todocs.cli.commands.status` - 15 calls
+- `todocs.cli.commands.cards` - 15 calls
 - `todocs.core.generate_articles` - 15 calls
 - `todocs.generators.article_sections.render_api_surface` - 14 calls
 - `examples.api_surface_deep.analyze_cli_commands` - 13 calls
@@ -557,7 +558,6 @@ Functions exposed as public API (no underscore prefix):
 - `examples.custom_analysis.main` - 12 calls
 - `todocs.formatters.table_formatter.TableFormatter.format_matrix` - 12 calls
 - `todocs.generators.article_sections.render_dependencies` - 12 calls
-- `todocs.extractors.metadata.MetadataExtractor.extract` - 12 calls
 
 ## System Interactions
 
@@ -588,13 +588,13 @@ graph TD
     parse_flow --> match
     parse_flow --> splitlines
     parse_flow --> int
-    export_cmd --> command
-    export_cmd --> argument
-    export_cmd --> option
     _parse_dockerfile --> splitlines
     _parse_dockerfile --> read_text
     _parse_dockerfile --> strip
     _parse_dockerfile --> match
+    export_cmd --> command
+    export_cmd --> argument
+    export_cmd --> option
 ```
 
 ## Reverse Engineering Guidelines

@@ -4,21 +4,21 @@ flowchart TD
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
 
     subgraph CLI
-        todocs__cli___detect_org_from_git["_detect_org_from_git"]
+        todocs__cli__progress__discover_and_show_progress["discover_and_show_progress"]
+        todocs__cli__progress__scan_with_progress["scan_with_progress"]
+        todocs__cli__progress__print_project_summary["print_project_summary"]
+        todocs__cli__progress__generate_articles_with_progress["generate_articles_with_progres"]
+        todocs__cli__progress__generate_with_rich["generate_with_rich"]
+        todocs__cli__progress__generate_without_rich["generate_without_rich"]
         todocs__cli__main["main"]
-        todocs__cli___generate_with_rich["_generate_with_rich"]
-        todocs__cli__generate["generate"]
-        todocs__cli___discover_and_show_progress["_discover_and_show_progress"]
-        todocs__cli___scan_with_progress["_scan_with_progress"]
-        todocs__cli___print_project_summary["_print_project_summary"]
-        todocs__cli___generate_articles_with_progress["_generate_articles_with_progre"]
-        todocs__cli___generate_without_rich["_generate_without_rich"]
-        todocs__cli___write_json_report["_write_json_report"]
-        todocs__cli__inspect["inspect"]
-        todocs__cli__compare["compare"]
-        todocs__cli__health["health"]
-        todocs__cli__readme["readme"]
-        todocs__cli__status["status"]
+        todocs__cli__utils__detect_org_from_git["detect_org_from_git"]
+        todocs__cli__utils__write_json_report["write_json_report"]
+        todocs__cli__commands__generate["generate"]
+        todocs__cli__commands__inspect["inspect"]
+        todocs__cli__commands__compare["compare"]
+        todocs__cli__commands__health["health"]
+        todocs__cli__commands__readme["readme"]
+        todocs__cli__commands__status["status"]
         ...["+3 more"]
     end
 
@@ -41,4 +41,4 @@ flowchart TD
         ...["+178 more"]
     end
 
-    class todocs__extractors__makefile_parser__MakefileParser__parse,todocs__extractors__makefile_parser__MakefileParser___parse_makefile,todocs__extractors__makefile_parser__MakefileParser___collect_phony_targets,todocs__extractors__makefile_parser__MakefileParser___parse_target_line,todocs__extractors__makefile_parser__MakefileParser___extract_help_text,todocs__extractors__makefile_parser__MakefileParser___collect_commands,todocs__extractors__makefile_parser__MakefileParser___parse_taskfile,todocs__extractors__makefile_parser__MakefileParser__get_target_names,todocs__cli___detect_org_from_git,todocs__cli__main entry
+    class todocs__extractors__makefile_parser__MakefileParser__parse,todocs__extractors__makefile_parser__MakefileParser___parse_makefile,todocs__extractors__makefile_parser__MakefileParser___collect_phony_targets,todocs__extractors__makefile_parser__MakefileParser___parse_target_line,todocs__extractors__makefile_parser__MakefileParser___extract_help_text,todocs__extractors__makefile_parser__MakefileParser___collect_commands,todocs__extractors__makefile_parser__MakefileParser___parse_taskfile,todocs__extractors__makefile_parser__MakefileParser__get_target_names,todocs__extractors__toon_parser__ToonParser__find_toon_files,todocs__extractors__toon_parser__ToonParser__parse_all entry

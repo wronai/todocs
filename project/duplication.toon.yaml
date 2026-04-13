@@ -1,12 +1,12 @@
-# redup/duplication | 7 groups | 41f 6403L | 2026-04-13
+# redup/duplication | 7 groups | 46f 6554L | 2026-04-13
 
 SUMMARY:
-  files_scanned: 41
-  total_lines:   6403
+  files_scanned: 46
+  total_lines:   6554
   dup_groups:    7
   dup_fragments: 23
   saved_lines:   87
-  scan_ms:       4998
+  scan_ms:       4718
 
 DUPLICATES[7] (ranked by impact):
   [79f7deb8ba6b4623]   EXAC  __init__  L=4 N=7 saved=24 sim=1.00
@@ -23,8 +23,8 @@ DUPLICATES[7] (ranked by impact):
       todocs/analyzers/import_graph.py:24-28  (_should_skip)
       todocs/analyzers/structure.py:97-101  (_should_skip)
   [b4541c910e42c23b]   STRU  health  L=14 N=2 saved=14 sim=1.00
-      todocs/cli.py:337-350  (health)
-      todocs/cli.py:398-411  (status)
+      todocs/cli/commands.py:120-133  (health)
+      todocs/cli/commands.py:181-194  (status)
   [0268d57159098ba6]   STRU  _footer  L=6 N=3 saved=12 sim=1.00
       todocs/generators/comparison.py:477-482  (_footer)
       todocs/generators/org_index_gen.py:113-118  (_footer)
@@ -47,9 +47,9 @@ REFACTOR[7] (ranked by priority):
   [2] ○ extract_function   → todocs/analyzers/utils/_should_skip.py
       WHY: 4 occurrences of 5-line block across 4 files — saves 15 lines
       FILES: todocs/analyzers/api_surface.py, todocs/analyzers/code_metrics.py, todocs/analyzers/import_graph.py, todocs/analyzers/structure.py
-  [3] ○ extract_function   → todocs/utils/health.py
+  [3] ○ extract_function   → todocs/cli/utils/health.py
       WHY: 2 occurrences of 14-line block across 1 files — saves 14 lines
-      FILES: todocs/cli.py
+      FILES: todocs/cli/commands.py
   [4] ○ extract_function   → todocs/generators/utils/_footer.py
       WHY: 3 occurrences of 6-line block across 3 files — saves 12 lines
       FILES: todocs/generators/comparison.py, todocs/generators/org_index_gen.py, todocs/generators/status_report_gen.py

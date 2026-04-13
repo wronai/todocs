@@ -1,10 +1,10 @@
-# todocs | 32f 5547L | shell:1,python:31 | 2026-04-13
-# stats: 255 func | 0 cls | 32 mod | CC̄=4.4 | critical:0 | cycles:0
+# todocs | 36f 5627L | shell:1,python:35 | 2026-04-13
+# stats: 255 func | 0 cls | 36 mod | CC̄=4.4 | critical:0 | cycles:0
 # alerts[5]: fan-out DockerParser._parse_dockerfile=16; fan-out MarkdownOutput.write_all=16; fan-out export_cmd=16; fan-out scan_organization=16; fan-out ArticleGenerator._render_article=15
-# hotspots[5]: export_cmd fan=16; DockerParser._parse_dockerfile fan=16; MarkdownOutput.write_all fan=16; scan_organization fan=16; ArticleGenerator._render_article fan=15
+# hotspots[5]: DockerParser._parse_dockerfile fan=16; MarkdownOutput.write_all fan=16; export_cmd fan=16; scan_organization fan=16; ArticleGenerator._render_article fan=15
 # evolution: CC̄ 4.4→4.4 (flat 0.0)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[32]:
+M[36]:
   project.sh,35
   todocs/__init__.py,10
   todocs/analyzers/__init__.py,1
@@ -14,7 +14,11 @@ M[32]:
   todocs/analyzers/import_graph.py,237
   todocs/analyzers/maturity.py,103
   todocs/analyzers/structure.py,234
-  todocs/cli.py,503
+  todocs/cli/__init__.py,53
+  todocs/cli/__main__.py,6
+  todocs/cli/commands.py,282
+  todocs/cli/progress.py,172
+  todocs/cli/utils.py,70
   todocs/core.py,407
   todocs/extractors/__init__.py,1
   todocs/extractors/changelog_parser.py,103
@@ -119,12 +123,12 @@ D:
   todocs/extractors/readme_parser.py:
     e: ReadmeParser
     ReadmeParser: __init__(1),parse(0),_find_readme(0),_parse_sections(1),_extract_description(1),_extract_preamble(1),_extract_post_h1(1),_extract_heading_sections(1),get_first_paragraph(0)  # Extract structured sections from a README.md file...
-  todocs/outputs/markdown.py:
-    e: MarkdownOutput
-    MarkdownOutput: __init__(2),write_all(7)  # Write project profiles as markdown files (WordPress-ready)...
   todocs/formatters/table_formatter.py:
     e: TableFormatter
     TableFormatter: format_comparison(5),format_matrix(2),format_ranking(5),_default_columns(-1),_default_features(-1),_sort_profiles(2),_render_table(1)  # Generate markdown comparison tables from project profiles...
+  todocs/outputs/markdown.py:
+    e: MarkdownOutput
+    MarkdownOutput: __init__(2),write_all(7)  # Write project profiles as markdown files (WordPress-ready)...
   todocs/utils/__init__.py:
     e: GitignoreParser,create_scan_filter
     GitignoreParser: __init__(2),_load_gitignore(0),_parse_patterns(1),_match_pattern(3),is_ignored(2)  # Parse and match .gitignore patterns...
@@ -132,18 +136,30 @@ D:
   todocs/analyzers/dependencies.py:
     e: DependencyAnalyzer
     DependencyAnalyzer: __init__(1),_load_pyproject(0),_parse_dep_name(1),_deduplicate(0),_deps_from_requirements(1),_deps_from_package_json(1),_pyproject_runtime_deps(1),_pyproject_dev_deps(1),get_runtime_deps(0),get_dev_deps(0)  # Extract project dependencies without executing anything...
-  todocs/cli.py:
-    e: _detect_org_from_git,main,_generate_with_rich,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health,readme,status,cards,index,export_cmd
-    _detect_org_from_git(root_dir)
-    main()
-    _generate_with_rich(root;out;exclude;org_name;org_url)
+  todocs/cli/progress.py:
+    e: discover_and_show_progress,scan_with_progress,print_project_summary,generate_articles_with_progress,generate_with_rich,generate_without_rich
+    discover_and_show_progress(root;exclude;console)
+    scan_with_progress(root;exclude;console;project_dirs)
+    print_project_summary(console;profiles)
+    generate_articles_with_progress(profiles;out;org_name;org_url;console)
+    generate_with_rich(root;out;exclude;org_name;org_url)
+    generate_without_rich(root;out;exclude;org_name;org_url)
+  todocs/analyzers/structure.py:
+    e: StructureAnalyzer
+    StructureAnalyzer: __init__(2),_should_skip(1),_iter_files(0),analyze(0),detect_tech_stack(0),_detect_languages(0),_detect_build_tools(0),_detect_test_frameworks(0),_detect_ci_cd(0),_detect_containers(0),_detect_frameworks(0),_read_deps_text(0)  # Analyze project directory structure...
+  todocs/generators/org_index_gen.py:
+    e: OrgIndexGenerator
+    OrgIndexGenerator: __init__(2),generate(2),render(1),_frontmatter(1),_header(1),_quick_stats(1),_category_sections(1),_alphabetical_index(1),_footer(0)  # Generate an index.md catalog page for all projects in an org...
+  todocs/cli/utils.py:
+    e: detect_org_from_git,write_json_report
+    detect_org_from_git(root_dir)
+    write_json_report(profiles;json_report;console;has_rich)
+  todocs/generators/project_card_gen.py:
+    e: ProjectCardGenerator
+    ProjectCardGenerator: __init__(2),generate(2),generate_all(2),render_card(1),_frontmatter(1),_badge_line(1),_description(1),_stats_table(1),_features_line(0),_deps_line(0),_footer(0)  # Generate a compact project card suitable for WordPress embed...
+  todocs/cli/commands.py:
+    e: generate,inspect,compare,health,readme,status,cards,index,export_cmd
     generate(root_dir;output_dir;org_name;org_url;exclude;json_report;verbose)
-    _discover_and_show_progress(root;exclude;console)
-    _scan_with_progress(root;exclude;console;project_dirs)
-    _print_project_summary(console;profiles)
-    _generate_articles_with_progress(profiles;out;org_name;org_url;console)
-    _generate_without_rich(root;out;exclude;org_name;org_url)
-    _write_json_report(profiles;json_report;console;has_rich)
     inspect(project_dir;output;fmt)
     compare(root_dir;output_path;org_name;exclude)
     health(root_dir;output_path;org_name;exclude)
@@ -152,19 +168,14 @@ D:
     cards(root_dir;output_dir;org_name;exclude)
     index(root_dir;output_path;org_name;exclude)
     export_cmd(root_dir;output_path;fmt;org_name;exclude)
-  todocs/analyzers/structure.py:
-    e: StructureAnalyzer
-    StructureAnalyzer: __init__(2),_should_skip(1),_iter_files(0),analyze(0),detect_tech_stack(0),_detect_languages(0),_detect_build_tools(0),_detect_test_frameworks(0),_detect_ci_cd(0),_detect_containers(0),_detect_frameworks(0),_read_deps_text(0)  # Analyze project directory structure...
-  todocs/generators/org_index_gen.py:
-    e: OrgIndexGenerator
-    OrgIndexGenerator: __init__(2),generate(2),render(1),_frontmatter(1),_header(1),_quick_stats(1),_category_sections(1),_alphabetical_index(1),_footer(0)  # Generate an index.md catalog page for all projects in an org...
-  todocs/generators/project_card_gen.py:
-    e: ProjectCardGenerator
-    ProjectCardGenerator: __init__(2),generate(2),generate_all(2),render_card(1),_frontmatter(1),_badge_line(1),_description(1),_stats_table(1),_features_line(0),_deps_line(0),_footer(0)  # Generate a compact project card suitable for WordPress embed...
+  todocs/cli/__init__.py:
+    e: main
+    main()
   project.sh:
   todocs/__init__.py:
   todocs/extractors/__init__.py:
   todocs/formatters/__init__.py:
+  todocs/cli/__main__.py:
   todocs/outputs/__init__.py:
   todocs/generators/__init__.py:
   todocs/analyzers/__init__.py:

@@ -1,4 +1,4 @@
-# code2llm/evolution | 255 func | 25f | 2026-04-13
+# code2llm/evolution | 255 func | 28f | 2026-04-13
 
 NEXT[0]: no refactoring needed
 
@@ -7,7 +7,7 @@ RISKS[0]: none
 METRICS-TARGET:
   CC̄:          4.4 → ≤3.1
   max-CC:      14 → ≤7
-  god-modules: 1 → 0
+  god-modules: 0 → 0
   high-CC(≥15): 0 → ≤0
   hub-types:   0 → ≤0
 
@@ -36,8 +36,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  2026-04-13: SPLIT cli.py → cli/ package (5 modules, 72-line compat shim)
-  2026-04-13: Refactored cli.py generate - extracted _generate_with_rich helper
-  2026-04-13: Refactored scan_project (core.py) - split into 3 phases
-  2026-04-13: Refactored ImportGraphAnalyzer.build_graph - decomposed methods
-  prev CC̄=4.5 → now CC̄=4.4
+  prev CC̄=4.4 → now CC̄=4.4

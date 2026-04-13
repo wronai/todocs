@@ -1,7 +1,7 @@
 <!-- code2docs:start --># todocs
 
 ![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-279-green)
-> **279** functions | **27** classes | **42** files | CC̄ = 4.6
+> **279** functions | **27** classes | **47** files | CC̄ = 4.6
 
 > Auto-generated project documentation from source code analysis.
 
@@ -147,7 +147,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 todocs/
-├── project        ├── advanced_usage    ├── article_sections_demo        ├── quickstart    ├── scan_org    ├── custom_analysis    ├── scan_single├── todocs/    ├── organization_health_report    ├── api_surface_deep        ├── makefile_parser    ├── cli    ├── extractors/        ├── toon_parser        ├── readme_parser        ├── docker_parser        ├── quickstart        ├── advanced_usage    ├── formatters/        ├── changelog_parser        ├── markdown        ├── table_formatter    ├── outputs/        ├── json        ├── html    ├── generators/        ├── org_index_gen        ├── article        ├── project_card_gen        ├── article_sections        ├── status_report_gen    ├── utils/        ├── structure    ├── analyzers/        ├── comparison        ├── dependencies        ├── maturity        ├── import_graph        ├── code_metrics        ├── api_surface    ├── core        ├── metadata```
+├── project        ├── quickstart        ├── advanced_usage    ├── article_sections_demo    ├── scan_org    ├── scan_single    ├── cli/├── todocs/    ├── api_surface_deep    ├── organization_health_report    ├── custom_analysis        ├── makefile_parser    ├── extractors/        ├── toon_parser        ├── readme_parser        ├── changelog_parser        ├── quickstart        ├── advanced_usage    ├── formatters/        ├── docker_parser        ├── table_formatter        ├── progress        ├── __main__        ├── utils        ├── markdown        ├── commands    ├── outputs/        ├── json        ├── html    ├── generators/        ├── org_index_gen        ├── article        ├── project_card_gen        ├── article_sections        ├── status_report_gen    ├── utils/        ├── structure    ├── analyzers/        ├── comparison        ├── dependencies        ├── maturity        ├── import_graph        ├── code_metrics        ├── api_surface    ├── core        ├── metadata```
 
 ## API Overview
 
@@ -156,10 +156,10 @@ todocs/
 - **`MakefileParser`** — Extract targets and structure from Makefile or Taskfile.yml.
 - **`ToonParser`** — Parse .toon files into structured data.
 - **`ReadmeParser`** — Extract structured sections from a README.md file.
-- **`DockerParser`** — Extract Docker infrastructure from Dockerfile and docker-compose.yml.
 - **`ChangelogParser`** — Extract structured entries from CHANGELOG.md.
-- **`MarkdownOutput`** — Write project profiles as markdown files (WordPress-ready).
+- **`DockerParser`** — Extract Docker infrastructure from Dockerfile and docker-compose.yml.
 - **`TableFormatter`** — Generate markdown comparison tables from project profiles.
+- **`MarkdownOutput`** — Write project profiles as markdown files (WordPress-ready).
 - **`JSONOutput`** — Write project profiles as structured JSON for APIs and dashboards.
 - **`HTMLOutput`** — Write project profiles as a standalone HTML report.
 - **`OrgIndexGenerator`** — Generate an index.md catalog page for all projects in an organization.
@@ -186,13 +186,6 @@ todocs/
 - `main()` — —
 - `main()` — —
 - `main()` — —
-- `main()` — —
-- `analyze_maturity_distribution(profiles)` — Analyze maturity grade distribution across projects.
-- `analyze_code_metrics(profiles)` — Aggregate code metrics across all projects.
-- `analyze_tech_stacks(profiles)` — Analyze technology distribution across projects.
-- `find_critical_projects(profiles, threshold)` — Find projects with low maturity scores.
-- `print_health_summary(profiles, org_name)` — Print a formatted health summary to console.
-- `main()` — —
 - `print_section(title)` — Print a formatted section header.
 - `analyze_entry_points(analyzer)` — Analyze and display entry points.
 - `analyze_cli_commands(analyzer)` — Analyze and display CLI commands.
@@ -200,7 +193,22 @@ todocs/
 - `analyze_rest_endpoints(analyzer)` — Analyze and display REST API endpoints.
 - `analyze_symbol_sources(analyzer)` — Show which files contribute public symbols.
 - `main()` — —
+- `analyze_maturity_distribution(profiles)` — Analyze maturity grade distribution across projects.
+- `analyze_code_metrics(profiles)` — Aggregate code metrics across all projects.
+- `analyze_tech_stacks(profiles)` — Analyze technology distribution across projects.
+- `find_critical_projects(profiles, threshold)` — Find projects with low maturity scores.
+- `print_health_summary(profiles, org_name)` — Print a formatted health summary to console.
+- `main()` — —
+- `main()` — —
+- `discover_and_show_progress(root, exclude, console)` — Discover projects and show progress. Returns list of project directories.
+- `scan_with_progress(root, exclude, console, project_dirs)` — Scan projects with real-time progress feedback.
+- `print_project_summary(console, profiles)` — Print a formatted summary table of analyzed projects.
+- `generate_articles_with_progress(profiles, out, org_name, org_url)` — Generate articles with progress indicator.
+- `generate_with_rich(root, out, exclude, org_name)` — Generate articles with Rich progress UI.
+- `generate_without_rich(root, out, exclude, org_name)` — Generate articles without Rich library (plain output).
 - `main()` — todocs — Static-analysis documentation generator for project portfolios.
+- `detect_org_from_git(root_dir)` — Detect organization name and URL from git remote.
+- `write_json_report(profiles, json_report, console, has_rich)` — Write optional JSON report.
 - `generate(root_dir, output_dir, org_name, org_url)` — Scan projects and generate WordPress markdown articles.
 - `inspect(project_dir, output, fmt)` — Inspect a single project and show its profile.
 - `compare(root_dir, output_path, org_name, exclude)` — Generate cross-project comparison report.
@@ -249,7 +257,11 @@ todocs/
 📄 `todocs.analyzers.import_graph` (13 functions, 1 classes)
 📄 `todocs.analyzers.maturity` (2 functions, 1 classes)
 📄 `todocs.analyzers.structure` (12 functions, 1 classes)
-📄 `todocs.cli` (18 functions)
+📦 `todocs.cli` (1 functions)
+📄 `todocs.cli.__main__`
+📄 `todocs.cli.commands` (9 functions)
+📄 `todocs.cli.progress` (6 functions)
+📄 `todocs.cli.utils` (2 functions)
 📄 `todocs.core` (11 functions, 5 classes)
 📄 `todocs.examples.advanced_usage`
 📄 `todocs.examples.quickstart`

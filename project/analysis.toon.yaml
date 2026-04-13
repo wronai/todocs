@@ -1,4 +1,4 @@
-# code2llm | 32f 5547L | python:31,shell:1 | 2026-04-13
+# code2llm | 36f 5627L | python:35,shell:1 | 2026-04-13
 # CC̄=4.4 | critical:0/279 | dups:0 | cycles:0
 
 HEALTH[1]:
@@ -16,27 +16,24 @@ PIPELINES[219]:
       PURITY: 100% pure
   [4] Src [main]: main → scan_organization → scan_project → create_scan_filter
       PURITY: 100% pure
-  [5] Src [main]: main → _analyze_import_graph → _print_section_header
+  [5] Src [main]: main → analyze_entry_points → print_section
       PURITY: 100% pure
 
 LAYERS:
-  todocs/                         CC̄=4.4    ←in:0  →out:0
-  │ cli                         72L  0C    9m  CC=2      ←0
-  │ cli/commands               197L  0C    9f  CC=2      ←0
-  │ cli/progress               117L  0C    6f  CC=3      ←0
-  │ cli/utils                   62L  0C    3f  CC=3      ←0
-  │ cli/__init__                43L  0C    1f  CC=1      ←0
+  todocs/                         CC̄=4.4    ←in:14  →out:0
   │ comparison                 482L  1C   23m  CC=14     ←0
   │ article_sections           460L  0C   18m  CC=12     ←2
-  │ core                       407L  5C   11m  CC=11     ←5
+  │ core                       407L  5C   11m  CC=11     ←6
   │ toon_parser                343L  1C   17m  CC=11     ←0
   │ api_surface                290L  1C   13m  CC=13     ←0
+  │ commands                   282L  0C    9m  CC=4      ←0
   │ code_metrics               265L  1C   15m  CC=10     ←0
   │ import_graph               237L  1C   13m  CC=9      ←0
   │ structure                  234L  1C   12m  CC=7      ←0
   │ metadata                   211L  1C    9m  CC=10     ←0
   │ status_report_gen          204L  1C   14m  CC=11     ←0
   │ docker_parser              174L  1C    6m  CC=13     ←0
+  │ progress                   172L  0C    6m  CC=7      ←1
   │ html                       164L  1C    5m  CC=12     ←0
   │ makefile_parser            153L  1C    9m  CC=10     ←0
   │ readme_parser              153L  1C    9m  CC=8      ←0
@@ -50,7 +47,10 @@ LAYERS:
   │ changelog_parser           103L  1C    5m  CC=9      ←0
   │ maturity                   103L  1C    2m  CC=14     ←0
   │ markdown                    81L  1C    2m  CC=8      ←0
+  │ utils                       70L  0C    2m  CC=5      ←1
+  │ __init__                    53L  0C    1m  CC=1      ←0
   │ __init__                    10L  0C    0m  CC=0.0    ←0
+  │ __main__                     6L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
@@ -61,7 +61,13 @@ LAYERS:
   │ project.sh                  35L  0C    0m  CC=0.0    ←0
   │
 
-COUPLING: no cross-package imports detected
+COUPLING:
+                  todocs  todocs.cli
+      todocs          ──         ←14  hub
+  todocs.cli          14          ──  !! fan-out
+  CYCLES: none
+  HUB: todocs/ (fan-in=14)
+  SMELL: todocs.cli/ fan-out=14 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon
