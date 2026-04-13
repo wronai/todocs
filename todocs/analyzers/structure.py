@@ -6,6 +6,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List
 
+from .utils import should_skip
+
 # Import locally to handle the TechStack dataclass from core
 # We'll do a lazy import to avoid circular deps
 
@@ -95,10 +97,7 @@ class StructureAnalyzer:
         self._filter = filter_func
 
     def _should_skip(self, path: Path) -> bool:
-        for part in path.parts:
-            if part in _SKIP_DIRS or part.endswith(".egg-info"):
-                return True
-        return False
+        return should_skip(path, _SKIP_DIRS)
 
     def _iter_files(self):
         for p in self.root.rglob("*"):

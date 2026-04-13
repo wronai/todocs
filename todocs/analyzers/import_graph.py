@@ -7,6 +7,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple
 
+from .utils import should_skip
+
 _SKIP_DIRS = {
     "venv", ".venv", "env", "node_modules", "__pycache__", ".git",
     ".tox", ".mypy_cache", ".pytest_cache", "dist", "build",
@@ -22,10 +24,7 @@ class ImportGraphAnalyzer:
         self._filter = filter_func
 
     def _should_skip(self, path: Path) -> bool:
-        for part in path.parts:
-            if part in _SKIP_DIRS or part.endswith(".egg-info"):
-                return True
-        return False
+        return should_skip(path, _SKIP_DIRS)
 
     def _iter_py_files(self):
         for p in self.root.rglob("*.py"):
