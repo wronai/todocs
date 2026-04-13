@@ -1,7 +1,7 @@
 <!-- code2docs:start --># todocs
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-272-green)
-> **272** functions | **27** classes | **42** files | CC̄ = 4.7
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-279-green)
+> **279** functions | **27** classes | **42** files | CC̄ = 4.6
 
 > Auto-generated project documentation from source code analysis.
 
@@ -147,7 +147,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 todocs/
-    ├── article_sections_demo    ├── scan_org    ├── custom_analysis    ├── scan_single├── todocs/    ├── organization_health_report    ├── api_surface_deep        ├── makefile_parser    ├── cli    ├── extractors/        ├── toon_parser        ├── readme_parser        ├── docker_parser        ├── quickstart        ├── advanced_usage    ├── formatters/        ├── changelog_parser        ├── markdown        ├── table_formatter    ├── outputs/        ├── json        ├── html    ├── generators/        ├── org_index_gen        ├── article        ├── project_card_gen        ├── article_sections        ├── status_report_gen    ├── utils/        ├── structure    ├── analyzers/        ├── comparison        ├── dependencies        ├── maturity        ├── import_graph        ├── code_metrics        ├── quickstart        ├── advanced_usage├── project        ├── api_surface    ├── core        ├── metadata```
+├── project        ├── advanced_usage    ├── article_sections_demo        ├── quickstart    ├── scan_org    ├── custom_analysis    ├── scan_single├── todocs/    ├── organization_health_report    ├── api_surface_deep        ├── makefile_parser    ├── cli    ├── extractors/        ├── toon_parser        ├── readme_parser        ├── docker_parser        ├── quickstart        ├── advanced_usage    ├── formatters/        ├── changelog_parser        ├── markdown        ├── table_formatter    ├── outputs/        ├── json        ├── html    ├── generators/        ├── org_index_gen        ├── article        ├── project_card_gen        ├── article_sections        ├── status_report_gen    ├── utils/        ├── structure    ├── analyzers/        ├── comparison        ├── dependencies        ├── maturity        ├── import_graph        ├── code_metrics        ├── api_surface    ├── core        ├── metadata```
 
 ## API Overview
 
@@ -246,11 +246,11 @@ todocs/
 📄 `todocs.analyzers.api_surface` (13 functions, 1 classes)
 📄 `todocs.analyzers.code_metrics` (15 functions, 1 classes)
 📄 `todocs.analyzers.dependencies` (10 functions, 1 classes)
-📄 `todocs.analyzers.import_graph` (11 functions, 1 classes)
+📄 `todocs.analyzers.import_graph` (13 functions, 1 classes)
 📄 `todocs.analyzers.maturity` (2 functions, 1 classes)
 📄 `todocs.analyzers.structure` (12 functions, 1 classes)
-📄 `todocs.cli` (17 functions)
-📄 `todocs.core` (8 functions, 5 classes)
+📄 `todocs.cli` (18 functions)
+📄 `todocs.core` (11 functions, 5 classes)
 📄 `todocs.examples.advanced_usage`
 📄 `todocs.examples.quickstart`
 📦 `todocs.extractors`
@@ -268,7 +268,7 @@ todocs/
 📄 `todocs.generators.comparison` (23 functions, 1 classes)
 📄 `todocs.generators.org_index_gen` (9 functions, 1 classes)
 📄 `todocs.generators.project_card_gen` (11 functions, 1 classes)
-📄 `todocs.generators.status_report_gen` (13 functions, 1 classes)
+📄 `todocs.generators.status_report_gen` (14 functions, 1 classes)
 📦 `todocs.outputs`
 📄 `todocs.outputs.html` (5 functions, 1 classes)
 📄 `todocs.outputs.json` (6 functions, 1 classes)

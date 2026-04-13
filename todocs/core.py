@@ -23,6 +23,10 @@ from todocs.extractors.docker_parser import DockerParser
 from todocs.generators.article import ArticleGenerator
 from todocs.utils import create_scan_filter
 
+MAX_3 = 3
+MAX_5 = 5
+
+
 
 @dataclass
 class TechStack:
@@ -118,7 +122,79 @@ class ProjectProfile:
         return json.dumps(self.to_dict(), indent=indent, default=str)
 
 
-def scan_project(project_path: Path, max_depth: int = 3) -> ProjectProfile:
+def _run_extraction_phase(project_path: Path, profile: ProjectProfile) -> None:
+    """Phase 1: Extract data from project files without analysis."""
+    # 1. Extract metadata from pyproject.toml / setup.py / setup.cfg
+    meta_ext = MetadataExtractor(project_path)
+    profile.metadata = meta_ext.extract()
+
+    # 2. Parse README for sections
+    readme_parser = ReadmeParser(project_path)
+    profile.readme_sections = readme_parser.parse()
+
+    # 3. Parse CHANGELOG
+    cl_parser = ChangelogParser(project_path)
+    profile.changelog_entries = cl_parser.parse(max_entries=MAX_5)
+
+    # 4. Parse .toon files (if present)
+    toon_parser = ToonParser(project_path)
+    toon_files = toon_parser.find_toon_files()
+    if toon_files:
+        profile.toon_data = toon_parser.parse_all()
+
+    # 5. Parse Makefile / Taskfile
+    mk_parser = MakefileParser(project_path)
+    mk_data = mk_parser.parse()
+    profile.makefile_targets = mk_data.get("targets", [])
+
+    # 6. Parse Docker infrastructure
+    docker_parser = DockerParser(project_path)
+    profile.docker_info = docker_parser.parse()
+
+
+def _run_analysis_phase(
+    project_path: Path, profile: ProjectProfile, scan_filter
+) -> None:
+    """Phase 2: Run analyzers that require file system scanning."""
+    # 1. Analyze directory structure (with filter)
+    struct_analyzer = StructureAnalyzer(project_path, filter_func=scan_filter)
+    profile.structure = struct_analyzer.analyze()
+    profile.tech_stack = struct_analyzer.detect_tech_stack()
+
+    # 2. Code metrics (AST + radon) (with filter)
+    metrics_analyzer = CodeMetricsAnalyzer(project_path, filter_func=scan_filter)
+    profile.code_stats = metrics_analyzer.analyze()
+    profile.key_modules = metrics_analyzer.get_key_modules(top_n=10)
+
+    # 3. Dependencies
+    dep_analyzer = DependencyAnalyzer(project_path)
+    profile.dependencies = dep_analyzer.get_runtime_deps()
+    profile.dev_dependencies = dep_analyzer.get_dev_deps()
+
+    # 4. Import graph (Python projects only) (with filter)
+    if profile.tech_stack.primary_language == "python":
+        ig = ImportGraphAnalyzer(project_path, filter_func=scan_filter)
+        profile.import_graph = ig.build_graph()
+
+    # 5. API surface detection (with filter)
+    api_analyzer = APISurfaceAnalyzer(project_path, filter_func=scan_filter)
+    profile.api_surface = api_analyzer.analyze()
+
+
+def _run_scoring_phase(project_path: Path, profile: ProjectProfile) -> None:
+    """Phase 3: Calculate derived metrics after all data is collected."""
+    # 1. Maturity scoring (after all data collected)
+    scorer = MaturityScorer(project_path, profile)
+    profile.maturity = scorer.score()
+
+    # 2. Auto-categorize
+    profile.category = _categorize(profile)
+
+    # 3. Generate summary sentence
+    profile.summary = _generate_summary(profile)
+
+
+def scan_project(project_path: Path, max_depth: int = MAX_3) -> ProjectProfile:
     """Analyze a single project and return its profile.
 
     Args:
@@ -130,66 +206,10 @@ def scan_project(project_path: Path, max_depth: int = 3) -> ProjectProfile:
     # Create scan filter with depth limit and gitignore support
     scan_filter = create_scan_filter(project_path, max_depth=max_depth)
 
-    # 1. Extract metadata from pyproject.toml / setup.py / setup.cfg
-    meta_ext = MetadataExtractor(project_path)
-    profile.metadata = meta_ext.extract()
-
-    # 2. Analyze directory structure (with filter)
-    struct_analyzer = StructureAnalyzer(project_path, filter_func=scan_filter)
-    profile.structure = struct_analyzer.analyze()
-    profile.tech_stack = struct_analyzer.detect_tech_stack()
-
-    # 3. Code metrics (AST + radon) (with filter)
-    metrics_analyzer = CodeMetricsAnalyzer(project_path, filter_func=scan_filter)
-    profile.code_stats = metrics_analyzer.analyze()
-    profile.key_modules = metrics_analyzer.get_key_modules(top_n=10)
-
-    # 4. Dependencies
-    dep_analyzer = DependencyAnalyzer(project_path)
-    profile.dependencies = dep_analyzer.get_runtime_deps()
-    profile.dev_dependencies = dep_analyzer.get_dev_deps()
-
-    # 5. Parse README for sections
-    readme_parser = ReadmeParser(project_path)
-    profile.readme_sections = readme_parser.parse()
-
-    # 6. Parse CHANGELOG
-    cl_parser = ChangelogParser(project_path)
-    profile.changelog_entries = cl_parser.parse(max_entries=5)
-
-    # 7. Parse .toon files (if present)
-    toon_parser = ToonParser(project_path)
-    toon_files = toon_parser.find_toon_files()
-    if toon_files:
-        profile.toon_data = toon_parser.parse_all()
-
-    # 8. Parse Makefile / Taskfile
-    mk_parser = MakefileParser(project_path)
-    mk_data = mk_parser.parse()
-    profile.makefile_targets = mk_data.get("targets", [])
-
-    # 9. Parse Docker infrastructure
-    docker_parser = DockerParser(project_path)
-    profile.docker_info = docker_parser.parse()
-
-    # 10. Import graph (Python projects only) (with filter)
-    if profile.tech_stack.primary_language == "python":
-        ig = ImportGraphAnalyzer(project_path, filter_func=scan_filter)
-        profile.import_graph = ig.build_graph()
-
-    # 11. API surface detection (with filter)
-    api_analyzer = APISurfaceAnalyzer(project_path, filter_func=scan_filter)
-    profile.api_surface = api_analyzer.analyze()
-
-    # 12. Maturity scoring (after all data collected)
-    scorer = MaturityScorer(project_path, profile)
-    profile.maturity = scorer.score()
-
-    # 13. Auto-categorize
-    profile.category = _categorize(profile)
-
-    # 14. Generate summary sentence
-    profile.summary = _generate_summary(profile)
+    # Run analysis in three phases
+    _run_extraction_phase(project_path, profile)
+    _run_analysis_phase(project_path, profile, scan_filter)
+    _run_scoring_phase(project_path, profile)
 
     return profile
 
@@ -227,7 +247,7 @@ def _discover_projects(root_path: Path, exclude: Optional[List[str]] = None) -> 
 def scan_organization(
     root_path: Path,
     exclude: Optional[List[str]] = None,
-    max_depth: int = 3,
+    max_depth: int = MAX_3,
     progress_callback = None
 ) -> List[ProjectProfile]:
     """Scan all projects under root_path and return profiles.

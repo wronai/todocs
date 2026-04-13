@@ -10,6 +10,22 @@ if TYPE_CHECKING:
     from todocs.core import ProjectProfile
 
 
+_QUALITY_GAP_CHECKS = [
+    ("No tests", "has_tests"),
+    ("No CI/CD", "has_ci"),
+    ("No docs", "has_docs"),
+    ("No changelog", "has_changelog"),
+    ("No license", "has_license"),
+    ("No Docker", "has_docker"),
+]
+
+_RECOMMENDATION_RULES = [
+    ("has_tests", "🧪 **Add tests** to {count} projects: {names}", 3),
+    ("has_ci", "⚙️ **Set up CI/CD** for {count} projects", 0),
+    ("has_license", "📄 **Add LICENSE** to {count} projects", 0),
+]
+
+
 class StatusReportGenerator:
     """Generate a comprehensive organization status report."""
 
@@ -113,25 +129,22 @@ class StatusReportGenerator:
             lines.append(f"  {lang:>12} {bar} {count} ({pct:.0f}%)")
         return "\n".join(lines)
 
-    def _quality_gaps(self, profiles: List["ProjectProfile"]) -> str:
-        gaps = {
-            "No tests": [p.name for p in profiles if not p.maturity.has_tests],
-            "No CI/CD": [p.name for p in profiles if not p.maturity.has_ci],
-            "No docs": [p.name for p in profiles if not p.maturity.has_docs],
-            "No changelog": [p.name for p in profiles if not p.maturity.has_changelog],
-            "No license": [p.name for p in profiles if not p.maturity.has_license],
-            "No Docker": [p.name for p in profiles if not p.maturity.has_docker],
-        }
+    @staticmethod
+    def _truncated_names(names: List[str], limit: int = 4) -> str:
+        """Return sorted, comma-separated names truncated at *limit*."""
+        display = ", ".join(sorted(names)[:limit])
+        if len(names) > limit:
+            display += f" +{len(names) - limit}"
+        return display
 
+    def _quality_gaps(self, profiles: List["ProjectProfile"]) -> str:
         lines = ["## Quality Gaps", ""]
         lines.append("| Gap | Count | Projects |")
         lines.append("|-----|------:|----------|")
-        for gap, names in gaps.items():
+        for label, attr in _QUALITY_GAP_CHECKS:
+            names = [p.name for p in profiles if not getattr(p.maturity, attr)]
             if names:
-                display = ", ".join(sorted(names)[:4])
-                if len(names) > 4:
-                    display += f" +{len(names) - 4}"
-                lines.append(f"| {gap} | {len(names)} | {display} |")
+                lines.append(f"| {label} | {len(names)} | {self._truncated_names(names)} |")
         return "\n".join(lines)
 
     def _largest_projects(self, profiles: List["ProjectProfile"]) -> str:
@@ -165,22 +178,18 @@ class StatusReportGenerator:
     def _recommendations(self, profiles: List["ProjectProfile"]) -> str:
         recs: List[str] = []
 
-        no_tests = [p.name for p in profiles if not p.maturity.has_tests]
-        if no_tests:
-            recs.append(f"- 🧪 **Add tests** to {len(no_tests)} projects: {', '.join(no_tests[:3])}")
-
-        no_ci = [p.name for p in profiles if not p.maturity.has_ci]
-        if no_ci:
-            recs.append(f"- ⚙️ **Set up CI/CD** for {len(no_ci)} projects")
+        for attr, template, name_limit in _RECOMMENDATION_RULES:
+            names = [p.name for p in profiles if not getattr(p.maturity, attr)]
+            if names:
+                fmt_kwargs = {"count": len(names), "names": ""}
+                if name_limit:
+                    fmt_kwargs["names"] = ", ".join(names[:name_limit])
+                recs.append(f"- {template.format(**fmt_kwargs)}")
 
         high_cc = [p for p in profiles if p.code_stats.max_complexity > 20]
         if high_cc:
             names = ", ".join(p.name for p in high_cc[:3])
             recs.append(f"- 📐 **Reduce complexity** in {len(high_cc)} projects: {names}")
-
-        no_license = [p.name for p in profiles if not p.maturity.has_license]
-        if no_license:
-            recs.append(f"- 📄 **Add LICENSE** to {len(no_license)} projects")
 
         if not recs:
             return ""

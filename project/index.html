@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>code2llm Analysis Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-hover: #334155;
+            --border: #475569;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #22c55e;
+            --warning: #eab308;
+            --error: #ef4444;
+        }
+        
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #f8fafc;
+                --surface: #ffffff;
+                --surface-hover: #f1f5f9;
+                --border: #e2e8f0;
+                --text: #1e293b;
+                --text-muted: #64748b;
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .header p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+        
+        .search {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .search input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            color: var(--text);
+            font-size: 0.875rem;
+            outline: none;
+        }
+        
+        .search input:focus {
+            border-color: var(--accent);
+        }
+        
+        .search input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .file-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        
+        .file-group {
+            margin-bottom: 1rem;
+        }
+        
+        .file-group-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0.5rem 0.75rem;
+            font-weight: 600;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-size: 0.875rem;
+        }
+        
+        .file-item:hover {
+            background: var(--surface-hover);
+        }
+        
+        .file-item.active {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .file-item.active .file-meta {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .file-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-size {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        
+        .empty-state {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        /* Main content */
+        .content {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .content-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .content-title h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .content-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            color: var(--text);
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.15s;
+        }
+        
+        .btn:hover {
+            background: var(--border);
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+        
+        .content-body {
+            flex: 1;
+            overflow: auto;
+            padding: 1.5rem;
+        }
+        
+        .welcome {
+            max-width: 600px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+        
+        .welcome h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .welcome p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        pre {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        /* Markdown rendered content styles */
+        .markdown-content {
+            line-height: 1.6;
+            max-width: 100%;
+        }
+        
+        .markdown-content h1, .markdown-content h2, .markdown-content h3,
+        .markdown-content h4, .markdown-content h5, .markdown-content h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        .markdown-content h1 { font-size: 1.75rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; }
+        .markdown-content h2 { font-size: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+        .markdown-content h3 { font-size: 1.25rem; }
+        .markdown-content h4 { font-size: 1.1rem; }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.25rem;
+        }
+        
+        .markdown-content code {
+            background: var(--surface);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.875em;
+        }
+        
+        .markdown-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid var(--accent);
+            padding-left: 1rem;
+            margin-left: 0;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content th, .markdown-content td {
+            border: 1px solid var(--border);
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+        }
+        
+        .markdown-content th {
+            background: var(--surface);
+            font-weight: 600;
+        }
+        
+        .markdown-content tr:nth-child(even) {
+            background: var(--surface-hover);
+        }
+        
+        .markdown-content a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .markdown-content a:hover {
+            text-decoration: underline;
+        }
+        
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+        }
+        
+        .markdown-content hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 1.5rem 0;
+        }
+        
+        /* Mermaid diagram styles */
+        .mermaid-content {
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+            background: var(--surface);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+        
+        .mermaid-content .mermaid {
+            background: transparent;
+        }
+        
+        /* Image preview styles */
+        .image-preview {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 1rem;
+            background: var(--surface);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+        
+        .image-preview img {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                max-height: 40vh;
+            }
+            
+            .file-list {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                gap: 0.25rem;
+                padding: 0.5rem;
+            }
+            
+            .file-group {
+                display: flex;
+                flex-direction: row;
+                margin: 0;
+            }
+            
+            .file-group-title {
+                display: none;
+            }
+            
+            .file-item {
+                flex-direction: column;
+                min-width: 80px;
+                padding: 0.5rem;
+                text-align: center;
+            }
+            
+            .file-info {
+                display: none;
+            }
+            
+            .file-size {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="header">
+                <h1>🔍 code2llm</h1>
+                <p>Analysis Results Browser</p>
+            </div>
+            <div class="search">
+                <input type="text" id="search" placeholder="Search files..." oninput="filterFiles(this.value)">
+            </div>
+            <div class="file-list" id="fileList">
+                <!-- Files will be rendered here -->
+            </div>
+        </aside>
+        
+        <main class="content">
+            <div class="content-header">
+                <div class="content-title">
+                    <span id="contentIcon">📁</span>
+                    <h2 id="contentTitle">Welcome</h2>
+                </div>
+                <div class="content-actions" id="contentActions">
+                    <!-- Actions will be rendered here -->
+                </div>
+            </div>
+            <div class="content-body" id="contentBody">
+                <div class="welcome">
+                    <h2>Analysis Results</h2>
+                    <p>Select a file from the sidebar to view its contents. This interface works on GitHub Pages without any server required.</p>
+                    <div class="stats-grid" id="statsGrid">
+                        <!-- Stats will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize mermaid
+        mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+        
+        const files = [{"name": "dashboard.html", "rel_path": "dashboard.html", "path": "dashboard.html", "size": "25.1KB", "icon": "🌐", "type": "html", "type_name": "HTML", "content": "[Binary file]", "is_subdir": false}, {"name": "calls.png", "rel_path": "calls.png", "path": "calls.png", "size": "351.9KB", "icon": "🖼️", "type": "image", "type_name": "Image", "content": "[Binary file]", "is_subdir": false}, {"name": "compact_flow.png", "rel_path": "compact_flow.png", "path": "compact_flow.png", "size": "38.4KB", "icon": "🖼️", "type": "image", "type_name": "Image", "content": "[Binary file]", "is_subdir": false}, {"name": "flow.png", "rel_path": "flow.png", "path": "flow.png", "size": "14.3KB", "icon": "🖼️", "type": "image", "type_name": "Image", "content": "[Binary file]", "is_subdir": false}, {"name": "README.md", "rel_path": "README.md", "path": "README.md", "size": "9.3KB", "icon": "📝", "type": "markdown", "type_name": "Markdown", "content": "# code2llm - Generated Analysis Files\n\nThis directory contains the complete analysis of your project generated by `code2llm`. Each file serves a specific purpose for understanding, refactoring, and documenting your codebase.\n\n## 📁 Generated Files Overview\n\nWhen you run `code2llm ./ -f all`, the following files are created:\n\n### 🎯 Core Analysis Files\n\n| File | Format | Purpose | Key Insights |\n|------|--------|---------|--------------|\n| `evolution.toon.yaml` | **YAML** | **📋 Refactoring queue** - Prioritized improvements | 0 refactoring actions needed |\n| `map.toon.yaml` | **YAML** | **🗺️ Structural map + project header** - Modules, imports, exports, signatures, stats, alerts, hotspots, trend | Project architecture overview |\n\n### 🤖 LLM-Ready Documentation\n\n| File | Format | Purpose | Use Case |\n|------|--------|---------|----------|\n| `prompt.txt` | **Text** | **📝 Ready-to-send prompt** - Lists all files with instructions | Attach to LLM conversation as context guide |\n| `context.md` | **Markdown** | **📖 LLM narrative** - Architecture summary | Paste into ChatGPT/Claude for code analysis |\n\n### 📊 Visualizations\n\n| File | Format | Purpose | Description |\n|------|--------|---------|-------------|\n| `flow.mmd` | **Mermaid** | **🔄 Control flow diagram** | Function call paths with complexity styling |\n| `calls.mmd` | **Mermaid** | **📞 Call graph** | Function dependencies (edges only) |\n| `compact_flow.mmd` | **Mermaid** | **📦 Module overview** | Aggregated module-level view |\n\n## 🚀 Quick Start Commands\n\n### Basic Analysis\n```bash\n# Quick health check (TOON format only)\ncode2llm ./ -f toon\n\n# Generate all formats (what created these files)\ncode2llm ./ -f all\n\n# LLM-ready context only\ncode2llm ./ -f context\n```\n\n### Performance Options\n```bash\n# Fast analysis for large projects\ncode2llm ./ -f toon --strategy quick\n\n# Memory-limited analysis\ncode2llm ./ -f all --max-memory 500\n\n# Skip PNG generation (faster)\ncode2llm ./ -f all --no-png\n```\n\n### Refactoring Focus\n```bash\n# Get refactoring recommendations\ncode2llm ./ -f evolution\n\n# Focus on specific code smells\ncode2llm ./ -f toon --refactor --smell god_function\n\n# Data flow analysis\ncode2llm ./ -f flow --data-flow\n```\n\n## 📖 Understanding Each File\n\n### `analysis.toon` - Health Diagnostics\n**Purpose**: Quick overview of code health issues\n**Key sections**:\n- **HEALTH**: Critical issues (🔴) and warnings (🟡)\n- **REFACTOR**: Prioritized refactoring actions\n- **COUPLING**: Module dependencies and potential cycles\n- **LAYERS**: Package complexity metrics\n- **FUNCTIONS**: High-complexity functions (CC ≥ 10)\n- **CLASSES**: Complex classes needing attention\n\n**Example usage**:\n```bash\n# View health issues\ncat analysis.toon | head -30\n\n# Check refactoring priorities\ngrep \"REFACTOR\" analysis.toon\n```\n\n### `evolution.toon.yaml` - Refactoring Queue\n**Purpose**: Step-by-step refactoring plan\n**Key sections**:\n- **NEXT**: Immediate actions to take\n- **RISKS**: Potential breaking changes\n- **METRICS-TARGET**: Success criteria\n\n**Example usage**:\n```bash\n# Get refactoring plan\ncat evolution.toon.yaml\n\n# Track progress\ngrep \"NEXT\" evolution.toon.yaml\n```\n\n### `flow.toon` - Legacy Data Flow Analysis\n**Purpose**: Understand data movement through the system (legacy / explicit opt-in)\n**Key sections**:\n- **PIPELINES**: Data processing chains\n- **CONTRACTS**: Function input/output contracts\n- **SIDE_EFFECTS**: Functions with external impacts\n\n**Example usage**:\n```bash\n# Find data pipelines\ngrep \"PIPELINES\" flow.toon\n\n# Identify side effects\ngrep \"SIDE_EFFECTS\" flow.toon\n```\n\n### `map.toon.yaml` - Structural Map + Project Header\n**Purpose**: High-level architecture overview plus compact project header\n**Key sections**:\n- **MODULES**: All modules with basic stats\n- **IMPORTS**: Dependency relationships\n- **EXPORTS**: Public API surface and signatures\n- **HEADER**: Stats, alerts, hotspots, evolution trend\n\n**Example usage**:\n```bash\n# See project structure\ncat map.toon.yaml | head -50\n\n# Find public APIs\ngrep \"SIGNATURES\" map.toon.yaml\n```\n\n### `project.toon.yaml` - Compact Analysis View\n**Purpose**: Compact module view generated from project.yaml data\n**Status**: Legacy view generated on demand from unified project.yaml\n\n**Example usage**:\n```bash\n# View compact project structure\ncat project.toon.yaml | head -30\n\n# Find largest files\ngrep -E \"^  .*[0-9]{3,}$\" project.toon.yaml | sort -t',' -k2 -n -r | head -10\n```\n\n### `prompt.txt` - Ready-to-Send LLM Prompt\n**Purpose**: Pre-formatted prompt listing all generated files for LLM conversation\n**Generation**: Written when `code2llm` runs with a source path and requests `-f all` (including `--no-chunk`) or `code2logic`\n**Contents**:\n- **Files section**: Lists all existing generated files with descriptions, including `project.toon.yaml` when generated by `-f all`\n- **Source files section**: Highlights important source files such as `cli_exports/orchestrator.py`\n- **Missing section**: Shows which files weren't generated (if any)\n- **Task section**: Refactoring brief with concrete execution instructions, not just analysis\n- **Priority Order section**: State-dependent refactoring priorities, starting with blockers and then architecture cleanup\n- **Requirements section**: Guidelines for suggested changes\n\n**Example usage**:\n```bash\n# View the prompt\ncat prompt.txt\n\n# Copy to clipboard and paste into ChatGPT/Claude\ncat prompt.txt | pbcopy  # macOS\ncat prompt.txt | xclip -sel clip  # Linux\n```\n\n### `context.md` - LLM Narrative\n**Purpose**: Ready-to-paste context for AI assistants\n**Key sections**:\n- **Overview**: Project statistics\n- **Architecture**: Module breakdown\n- **Entry Points**: Public interfaces\n- **Patterns**: Design patterns detected\n\n**Example usage**:\n```bash\n# Copy to clipboard for LLM\ncat context.md | pbcopy  # macOS\ncat context.md | xclip -sel clip  # Linux\n\n# Use with Claude/ChatGPT for code analysis\n```\n\n### Visualization Files (`*.mmd`, `*.png`)\n**Purpose**: Visual understanding of code structure\n**Files**:\n- `flow.mmd` - Detailed control flow with complexity colors\n- `calls.mmd` - Simple call graph\n- `compact_flow.mmd` - High-level module view\n- `*.png` - Pre-rendered images\n\n**Example usage**:\n```bash\n# View diagrams\nopen flow.png  # macOS\nxdg-open flow.png  # Linux\n\n# Edit in Mermaid Live Editor\n# Copy content of .mmd files to https://mermaid.live\n```\n\n## 🔍 Common Analysis Patterns\n\n### 1. Code Health Assessment\n```bash\n# Quick health check\ncode2llm ./ -f toon\ncat analysis.toon | grep -E \"(HEALTH|REFACTOR)\"\n```\n\n### 2. Refactoring Planning\n```bash\n# Get refactoring queue\ncode2llm ./ -f evolution\ncat evolution.toon.yaml\n\n# Focus on specific issues\ncode2llm ./ -f toon --refactor --smell god_function\n```\n\n### 3. LLM Assistance\n```bash\n# Generate context for AI\ncode2llm ./ -f context\ncat context.md\n\n# Use with Claude: \"Based on this context, help me refactor the god modules\"\n```\n\n### 4. Team Documentation\n```bash\n# Generate all docs for team\ncode2llm ./ -f all -o ./docs/\n\n# Create visual diagrams\nopen docs/flow.png\n```\n\n## 📊 Interpreting Metrics\n\n### Complexity Metrics (CC)\n- **🔴 Critical (≥5.0)**: Immediate refactoring needed\n- **🟠 High (3.0-4.9)**: Consider refactoring\n- **🟡 Medium (1.5-2.9)**: Monitor complexity\n- **🟢 Low (0.1-1.4)**: Acceptable\n- **⚪ Basic (0.0)**: Simple functions\n\n### Module Health\n- **GOD Module**: Too large (>500 lines, >20 methods)\n- **HUB**: High fan-out (calls many modules)\n- **FAN-IN**: High incoming dependencies\n- **CYCLES**: Circular dependencies\n\n### Data Flow Indicators\n- **PIPELINE**: Sequential data processing\n- **CONTRACT**: Clear input/output specification\n- **SIDE_EFFECT**: External state modification\n\n## 🛠️ Integration Examples\n\n### CI/CD Pipeline\n```bash\n#!/bin/bash\n# Analyze code quality in CI\ncode2llm ./ -f toon -o ./analysis\nif grep -q \"🔴 GOD\" ./analysis/analysis.toon; then\n    echo \"❌ God modules detected\"\n    exit 1\nfi\n```\n\n### Pre-commit Hook\n```bash\n#!/bin/sh\n# .git/hooks/pre-commit\ncode2llm ./ -f toon -o ./temp_analysis\nif grep -q \"🔴\" ./temp_analysis/analysis.toon; then\n    echo \"⚠️  Critical issues found. Review before committing.\"\nfi\nrm -rf ./temp_analysis\n```\n\n### Documentation Generation\n```bash\n# Generate docs for README\ncode2llm ./ -f context -o ./docs/\necho \"## Architecture\" >> README.md\ncat docs/context.md >> README.md\n```\n\n## 📚 Next Steps\n\n1. **Review `analysis.toon`** - Identify critical issues\n2. **Check `evolution.toon.yaml`** - Plan refactoring priorities\n3. **Use `context.md`** - Get LLM assistance for complex changes\n4. **Reference visualizations** - Understand system architecture\n5. **Track progress** - Re-run analysis after changes\n\n## 🔧 Advanced Usage\n\n### Custom Analysis\n```bash\n# Deep analysis with all insights\ncode2llm ./ -m hybrid -f all --max-depth 15 -v\n\n# Performance-optimized\ncode2llm ./ -m static -f toon --strategy quick\n\n# Refactoring-focused\ncode2llm ./ -f toon,evolution --refactor\n```\n\n### Output Customization\n```bash\n# Separate output directories\ncode2llm ./ -f all -o ./analysis-$(date +%Y%m%d)\n\n# Split YAML into multiple files\ncode2llm ./ -f yaml --split-output\n\n# Separate orphaned functions\ncode2llm ./ -f yaml --separate-orphans\n```\n\n---\n\n**Generated by**: `code2llm ./ -f all --readme`  \n**Analysis Date**: 2026-04-13  \n**Total Functions**: 279  \n**Total Classes**: 27  \n**Modules**: 42  \n\nFor more information about code2llm, visit: https://github.com/tom-sapletta/code2llm\n", "is_subdir": false}, {"name": "context.md", "rel_path": "context.md", "path": "context.md", "size": "31.8KB", "icon": "📝", "type": "markdown", "type_name": "Markdown", "content": "# System Architecture Analysis\n\n## Overview\n\n- **Project**: /home/tom/github/wronai/todocs\n- **Primary Language**: python\n- **Languages**: python: 41, shell: 1\n- **Analysis Mode**: static\n- **Total Functions**: 279\n- **Total Classes**: 27\n- **Modules**: 42\n- **Entry Points**: 225\n\n## Architecture by Module\n\n### todocs.generators.comparison\n- **Functions**: 23\n- **Classes**: 1\n- **File**: `comparison.py`\n\n### todocs.cli\n- **Functions**: 18\n- **File**: `cli.py`\n\n### todocs.generators.article_sections\n- **Functions**: 18\n- **File**: `article_sections.py`\n\n### todocs.extractors.toon_parser\n- **Functions**: 17\n- **Classes**: 1\n- **File**: `toon_parser.py`\n\n### todocs.analyzers.code_metrics\n- **Functions**: 15\n- **Classes**: 1\n- **File**: `code_metrics.py`\n\n### todocs.generators.status_report_gen\n- **Functions**: 14\n- **Classes**: 1\n- **File**: `status_report_gen.py`\n\n### todocs.analyzers.import_graph\n- **Functions**: 13\n- **Classes**: 1\n- **File**: `import_graph.py`\n\n### todocs.analyzers.api_surface\n- **Functions**: 13\n- **Classes**: 1\n- **File**: `api_surface.py`\n\n### todocs.analyzers.structure\n- **Functions**: 12\n- **Classes**: 1\n- **File**: `structure.py`\n\n### todocs.generators.project_card_gen\n- **Functions**: 11\n- **Classes**: 1\n- **File**: `project_card_gen.py`\n\n### todocs.core\n- **Functions**: 11\n- **Classes**: 5\n- **File**: `core.py`\n\n### todocs.analyzers.dependencies\n- **Functions**: 10\n- **Classes**: 1\n- **File**: `dependencies.py`\n\n### todocs.extractors.makefile_parser\n- **Functions**: 9\n- **Classes**: 1\n- **File**: `makefile_parser.py`\n\n### todocs.extractors.readme_parser\n- **Functions**: 9\n- **Classes**: 1\n- **File**: `readme_parser.py`\n\n### todocs.generators.org_index_gen\n- **Functions**: 9\n- **Classes**: 1\n- **File**: `org_index_gen.py`\n\n### todocs.extractors.metadata\n- **Functions**: 9\n- **Classes**: 1\n- **File**: `metadata.py`\n\n### examples.custom_analysis\n- **Functions**: 8\n- **File**: `custom_analysis.py`\n\n### examples.api_surface_deep\n- **Functions**: 7\n- **File**: `api_surface_deep.py`\n\n### todocs.formatters.table_formatter\n- **Functions**: 7\n- **Classes**: 1\n- **File**: `table_formatter.py`\n\n### examples.organization_health_report\n- **Functions**: 6\n- **File**: `organization_health_report.py`\n\n## Key Entry Points\n\nMain execution flows into the system:\n\n### examples.article_sections_demo.main\n- **Calls**: None.resolve, todocs.core.scan_project, print, print, print, print, print, print\n\n### examples.scan_single.main\n- **Calls**: None.resolve, print, todocs.core.scan_project, len, print, sys.exit, project_path.is_dir, print\n\n### todocs.generators.article.ArticleGenerator._render_index\n> Generate organization portfolio index.\n- **Calls**: sections.append, sections.append, sections.append, sum, sum, sections.append, sorted, sections.append\n\n### todocs.extractors.docker_parser.DockerParser._parse_compose\n> Extract services, ports, volumes from docker-compose.yml.\n- **Calls**: data.get, raw_services.items, list, yaml.safe_load, isinstance, svc.get, bool, svc.get\n\n### todocs.generators.comparison.ComparisonGenerator._render_category\n- **Calls**: sections.append, sections.append, sections.append, lines.append, lines.append, sorted, sections.append, sum\n\n### todocs.analyzers.maturity.MaturityScorer.score\n- **Calls**: None.is_dir, None.exists, None.exists, None.exists, None.exists, max, set, len\n\n### todocs.extractors.metadata.MetadataExtractor._from_pyproject\n- **Calls**: data.get, None.get, combined.get, combined.get, combined.get, self._extract_license, combined.get, combined.get\n\n### examples.scan_org.main\n- **Calls**: None.resolve, Path, print, todocs.core.scan_organization, print, sorted, print, sorted\n\n### examples.api_surface_deep.main\n- **Calls**: None.resolve, print, print, print, print, print, print, print\n\n### examples.organization_health_report.main\n- **Calls**: argparse.ArgumentParser, parser.add_argument, parser.add_argument, parser.add_argument, parser.add_argument, parser.parse_args, None.resolve, print\n\n### todocs.extractors.toon_parser.ToonParser.parse_flow\n> Parse flow.toon — pipeline and data-flow analysis.\n- **Calls**: self._read, re.match, text.splitlines, int, int, re.match, pipelines.append, hm.group\n\n### todocs.cli.export_cmd\n> Export organization report in HTML or JSON format.\n\nROOT_DIR is the directory containing project subdirectories.\n\nExamples:\n    todocs export /path/to\n- **Calls**: main.command, click.argument, click.option, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization\n\n### todocs.extractors.docker_parser.DockerParser._parse_dockerfile\n> Extract FROM images, EXPOSE ports, ENTRYPOINT from Dockerfile.\n- **Calls**: text.splitlines, path.read_text, line.strip, re.match, re.match, re.match, re.match, line.startswith\n\n### todocs.cli.readme\n> Generate a single README.md with project list and 5-line descriptions.\n\nROOT_DIR is the directory containing project subdirectories.\n\nExample:\n    tod\n- **Calls**: main.command, click.argument, click.option, click.option, click.option, click.option, click.option, None.resolve\n\n### todocs.outputs.markdown.MarkdownOutput.write_all\n> Write all markdown outputs. Returns list of written paths.\n- **Calls**: Path, output_dir.mkdir, ArticleGenerator, article_gen.generate, paths.append, OrgIndexGenerator, idx_gen.generate, paths.append\n\n### todocs.generators.comparison.ComparisonGenerator._render_readme_list\n> Render a compact README with project list and 5-line descriptions.\n- **Calls**: sections.append, sections.append, sections.append, sections.append, sections.append, sections.append, sections.append, sections.append\n\n### todocs.analyzers.structure.StructureAnalyzer.detect_tech_stack\n> Detect technology stack from files and markers.\n- **Calls**: self._detect_languages, self._detect_build_tools, self._detect_test_frameworks, self._detect_ci_cd, self._detect_containers, self._detect_frameworks, TechStack, dict\n\n### todocs.generators.comparison.ComparisonGenerator._tech_stack_overview\n- **Calls**: Counter, Counter, Counter, lines.append, lines.append, lines.append, lang_counter.most_common, None.join\n\n### todocs.analyzers.code_metrics.CodeMetricsAnalyzer.analyze\n> Return CodeStats dataclass.\n- **Calls**: self._scan, len, len, set, sum, sum, self._collect_complexity_data, hotspots.sort\n\n### todocs.cli.compare\n> Generate cross-project comparison report.\n\nROOT_DIR is the directory containing project subdirectories.\n- **Calls**: main.command, click.argument, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization, ComparisonGenerator\n\n### todocs.outputs.json.JSONOutput._summary\n- **Calls**: len, sum, sum, sum, round, round, round, round\n\n### todocs.generators.comparison.ComparisonGenerator._render_comparison\n- **Calls**: sections.append, sections.append, sections.append, sections.append, sections.append, sections.append, sections.append, sections.append\n\n### todocs.analyzers.import_graph.ImportGraphAnalyzer.build_graph\n> Build the import dependency graph.\n\nReturns:\n    {\n        \"nodes\": [{\"name\": \"module.name\", \"lines\": N, \"is_test\": bool}],\n        \"edges\": [{\"from\":\n- **Calls**: self._detect_internal_packages, self._collect_modules, self._build_import_edges, self._build_fan_metrics, self._detect_cycles, list, sorted, dict\n\n### todocs.cli.generate\n> Scan projects and generate WordPress markdown articles.\n\nROOT_DIR is the directory containing project subdirectories.\n- **Calls**: main.command, click.argument, click.option, click.option, click.option, click.option, click.option, click.option\n\n### todocs.cli.inspect\n> Inspect a single project and show its profile.\n\nPROJECT_DIR is the path to the project directory.\n- **Calls**: main.command, click.argument, click.option, click.option, None.resolve, todocs.core.scan_project, profile.to_json, ArticleGenerator\n\n### todocs.cli.index\n> Generate organization project index / catalog page.\n\nROOT_DIR is the directory containing project subdirectories.\n- **Calls**: main.command, click.argument, click.option, click.option, click.option, None.resolve, todocs.core.scan_organization, OrgIndexGenerator\n\n### todocs.extractors.toon_parser.ToonParser._parse_layers_section\n> Parse LAYERS section from analysis.toon.\n- **Calls**: text.splitlines, None.startswith, re.match, line.strip, line.strip, layers.append, line.startswith, line.startswith\n\n### todocs.analyzers.dependencies.DependencyAnalyzer._pyproject_dev_deps\n> Extract dev deps from pyproject.toml optional-dependencies and poetry groups.\n- **Calls**: None.get, None.get, deps.extend, None.get, None.get, deps.extend, opt.get, poetry_dev.keys\n\n### todocs.extractors.metadata.MetadataExtractor._from_package_json\n- **Calls**: data.get, isinstance, data.get, fp.exists, json.loads, data.get, data.get, data.get\n\n### todocs.extractors.readme_parser.ReadmeParser._extract_heading_sections\n> Extract sections based on markdown headings.\n- **Calls**: re.compile, list, enumerate, heading_pattern.finditer, None.strip, None.strip, _SECTION_ALIASES.get, m.end\n\n## Process Flows\n\nKey execution flows identified:\n\n### Flow 1: main\n```\nmain [examples.article_sections_demo]\n  └─ →> scan_project\n      └─> _run_extraction_phase\n      └─> _run_analysis_phase\n      └─ →> create_scan_filter\n```\n\n### Flow 2: _render_index\n```\n_render_index [todocs.generators.article.ArticleGenerator]\n```\n\n### Flow 3: _parse_compose\n```\n_parse_compose [todocs.extractors.docker_parser.DockerParser]\n```\n\n### Flow 4: _render_category\n```\n_render_category [todocs.generators.comparison.ComparisonGenerator]\n```\n\n### Flow 5: score\n```\nscore [todocs.analyzers.maturity.MaturityScorer]\n```\n\n### Flow 6: _from_pyproject\n```\n_from_pyproject [todocs.extractors.metadata.MetadataExtractor]\n```\n\n### Flow 7: parse_flow\n```\nparse_flow [todocs.extractors.toon_parser.ToonParser]\n```\n\n### Flow 8: export_cmd\n```\nexport_cmd [todocs.cli]\n```\n\n### Flow 9: _parse_dockerfile\n```\n_parse_dockerfile [todocs.extractors.docker_parser.DockerParser]\n```\n\n### Flow 10: readme\n```\nreadme [todocs.cli]\n```\n\n## Key Classes\n\n### todocs.generators.comparison.ComparisonGenerator\n> Generate comparative analysis articles across projects.\n- **Methods**: 23\n- **Key Methods**: todocs.generators.comparison.ComparisonGenerator.__init__, todocs.generators.comparison.ComparisonGenerator.generate_comparison, todocs.generators.comparison.ComparisonGenerator.generate_category_articles, todocs.generators.comparison.ComparisonGenerator.generate_health_report, todocs.generators.comparison.ComparisonGenerator._render_comparison, todocs.generators.comparison.ComparisonGenerator._size_comparison, todocs.generators.comparison.ComparisonGenerator._maturity_leaderboard, todocs.generators.comparison.ComparisonGenerator._complexity_comparison, todocs.generators.comparison.ComparisonGenerator._tech_stack_overview, todocs.generators.comparison.ComparisonGenerator._dependency_overlap\n\n### todocs.extractors.toon_parser.ToonParser\n> Parse .toon files into structured data.\n- **Methods**: 17\n- **Key Methods**: todocs.extractors.toon_parser.ToonParser.__init__, todocs.extractors.toon_parser.ToonParser.find_toon_files, todocs.extractors.toon_parser.ToonParser.parse_all, todocs.extractors.toon_parser.ToonParser.parse_map, todocs.extractors.toon_parser.ToonParser._parse_map_header, todocs.extractors.toon_parser.ToonParser._parse_modules_section, todocs.extractors.toon_parser.ToonParser._parse_details_section, todocs.extractors.toon_parser.ToonParser._parse_class_line, todocs.extractors.toon_parser.ToonParser._parse_function_line, todocs.extractors.toon_parser.ToonParser.parse_analysis\n\n### todocs.analyzers.code_metrics.CodeMetricsAnalyzer\n> Analyze code metrics: lines, complexity, maintainability.\n- **Methods**: 15\n- **Key Methods**: todocs.analyzers.code_metrics.CodeMetricsAnalyzer.__init__, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._should_skip, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._is_test, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._scan, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._count_lines, todocs.analyzers.code_metrics.CodeMetricsAnalyzer.analyze, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._collect_complexity_data, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._collect_radon_metrics, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._collect_ast_fallback, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._ast_complexity\n\n### todocs.generators.status_report_gen.StatusReportGenerator\n> Generate a comprehensive organization status report.\n- **Methods**: 14\n- **Key Methods**: todocs.generators.status_report_gen.StatusReportGenerator.__init__, todocs.generators.status_report_gen.StatusReportGenerator.generate, todocs.generators.status_report_gen.StatusReportGenerator.render, todocs.generators.status_report_gen.StatusReportGenerator._frontmatter, todocs.generators.status_report_gen.StatusReportGenerator._header, todocs.generators.status_report_gen.StatusReportGenerator._kpi_dashboard, todocs.generators.status_report_gen.StatusReportGenerator._grade_breakdown, todocs.generators.status_report_gen.StatusReportGenerator._language_distribution, todocs.generators.status_report_gen.StatusReportGenerator._truncated_names, todocs.generators.status_report_gen.StatusReportGenerator._quality_gaps\n\n### todocs.analyzers.import_graph.ImportGraphAnalyzer\n> Analyze import relationships between project modules.\n- **Methods**: 13\n- **Key Methods**: todocs.analyzers.import_graph.ImportGraphAnalyzer.__init__, todocs.analyzers.import_graph.ImportGraphAnalyzer._should_skip, todocs.analyzers.import_graph.ImportGraphAnalyzer._iter_py_files, todocs.analyzers.import_graph.ImportGraphAnalyzer._module_name, todocs.analyzers.import_graph.ImportGraphAnalyzer._collect_modules, todocs.analyzers.import_graph.ImportGraphAnalyzer._build_import_edges, todocs.analyzers.import_graph.ImportGraphAnalyzer.build_graph, todocs.analyzers.import_graph.ImportGraphAnalyzer._parse_file_imports, todocs.analyzers.import_graph.ImportGraphAnalyzer._resolve_relative_import, todocs.analyzers.import_graph.ImportGraphAnalyzer._build_fan_metrics\n\n### todocs.analyzers.api_surface.APISurfaceAnalyzer\n> Detect public API surface of a project.\n- **Methods**: 13\n- **Key Methods**: todocs.analyzers.api_surface.APISurfaceAnalyzer.__init__, todocs.analyzers.api_surface.APISurfaceAnalyzer.analyze, todocs.analyzers.api_surface.APISurfaceAnalyzer._should_skip, todocs.analyzers.api_surface.APISurfaceAnalyzer._detect_entry_points, todocs.analyzers.api_surface.APISurfaceAnalyzer._detect_cli_commands, todocs.analyzers.api_surface.APISurfaceAnalyzer._decorator_name, todocs.analyzers.api_surface.APISurfaceAnalyzer._scan_public_symbols, todocs.analyzers.api_surface.APISurfaceAnalyzer._collect_target_files, todocs.analyzers.api_surface.APISurfaceAnalyzer._extract_from_file, todocs.analyzers.api_surface.APISurfaceAnalyzer._extract_class\n\n### todocs.analyzers.structure.StructureAnalyzer\n> Analyze project directory structure.\n- **Methods**: 12\n- **Key Methods**: todocs.analyzers.structure.StructureAnalyzer.__init__, todocs.analyzers.structure.StructureAnalyzer._should_skip, todocs.analyzers.structure.StructureAnalyzer._iter_files, todocs.analyzers.structure.StructureAnalyzer.analyze, todocs.analyzers.structure.StructureAnalyzer.detect_tech_stack, todocs.analyzers.structure.StructureAnalyzer._detect_languages, todocs.analyzers.structure.StructureAnalyzer._detect_build_tools, todocs.analyzers.structure.StructureAnalyzer._detect_test_frameworks, todocs.analyzers.structure.StructureAnalyzer._detect_ci_cd, todocs.analyzers.structure.StructureAnalyzer._detect_containers\n\n### todocs.generators.project_card_gen.ProjectCardGenerator\n> Generate a compact project card suitable for WordPress embedding.\n- **Methods**: 11\n- **Key Methods**: todocs.generators.project_card_gen.ProjectCardGenerator.__init__, todocs.generators.project_card_gen.ProjectCardGenerator.generate, todocs.generators.project_card_gen.ProjectCardGenerator.generate_all, todocs.generators.project_card_gen.ProjectCardGenerator.render_card, todocs.generators.project_card_gen.ProjectCardGenerator._frontmatter, todocs.generators.project_card_gen.ProjectCardGenerator._badge_line, todocs.generators.project_card_gen.ProjectCardGenerator._description, todocs.generators.project_card_gen.ProjectCardGenerator._stats_table, todocs.generators.project_card_gen.ProjectCardGenerator._features_line, todocs.generators.project_card_gen.ProjectCardGenerator._deps_line\n\n### todocs.analyzers.dependencies.DependencyAnalyzer\n> Extract project dependencies without executing anything.\n- **Methods**: 10\n- **Key Methods**: todocs.analyzers.dependencies.DependencyAnalyzer.__init__, todocs.analyzers.dependencies.DependencyAnalyzer._load_pyproject, todocs.analyzers.dependencies.DependencyAnalyzer._parse_dep_name, todocs.analyzers.dependencies.DependencyAnalyzer._deduplicate, todocs.analyzers.dependencies.DependencyAnalyzer._deps_from_requirements, todocs.analyzers.dependencies.DependencyAnalyzer._deps_from_package_json, todocs.analyzers.dependencies.DependencyAnalyzer._pyproject_runtime_deps, todocs.analyzers.dependencies.DependencyAnalyzer._pyproject_dev_deps, todocs.analyzers.dependencies.DependencyAnalyzer.get_runtime_deps, todocs.analyzers.dependencies.DependencyAnalyzer.get_dev_deps\n\n### todocs.extractors.makefile_parser.MakefileParser\n> Extract targets and structure from Makefile or Taskfile.yml.\n- **Methods**: 9\n- **Key Methods**: todocs.extractors.makefile_parser.MakefileParser.__init__, todocs.extractors.makefile_parser.MakefileParser.parse, todocs.extractors.makefile_parser.MakefileParser._parse_makefile, todocs.extractors.makefile_parser.MakefileParser._collect_phony_targets, todocs.extractors.makefile_parser.MakefileParser._parse_target_line, todocs.extractors.makefile_parser.MakefileParser._extract_help_text, todocs.extractors.makefile_parser.MakefileParser._collect_commands, todocs.extractors.makefile_parser.MakefileParser._parse_taskfile, todocs.extractors.makefile_parser.MakefileParser.get_target_names\n\n### todocs.extractors.readme_parser.ReadmeParser\n> Extract structured sections from a README.md file.\n- **Methods**: 9\n- **Key Methods**: todocs.extractors.readme_parser.ReadmeParser.__init__, todocs.extractors.readme_parser.ReadmeParser.parse, todocs.extractors.readme_parser.ReadmeParser._find_readme, todocs.extractors.readme_parser.ReadmeParser._parse_sections, todocs.extractors.readme_parser.ReadmeParser._extract_description, todocs.extractors.readme_parser.ReadmeParser._extract_preamble, todocs.extractors.readme_parser.ReadmeParser._extract_post_h1, todocs.extractors.readme_parser.ReadmeParser._extract_heading_sections, todocs.extractors.readme_parser.ReadmeParser.get_first_paragraph\n\n### todocs.generators.org_index_gen.OrgIndexGenerator\n> Generate an index.md catalog page for all projects in an organization.\n- **Methods**: 9\n- **Key Methods**: todocs.generators.org_index_gen.OrgIndexGenerator.__init__, todocs.generators.org_index_gen.OrgIndexGenerator.generate, todocs.generators.org_index_gen.OrgIndexGenerator.render, todocs.generators.org_index_gen.OrgIndexGenerator._frontmatter, todocs.generators.org_index_gen.OrgIndexGenerator._header, todocs.generators.org_index_gen.OrgIndexGenerator._quick_stats, todocs.generators.org_index_gen.OrgIndexGenerator._category_sections, todocs.generators.org_index_gen.OrgIndexGenerator._alphabetical_index, todocs.generators.org_index_gen.OrgIndexGenerator._footer\n\n### todocs.extractors.metadata.MetadataExtractor\n> Extract structured metadata from project config files.\n- **Methods**: 9\n- **Key Methods**: todocs.extractors.metadata.MetadataExtractor.__init__, todocs.extractors.metadata.MetadataExtractor.extract, todocs.extractors.metadata.MetadataExtractor._merge, todocs.extractors.metadata.MetadataExtractor._from_pyproject, todocs.extractors.metadata.MetadataExtractor._from_setup_cfg, todocs.extractors.metadata.MetadataExtractor._from_setup_py, todocs.extractors.metadata.MetadataExtractor._extract_setup_kwargs, todocs.extractors.metadata.MetadataExtractor._from_package_json, todocs.extractors.metadata.MetadataExtractor._extract_license\n\n### todocs.formatters.table_formatter.TableFormatter\n> Generate markdown comparison tables from project profiles.\n- **Methods**: 7\n- **Key Methods**: todocs.formatters.table_formatter.TableFormatter.format_comparison, todocs.formatters.table_formatter.TableFormatter.format_matrix, todocs.formatters.table_formatter.TableFormatter.format_ranking, todocs.formatters.table_formatter.TableFormatter._default_columns, todocs.formatters.table_formatter.TableFormatter._default_features, todocs.formatters.table_formatter.TableFormatter._sort_profiles, todocs.formatters.table_formatter.TableFormatter._render_table\n\n### todocs.extractors.docker_parser.DockerParser\n> Extract Docker infrastructure from Dockerfile and docker-compose.yml.\n- **Methods**: 6\n- **Key Methods**: todocs.extractors.docker_parser.DockerParser.__init__, todocs.extractors.docker_parser.DockerParser.parse, todocs.extractors.docker_parser.DockerParser._find_dockerfiles, todocs.extractors.docker_parser.DockerParser._find_compose_files, todocs.extractors.docker_parser.DockerParser._parse_dockerfile, todocs.extractors.docker_parser.DockerParser._parse_compose\n\n### todocs.outputs.json.JSONOutput\n> Write project profiles as structured JSON for APIs and dashboards.\n- **Methods**: 6\n- **Key Methods**: todocs.outputs.json.JSONOutput.__init__, todocs.outputs.json.JSONOutput.write, todocs.outputs.json.JSONOutput.render, todocs.outputs.json.JSONOutput._meta, todocs.outputs.json.JSONOutput._summary, todocs.outputs.json.JSONOutput._project_entry\n\n### todocs.extractors.changelog_parser.ChangelogParser\n> Extract structured entries from CHANGELOG.md.\n- **Methods**: 5\n- **Key Methods**: todocs.extractors.changelog_parser.ChangelogParser.__init__, todocs.extractors.changelog_parser.ChangelogParser.parse, todocs.extractors.changelog_parser.ChangelogParser._find_changelog, todocs.extractors.changelog_parser.ChangelogParser._parse_entries, todocs.extractors.changelog_parser.ChangelogParser._summarize_entry\n\n### todocs.outputs.html.HTMLOutput\n> Write project profiles as a standalone HTML report.\n- **Methods**: 5\n- **Key Methods**: todocs.outputs.html.HTMLOutput.__init__, todocs.outputs.html.HTMLOutput.write, todocs.outputs.html.HTMLOutput.render, todocs.outputs.html.HTMLOutput._render_row, todocs.outputs.html.HTMLOutput._render_card\n\n### todocs.generators.article.ArticleGenerator\n> Generate markdown articles for WordPress from analyzed project profiles.\n- **Methods**: 5\n- **Key Methods**: todocs.generators.article.ArticleGenerator.__init__, todocs.generators.article.ArticleGenerator.generate, todocs.generators.article.ArticleGenerator.generate_index, todocs.generators.article.ArticleGenerator._render_article, todocs.generators.article.ArticleGenerator._render_index\n\n### todocs.utils.GitignoreParser\n> Parse and match .gitignore patterns.\n- **Methods**: 5\n- **Key Methods**: todocs.utils.GitignoreParser.__init__, todocs.utils.GitignoreParser._load_gitignore, todocs.utils.GitignoreParser._parse_patterns, todocs.utils.GitignoreParser._match_pattern, todocs.utils.GitignoreParser.is_ignored\n\n## Data Transformation Functions\n\nKey functions that process and transform data:\n\n### todocs.extractors.makefile_parser.MakefileParser.parse\n> Parse build file and return targets with descriptions.\n- **Output to**: makefile.exists, self._parse_makefile, taskfile.exists, self._parse_taskfile\n\n### todocs.extractors.makefile_parser.MakefileParser._parse_makefile\n> Parse GNU Makefile targets.\n- **Output to**: self._collect_phony_targets, text.splitlines, enumerate, path.read_text, self._parse_target_line\n\n### todocs.extractors.makefile_parser.MakefileParser._parse_target_line\n> Parse a single Makefile target line.\n- **Output to**: re.match, target_m.group, self._extract_help_text, self._collect_commands, name.startswith\n\n### todocs.extractors.makefile_parser.MakefileParser._parse_taskfile\n> Parse Taskfile.yml (go-task format).\n- **Output to**: data.get, tasks.items, yaml.safe_load, isinstance, isinstance\n\n### todocs.extractors.toon_parser.ToonParser.parse_all\n> Parse all discovered .toon files and return unified summary.\n- **Output to**: self.find_toon_files, list, self.parse_map, self.parse_analysis, self.parse_flow\n\n### todocs.extractors.toon_parser.ToonParser.parse_map\n> Parse project.toon / map.toon — module listing with metadata.\n- **Output to**: self._read, result.update, self._parse_modules_section, self._parse_details_section, self._parse_map_header\n\n### todocs.extractors.toon_parser.ToonParser._parse_map_header\n> Parse header from map.toon: # project_name | Nf NL | lang:N.\n- **Output to**: re.match, header_m.group, int, int, header_m.group\n\n### todocs.extractors.toon_parser.ToonParser._parse_modules_section\n> Parse M[] section from map.toon.\n- **Output to**: text.splitlines, None.startswith, re.match, line.strip, line.startswith\n\n### todocs.extractors.toon_parser.ToonParser._parse_details_section\n> Parse D: section from map.toon — classes and functions.\n- **Output to**: text.splitlines, re.match, self._parse_class_line, self._parse_function_line, line.strip\n\n### todocs.extractors.toon_parser.ToonParser._parse_class_line\n> Parse a class definition line from map.toon details.\n- **Output to**: re.match, cls_m.group, None.strip, None.isupper, None.startswith\n\n### todocs.extractors.toon_parser.ToonParser._parse_function_line\n> Parse a function definition line from map.toon details.\n- **Output to**: re.match, func_m.group, None.startswith, None.islower, line.strip\n\n### todocs.extractors.toon_parser.ToonParser.parse_analysis\n> Parse analysis.toon — health, coupling, layers.\n- **Output to**: self._read, result.update, self._parse_health_section, self._parse_refactor_section, self._parse_layers_section\n\n### todocs.extractors.toon_parser.ToonParser._parse_analysis_header\n> Parse header metrics from analysis.toon.\n- **Output to**: re.search, re.search, re.search, re.search, float\n\n### todocs.extractors.toon_parser.ToonParser._parse_health_section\n> Parse HEALTH section from analysis.toon.\n- **Output to**: text.splitlines, None.startswith, re.match, line.strip, line.strip\n\n### todocs.extractors.toon_parser.ToonParser._parse_refactor_section\n> Parse REFACTOR section from analysis.toon.\n- **Output to**: text.splitlines, None.startswith, re.match, line.strip, line.strip\n\n### todocs.extractors.toon_parser.ToonParser._parse_layers_section\n> Parse LAYERS section from analysis.toon.\n- **Output to**: text.splitlines, None.startswith, re.match, line.strip, line.strip\n\n### todocs.extractors.toon_parser.ToonParser.parse_flow\n> Parse flow.toon — pipeline and data-flow analysis.\n- **Output to**: self._read, re.match, text.splitlines, int, int\n\n### todocs.extractors.toon_parser.ToonParser.parse_functions\n> Parse *.functions.toon — exported function signatures.\n- **Output to**: self._read, text.splitlines, re.match, fm.group, None.islower\n\n### todocs.extractors.readme_parser.ReadmeParser.parse\n> Parse README and return section_name -> content dict.\n- **Output to**: self._find_readme, self._parse_sections, readme_path.read_text\n\n### todocs.extractors.readme_parser.ReadmeParser._parse_sections\n> Split markdown by headings into sections.\n- **Output to**: self._extract_description, sections.update, self._extract_heading_sections\n\n### todocs.extractors.docker_parser.DockerParser.parse\n> Parse all Docker-related files.\n- **Output to**: self._find_dockerfiles, self._find_compose_files, list, list, self._parse_dockerfile\n\n### todocs.extractors.docker_parser.DockerParser._parse_dockerfile\n> Extract FROM images, EXPOSE ports, ENTRYPOINT from Dockerfile.\n- **Output to**: text.splitlines, path.read_text, line.strip, re.match, re.match\n\n### todocs.extractors.docker_parser.DockerParser._parse_compose\n> Extract services, ports, volumes from docker-compose.yml.\n- **Output to**: data.get, raw_services.items, list, yaml.safe_load, isinstance\n\n### todocs.extractors.changelog_parser.ChangelogParser.parse\n> Return list of {version, date, content} dicts for recent releases.\n- **Output to**: self._find_changelog, self._parse_entries, cl_path.read_text\n\n### todocs.extractors.changelog_parser.ChangelogParser._parse_entries\n> Parse Keep-a-Changelog or similar format.\n- **Output to**: re.compile, list, enumerate, heading_re.finditer, m.group\n\n## Behavioral Patterns\n\n### state_machine_CodeMetricsAnalyzer\n- **Type**: state_machine\n- **Confidence**: 0.70\n- **Functions**: todocs.analyzers.code_metrics.CodeMetricsAnalyzer.__init__, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._should_skip, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._is_test, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._scan, todocs.analyzers.code_metrics.CodeMetricsAnalyzer._count_lines\n\n## Public API Surface\n\nFunctions exposed as public API (no underscore prefix):\n\n- `examples.article_sections_demo.main` - 64 calls\n- `examples.scan_single.main` - 57 calls\n- `examples.organization_health_report.print_health_summary` - 48 calls\n- `todocs.generators.article_sections.render_architecture` - 33 calls\n- `todocs.analyzers.maturity.MaturityScorer.score` - 28 calls\n- `examples.scan_org.main` - 26 calls\n- `examples.api_surface_deep.main` - 26 calls\n- `examples.api_surface_deep.analyze_public_symbols` - 24 calls\n- `examples.organization_health_report.main` - 23 calls\n- `todocs.extractors.toon_parser.ToonParser.parse_flow` - 23 calls\n- `todocs.generators.article_sections.render_docker` - 23 calls\n- `todocs.cli.export_cmd` - 22 calls\n- `todocs.cli.readme` - 21 calls\n- `todocs.outputs.markdown.MarkdownOutput.write_all` - 20 calls\n- `todocs.generators.article_sections.render_metrics` - 19 calls\n- `todocs.generators.article_sections.render_usage` - 19 calls\n- `todocs.analyzers.structure.StructureAnalyzer.detect_tech_stack` - 19 calls\n- `todocs.analyzers.code_metrics.CodeMetricsAnalyzer.analyze` - 19 calls\n- `todocs.cli.compare` - 18 calls\n- `todocs.analyzers.import_graph.ImportGraphAnalyzer.build_graph` - 18 calls\n- `todocs.cli.generate` - 17 calls\n- `todocs.cli.inspect` - 17 calls\n- `todocs.cli.index` - 17 calls\n- `todocs.extractors.docker_parser.DockerParser.parse` - 16 calls\n- `todocs.generators.article_sections.render_tech_stack` - 16 calls\n- `todocs.core.scan_organization` - 16 calls\n- `examples.api_surface_deep.analyze_rest_endpoints` - 15 calls\n- `todocs.cli.health` - 15 calls\n- `todocs.cli.status` - 15 calls\n- `todocs.cli.cards` - 15 calls\n- `todocs.core.generate_articles` - 15 calls\n- `todocs.generators.article_sections.render_api_surface` - 14 calls\n- `examples.api_surface_deep.analyze_cli_commands` - 13 calls\n- `examples.api_surface_deep.analyze_symbol_sources` - 13 calls\n- `todocs.outputs.html.HTMLOutput.render` - 13 calls\n- `todocs.generators.status_report_gen.StatusReportGenerator.render` - 13 calls\n- `examples.custom_analysis.main` - 12 calls\n- `todocs.formatters.table_formatter.TableFormatter.format_matrix` - 12 calls\n- `todocs.generators.article_sections.render_dependencies` - 12 calls\n- `todocs.extractors.metadata.MetadataExtractor.extract` - 12 calls\n\n## System Interactions\n\nHow components interact:\n\n```mermaid\ngraph TD\n    main --> resolve\n    main --> scan_project\n    main --> print\n    main --> len\n    _render_index --> append\n    _render_index --> sum\n    _parse_compose --> get\n    _parse_compose --> items\n    _parse_compose --> list\n    _parse_compose --> safe_load\n    _parse_compose --> isinstance\n    _render_category --> append\n    score --> is_dir\n    score --> exists\n    _from_pyproject --> get\n    main --> Path\n    main --> scan_organization\n    main --> ArgumentParser\n    main --> add_argument\n    parse_flow --> _read\n    parse_flow --> match\n    parse_flow --> splitlines\n    parse_flow --> int\n    export_cmd --> command\n    export_cmd --> argument\n    export_cmd --> option\n    _parse_dockerfile --> splitlines\n    _parse_dockerfile --> read_text\n    _parse_dockerfile --> strip\n    _parse_dockerfile --> match\n```\n\n## Reverse Engineering Guidelines\n\n1. **Entry Points**: Start analysis from the entry points listed above\n2. **Core Logic**: Focus on classes with many methods\n3. **Data Flow**: Follow data transformation functions\n4. **Process Flows**: Use the flow diagrams for execution paths\n5. **API Surface**: Public API functions reveal the interface\n\n## Context for LLM\n\nMaintain the identified architectural patterns and public API surface when suggesting changes.", "is_subdir": false}, {"name": "refactoring-plan.md", "rel_path": "refactoring-plan.md", "path": "refactoring-plan.md", "size": "8.2KB", "icon": "📝", "type": "markdown", "type_name": "Markdown", "content": "# Refactoring Plan: code2docs ↔ todocs\n\n> Status: In Progress | Created: 2026-03-08 | Updated: 2026-03-08\n\n## Current State\n\nBoth scopes live in one `code2docs` package (64 files, 9010 lines).\n`todocs` has been extracted as a standalone package (Phase 3 ✅).\n\n## Responsibility Split\n\n### code2docs — single-project documentation\n> \"Generate full documentation for THIS repository\"\n\n| Module | Role |\n|--------|------|\n| readme_gen | README.md from analysis |\n| api_reference_gen | docs/api.md |\n| module_docs_gen | docs/modules.md |\n| architecture_gen | docs/architecture.md + Mermaid |\n| examples_gen | examples/ from API signatures |\n| getting_started_gen | docs/getting-started.md |\n| contributing_gen | CONTRIBUTING.md |\n| coverage_gen | docs/coverage.md |\n| depgraph_gen | docs/dependency-graph.md |\n| changelog_gen | CHANGELOG.md from git log |\n| api_changelog_gen | API changelog from diffs |\n| config_docs_gen | docs/configuration.md |\n| code2llm_gen | code2llm analysis → project/ |\n| mkdocs_gen | mkdocs.yml |\n\n**Infrastructure**: analyzers/, formatters/, sync/, config.py, registry.py, cli.py, llm_helper.py\n\n### todocs — multi-project organization overview\n> \"Summarize all projects in THIS folder/organization\"\n\n| Module | Role | Status |\n|--------|------|--------|\n| article.py | WordPress-ready project articles | ✅ |\n| article_sections.py | Section renderers | ✅ |\n| comparison.py | Cross-project comparison | ✅ |\n| project_card_gen.py | Single project card (WordPress) | ✅ |\n| org_index_gen.py | Organization index.md/catalog | ✅ |\n| status_report_gen.py | Organization status report | ✅ |\n| formatters/table_formatter.py | Comparative project tables | ✅ |\n| outputs/markdown.py | WordPress-ready Markdown output | ✅ |\n| outputs/html.py | HTML output | ✅ |\n| outputs/json.py | JSON output (API/dashboards) | ✅ |\n\n## Overlaps & Duplicates\n\n### 2.1 Shared code2llm dependency\nBoth use `code2llm.api.analyze()` / `AnalysisResult`:\n- **code2docs**: via ProjectScanner → full single-project analysis\n- **todocs** (formerly org_readme_gen): via `_analyze_project()` → simplified multi-project analysis\n\n**Current todocs status**: No code2llm dependency — uses own static analysis pipeline.\n\n### 2.2 Project description extraction\n`_extract_description()` (CC=17) duplicated fragments from ReadmeGenerator._extract_project_metadata() (CC=29).\n\n**Current todocs status**: Uses own `MetadataExtractor` — independent implementation.\n\n### 2.3 Shared formatters\nBoth use MarkdownFormatter, badges, toc — todocs needs only a subset.\n\n### 2.4 Config\n`Code2DocsConfig` contains config for both single-project and org-level. `org_name` in CLI switches mode.\n\n### 2.5 CLI\n`generate --org-name` activates OrgReadmeAdapter — mixing two modes.\n\n## Refactoring Phases\n\n### Phase 1: Extract shared core → code2docs-core ❌ Blocked (needs code2docs repo)\n\n```\ncode2docs-core/\n├── project_metadata.py    ← shared description/version/URL extraction\n├── analysis_bridge.py     ← quick_analyze + full_analyze\n├── formatters/\n│   ├── markdown.py\n│   └── badges.py\n└── llm_helper.py\n```\n\n### Phase 2: Clean up code2docs ❌ Blocked (needs code2docs repo)\n\n- ReadmeGenerator → delegates to core.extract_project_info()\n- Remove OrgReadmeGenerator, OrgReadmeAdapter\n- Remove --org-name from CLI\n- Remove org-level config fields\n\n### Phase 3: todocs as standalone package ✅ DONE\n\nCurrent todocs structure:\n```\ntodocs/\n├── analyzers/          (6 modules)\n├── extractors/         (6 modules)\n├── generators/         (6 modules: article, article_sections, comparison,\n│                        project_card_gen, status_report_gen, org_index_gen)\n├── formatters/         (table_formatter)\n├── outputs/            (markdown, html, json)\n├── utils/              (gitignore parser)\n├── core.py             (data models + orchestration)\n└── cli.py              (9 commands: generate, inspect, compare, health,\n                         readme, status, cards, index, export)\n```\n\nCompleted work:\n- [x] Add project_card_gen, status_report_gen, org_index_gen\n- [x] Add table_formatter\n- [x] Add output format modules (markdown, html, json)\n- [x] Wire into CLI (status, cards, index, export commands)\n\n### Phase 4: Reduce high CC ✅ DONE\n\nAll 8 methods with CC≥15 refactored below 15. Results:\n\n| Method | Before | After | Strategy |\n|--------|--------|-------|----------|\n| DependencyAnalyzer.get_dev_deps | 18 | 4 | Extract _deduplicate, _deps_from_requirements, _deps_from_package_json, _pyproject_dev_deps |\n| ComparisonGenerator._render_health_report | 18 | 7 | Extract _health_executive_summary, _health_grade_distribution, _health_projects_needing_attention, _health_top_performers |\n| render_api_surface | 17 | 7 | Extract _render_entry_points, _render_cli_commands, _render_rest_endpoints, _render_public_classes |\n| CodeMetricsAnalyzer._parse_module_ast | 17 | 8 | Extract _extract_module_docstring, _extract_imports |\n| DependencyAnalyzer.get_runtime_deps | 17 | 4 | Shared helpers with get_dev_deps |\n| CodeMetricsAnalyzer.analyze | 16 | 8 | Extract _collect_complexity_data, _collect_radon_metrics, _collect_ast_fallback |\n| ComparisonGenerator._render_readme_list | 16 | 5 | Extract _readme_summary_table, _project_features, _readme_project_section |\n| ImportGraphAnalyzer.build_graph | 15 | 9 | Extract _parse_file_imports, _resolve_relative_import, _build_fan_metrics |\n\nMax CC remaining: 14 (ComparisonGenerator._render_category, MaturityScorer.score)\n\n### Phase 5: Break dependency cycles ❌ Pertains to code2docs\n\n### Phase 1/2 Feasibility Assessment (code2docs repo found)\n\n**code2docs repo**: `/home/tom/github/wronai/code2docs` (v3.0.9)\n\n**Architecture**: code2docs depends on `code2llm` for analysis, uses a `BaseGenerator` + `GeneratorRegistry` pattern. 14 generators, formatters, sync/watcher, LLM helper.\n\n**Overlap analysis**:\n\n| Area | code2docs | todocs | Shared potential |\n|------|-----------|--------|------------------|\n| Dependency scanning | `DependencyScanner` (richer, returns `DependencyInfo` dataclass) | `DependencyAnalyzer` (simpler, returns `List[str]`) | Medium — different granularity |\n| Project metadata | Via `code2llm.api.AnalysisResult` | Own `MetadataExtractor` | Low — different data sources |\n| Markdown formatting | `formatters/markdown.py`, `badges.py`, `toc.py` | Inline in generators | Low — todocs is simpler |\n| Config | `Code2DocsConfig` dataclass | Minimal (CLI args only) | None |\n| CLI | `click`-based, single `generate` + sub-modes | `click`-based, 9 commands | None — distinct UIs |\n\n**Assessment**:\n- **Phase 1 (shared core)**: Low priority. The overlap is limited to dependency scanning and some formatting utilities. The packages use different analysis backends (`code2llm` vs todocs' own AST-based pipeline). Extracting a shared core would add coupling for minimal dedup (~100 LOC).\n- **Phase 2 (clean code2docs)**: Independent of todocs. The `OrgReadmeGenerator`/`OrgReadmeAdapter` in code2docs can be deprecated in favor of todocs, but this is a code2docs-side change.\n- **Recommendation**: Keep packages independent. Phase 1 is not cost-effective. Phase 2 can proceed as a code2docs cleanup task (remove org-level code, point users to todocs for multi-project docs).\n\n## Complementarity Matrix (post-refactoring)\n\n| Function | code2docs-core | code2docs | todocs |\n|----------|---------------|-----------|--------|\n| Project metadata extraction | ✅ | — | — |\n| MarkdownFormatter | ✅ | — | — |\n| LLM Helper | ✅ | — | — |\n| code2llm bridge | ✅ | — | — |\n| Single-project README | — | ✅ | — |\n| API reference | — | ✅ | — |\n| Module/architecture docs | — | ✅ | — |\n| Sync/Watch | — | ✅ | — |\n| Multi-project discovery | — | — | ✅ |\n| Multi-project analysis | — | — | ✅ |\n| Organization README | — | — | ✅ |\n| Project cards (WP) | — | — | ✅ |\n| Status reports | — | — | ✅ |\n| Comparative tables | — | — | ✅ |\n\n## Impact Estimates\n\n| Metric | Before | After |\n|--------|--------|-------|\n| CC̄ code2docs | 4.2 | ~3.0 |\n| Methods CC>15 | 10 | 0 |\n| Dependency cycles | 1 | 0 |\n| Duplicated logic | ~200 LOC | 0 |\n| Packages | 1 (monolith) | 2 (code2docs + todocs) — shared core not justified |\n", "is_subdir": false}, {"name": "calls.mmd", "rel_path": "calls.mmd", "path": "calls.mmd", "size": "8.9KB", "icon": "📈", "type": "mermaid", "type_name": "Mermaid", "content": "flowchart LR\n    subgraph examples__api_surface_deep\n        examples__api_surface_deep__analyze_public_symbols[&quot;analyze_public_symbols&quot;]\n        examples__api_surface_deep__print_section[&quot;print_section&quot;]\n        examples__api_surface_deep__main[&quot;main&quot;]\n        examples__api_surface_deep__analyze_rest_endpoints[&quot;analyze_rest_endpoints&quot;]\n        examples__api_surface_deep__analyze_symbol_sources[&quot;analyze_symbol_sources&quot;]\n        examples__api_surface_deep__analyze_cli_commands[&quot;analyze_cli_commands&quot;]\n        examples__api_surface_deep__analyze_entry_points[&quot;analyze_entry_points&quot;]\n    end\n    subgraph examples__article_sections_demo\n        examples__article_sections_demo__main[&quot;main&quot;]\n    end\n    subgraph examples__custom_analysis\n        examples__custom_analysis___analyze_makefile[&quot;_analyze_makefile&quot;]\n        examples__custom_analysis__main[&quot;main&quot;]\n        examples__custom_analysis___print_section_header[&quot;_print_section_header&quot;]\n        examples__custom_analysis___analyze_code_metrics[&quot;_analyze_code_metrics&quot;]\n        examples__custom_analysis___analyze_api_surface[&quot;_analyze_api_surface&quot;]\n        examples__custom_analysis___analyze_toon_files[&quot;_analyze_toon_files&quot;]\n        examples__custom_analysis___analyze_import_graph[&quot;_analyze_import_graph&quot;]\n        examples__custom_analysis___analyze_docker[&quot;_analyze_docker&quot;]\n    end\n    subgraph examples__organization_health_report\n        examples__organization_health_report__print_health_summary[&quot;print_health_summary&quot;]\n        examples__organization_health_report__main[&quot;main&quot;]\n        examples__organization_health_report__analyze_maturity_distribution[&quot;analyze_maturity_distribution&quot;]\n    end\n    subgraph examples__scan_org\n        examples__scan_org__main[&quot;main&quot;]\n    end\n    subgraph examples__scan_single\n        examples__scan_single__main[&quot;main&quot;]\n    end\n    subgraph todocs__cli\n        todocs__cli__index[&quot;index&quot;]\n        todocs__cli___generate_without_rich[&quot;_generate_without_rich&quot;]\n        todocs__cli__compare[&quot;compare&quot;]\n        todocs__cli__inspect[&quot;inspect&quot;]\n        todocs__cli__export_cmd[&quot;export_cmd&quot;]\n        todocs__cli___discover_and_show_progress[&quot;_discover_and_show_progress&quot;]\n        todocs__cli___scan_with_progress[&quot;_scan_with_progress&quot;]\n        todocs__cli___print_project_summary[&quot;_print_project_summary&quot;]\n        todocs__cli__status[&quot;status&quot;]\n        todocs__cli__cards[&quot;cards&quot;]\n        todocs__cli___generate_articles_with_progress[&quot;_generate_articles_with_progre&quot;]\n        todocs__cli___generate_with_rich[&quot;_generate_with_rich&quot;]\n        todocs__cli__health[&quot;health&quot;]\n        todocs__cli__readme[&quot;readme&quot;]\n    end\n    subgraph todocs__core\n        todocs__core___run_analysis_phase[&quot;_run_analysis_phase&quot;]\n        todocs__core__scan_organization[&quot;scan_organization&quot;]\n        todocs__core__scan_project[&quot;scan_project&quot;]\n        todocs__core___discover_projects[&quot;_discover_projects&quot;]\n        todocs__core___categorize[&quot;_categorize&quot;]\n        todocs__core___generate_summary[&quot;_generate_summary&quot;]\n        todocs__core___run_extraction_phase[&quot;_run_extraction_phase&quot;]\n        todocs__core__generate_articles[&quot;generate_articles&quot;]\n        todocs__core___run_scoring_phase[&quot;_run_scoring_phase&quot;]\n    end\n    subgraph todocs__generators\n        todocs__generators__article_sections__render_metrics[&quot;render_metrics&quot;]\n        todocs__generators__article_sections__render_overview[&quot;render_overview&quot;]\n        todocs__generators__article_sections__render_dependencies[&quot;render_dependencies&quot;]\n        todocs__generators__article_sections__render_tech_stack[&quot;render_tech_stack&quot;]\n        todocs__generators__article_sections__render_architecture[&quot;render_architecture&quot;]\n        todocs__generators__article_sections__render_frontmatter[&quot;render_frontmatter&quot;]\n        todocs__generators__article_sections__render_maturity[&quot;render_maturity&quot;]\n        todocs__generators__article_sections__render_api_surface[&quot;render_api_surface&quot;]\n        todocs__generators__article__ArticleGenerator___render_article[&quot;_render_article&quot;]\n        todocs__generators__article_sections__render_header[&quot;render_header&quot;]\n    end\n    subgraph todocs__utils\n        todocs__utils__create_scan_filter[&quot;create_scan_filter&quot;]\n    end\n    examples__article_sections_demo__main --&gt; todocs__core__scan_project\n    examples__scan_single__main --&gt; todocs__core__scan_project\n    examples__scan_org__main --&gt; todocs__core__scan_organization\n    examples__scan_org__main --&gt; todocs__core__generate_articles\n    examples__organization_health_report__print_health_summary --&gt; examples__organization_health_report__analyze_maturity_distribution\n    examples__organization_health_report__main --&gt; todocs__core__scan_organization\n    examples__custom_analysis___analyze_import_graph --&gt; examples__custom_analysis___print_section_header\n    examples__custom_analysis___analyze_api_surface --&gt; examples__custom_analysis___print_section_header\n    examples__custom_analysis___analyze_toon_files --&gt; examples__custom_analysis___print_section_header\n    examples__custom_analysis___analyze_makefile --&gt; examples__custom_analysis___print_section_header\n    examples__custom_analysis___analyze_docker --&gt; examples__custom_analysis___print_section_header\n    examples__custom_analysis___analyze_code_metrics --&gt; examples__custom_analysis___print_section_header\n    examples__custom_analysis__main --&gt; examples__custom_analysis___analyze_import_graph\n    examples__custom_analysis__main --&gt; examples__custom_analysis___analyze_api_surface\n    examples__custom_analysis__main --&gt; examples__custom_analysis___analyze_toon_files\n    examples__custom_analysis__main --&gt; examples__custom_analysis___analyze_makefile\n    examples__custom_analysis__main --&gt; examples__custom_analysis___analyze_docker\n    examples__custom_analysis__main --&gt; examples__custom_analysis___analyze_code_metrics\n    examples__api_surface_deep__analyze_entry_points --&gt; examples__api_surface_deep__print_section\n    examples__api_surface_deep__analyze_cli_commands --&gt; examples__api_surface_deep__print_section\n    examples__api_surface_deep__analyze_public_symbols --&gt; examples__api_surface_deep__print_section\n    examples__api_surface_deep__analyze_rest_endpoints --&gt; examples__api_surface_deep__print_section\n    examples__api_surface_deep__analyze_symbol_sources --&gt; examples__api_surface_deep__print_section\n    examples__api_surface_deep__main --&gt; examples__api_surface_deep__analyze_entry_points\n    todocs__cli___generate_with_rich --&gt; todocs__cli___discover_and_show_progress\n    todocs__cli___generate_with_rich --&gt; todocs__cli___print_project_summary\n    todocs__cli___generate_with_rich --&gt; todocs__cli___scan_with_progress\n    todocs__cli___generate_with_rich --&gt; todocs__cli___generate_articles_with_progress\n    todocs__cli___discover_and_show_progress --&gt; todocs__core___discover_projects\n    todocs__cli___scan_with_progress --&gt; todocs__core__scan_organization\n    todocs__cli___generate_articles_with_progress --&gt; todocs__core__generate_articles\n    todocs__cli___generate_without_rich --&gt; todocs__core___discover_projects\n    todocs__cli___generate_without_rich --&gt; todocs__core__generate_articles\n    todocs__cli__inspect --&gt; todocs__core__scan_project\n    todocs__cli__compare --&gt; todocs__core__scan_organization\n    todocs__cli__health --&gt; todocs__core__scan_organization\n    todocs__cli__readme --&gt; todocs__core__scan_organization\n    todocs__cli__status --&gt; todocs__core__scan_organization\n    todocs__cli__cards --&gt; todocs__core__scan_organization\n    todocs__cli__index --&gt; todocs__core__scan_organization\n    todocs__cli__export_cmd --&gt; todocs__core__scan_organization\n    todocs__generators__article__ArticleGenerator___render_article --&gt; todocs__generators__article_sections__render_frontmatter\n    todocs__generators__article__ArticleGenerator___render_article --&gt; todocs__generators__article_sections__render_header\n    todocs__generators__article__ArticleGenerator___render_article --&gt; todocs__generators__article_sections__render_overview\n    todocs__generators__article__ArticleGenerator___render_article --&gt; todocs__generators__article_sections__render_tech_stack\n    todocs__generators__article__ArticleGenerator___render_article --&gt; todocs__generators__article_sections__render_architecture\n    todocs__generators__article__ArticleGenerator___render_article --&gt; todocs__generators__article_sections__render_metrics\n    todocs__generators__article__ArticleGenerator___render_article --&gt; todocs__generators__article_sections__render_maturity\n    todocs__generators__article__ArticleGenerator___render_article --&gt; todocs__generators__article_sections__render_dependencies\n    todocs__generators__article__ArticleGenerator___render_article --&gt; todocs__generators__article_sections__render_api_surface\n    todocs__core___run_scoring_phase --&gt; todocs__core___categorize\n    todocs__core___run_scoring_phase --&gt; todocs__core___generate_summary\n    todocs__core__scan_project --&gt; todocs__utils__create_scan_filter\n    todocs__core__scan_project --&gt; todocs__core___run_extraction_phase\n    todocs__core__scan_project --&gt; todocs__core___run_analysis_phase\n    todocs__core__scan_project --&gt; todocs__core___run_scoring_phase\n", "is_subdir": false}, {"name": "compact_flow.mmd", "rel_path": "compact_flow.mmd", "path": "compact_flow.mmd", "size": "840B", "icon": "📈", "type": "mermaid", "type_name": "Mermaid", "content": "flowchart TD\n    examples__article_sections_demo[&quot;examples.article_sections_demo&lt;br/&gt;1 funcs&quot;]\n    examples__organization_health_report[&quot;examples.organization_health_report&lt;br/&gt;6 funcs&quot;]\n    examples__scan_org[&quot;examples.scan_org&lt;br/&gt;1 funcs&quot;]\n    examples__scan_single[&quot;examples.scan_single&lt;br/&gt;1 funcs&quot;]\n    todocs__cli[&quot;todocs.cli&lt;br/&gt;18 funcs&quot;]\n    todocs__core[&quot;todocs.core&lt;br/&gt;11 funcs&quot;]\n    todocs__generators[&quot;todocs.generators&lt;br/&gt;80 funcs&quot;]\n    todocs__utils[&quot;todocs.utils&lt;br/&gt;6 funcs&quot;]\n    examples__article_sections_demo ==&gt;|22| todocs__generators\n    todocs__cli ==&gt;|14| todocs__core\n    examples__scan_org --&gt;|2| todocs__core\n    examples__article_sections_demo --&gt;|1| todocs__core\n    examples__scan_single --&gt;|1| todocs__core\n    examples__organization_health_report --&gt;|1| todocs__core\n    todocs__core --&gt;|1| todocs__utils\n", "is_subdir": false}, {"name": "flow.mmd", "rel_path": "flow.mmd", "path": "flow.mmd", "size": "3.0KB", "icon": "📈", "type": "mermaid", "type_name": "Mermaid", "content": "flowchart TD\n\n    %% Entry points (blue)\n    classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff\n\n    subgraph CLI\n        todocs__cli___detect_org_from_git[&quot;_detect_org_from_git&quot;]\n        todocs__cli__main[&quot;main&quot;]\n        todocs__cli___generate_with_rich[&quot;_generate_with_rich&quot;]\n        todocs__cli__generate[&quot;generate&quot;]\n        todocs__cli___discover_and_show_progress[&quot;_discover_and_show_progress&quot;]\n        todocs__cli___scan_with_progress[&quot;_scan_with_progress&quot;]\n        todocs__cli___print_project_summary[&quot;_print_project_summary&quot;]\n        todocs__cli___generate_articles_with_progress[&quot;_generate_articles_with_progre&quot;]\n        todocs__cli___generate_without_rich[&quot;_generate_without_rich&quot;]\n        todocs__cli___write_json_report[&quot;_write_json_report&quot;]\n        todocs__cli__inspect[&quot;inspect&quot;]\n        todocs__cli__compare[&quot;compare&quot;]\n        todocs__cli__health[&quot;health&quot;]\n        todocs__cli__readme[&quot;readme&quot;]\n        todocs__cli__status[&quot;status&quot;]\n        ...[&quot;+3 more&quot;]\n    end\n\n    subgraph Core\n        todocs__extractors__makefile_parser__MakefileParser__parse[&quot;parse&quot;]\n        todocs__extractors__makefile_parser__MakefileParser___parse_makefile[&quot;_parse_makefile&quot;]\n        todocs__extractors__makefile_parser__MakefileParser___collect_phony_targets[&quot;_collect_phony_targets&quot;]\n        todocs__extractors__makefile_parser__MakefileParser___parse_target_line[&quot;_parse_target_line&quot;]\n        todocs__extractors__makefile_parser__MakefileParser___extract_help_text[&quot;_extract_help_text&quot;]\n        todocs__extractors__makefile_parser__MakefileParser___collect_commands[&quot;_collect_commands&quot;]\n        todocs__extractors__makefile_parser__MakefileParser___parse_taskfile[&quot;_parse_taskfile&quot;]\n        todocs__extractors__makefile_parser__MakefileParser__get_target_names[&quot;get_target_names&quot;]\n        todocs__extractors__toon_parser__ToonParser__find_toon_files[&quot;find_toon_files&quot;]\n        todocs__extractors__toon_parser__ToonParser__parse_all[&quot;parse_all&quot;]\n        todocs__extractors__toon_parser__ToonParser__parse_map[&quot;parse_map&quot;]\n        todocs__extractors__toon_parser__ToonParser___parse_map_header[&quot;_parse_map_header&quot;]\n        todocs__extractors__toon_parser__ToonParser___parse_modules_section[&quot;_parse_modules_section&quot;]\n        todocs__extractors__toon_parser__ToonParser___parse_details_section[&quot;_parse_details_section&quot;]\n        todocs__extractors__toon_parser__ToonParser___parse_class_line[&quot;_parse_class_line&quot;]\n        ...[&quot;+178 more&quot;]\n    end\n\n    class todocs__extractors__makefile_parser__MakefileParser__parse,todocs__extractors__makefile_parser__MakefileParser___parse_makefile,todocs__extractors__makefile_parser__MakefileParser___collect_phony_targets,todocs__extractors__makefile_parser__MakefileParser___parse_target_line,todocs__extractors__makefile_parser__MakefileParser___extract_help_text,todocs__extractors__makefile_parser__MakefileParser___collect_commands,todocs__extractors__makefile_parser__MakefileParser___parse_taskfile,todocs__extractors__makefile_parser__MakefileParser__get_target_names,todocs__cli___detect_org_from_git,todocs__cli__main entry\n", "is_subdir": false}, {"name": "prompt.txt", "rel_path": "prompt.txt", "path": "prompt.txt", "size": "2.9KB", "icon": "📄", "type": "text", "type_name": "Text", "content": "You are an AI assistant helping me understand and improve a codebase.\nUse the attached/generated files as the authoritative context.\nYour goal is to refactor the project based on these files, not just summarize it.\n\nwe are in project path: .\n\nFiles for analysis:\n\nNote: project/validation.toon.yaml and project/duplication.toon.yaml are generated by external tools (vallm and redup)\n- project/analysis.toon.yaml  (Health diagnostics - complexity metrics, god modules, coupling issues, refactoring priorities) [3KB]\n- project/map.toon.yaml  (Structural map - files, sizes, imports, exports, signatures, project header) [11KB]\n- project/evolution.toon.yaml  (Refactoring queue - ranked actions by impact/effort, risks, metrics targets, history) [1KB]\n- project/project.toon.yaml  (Compact project overview - generated from project.yaml data) [2KB]\n- project/context.md  (LLM narrative - architecture summary and project context) [31KB]\n- project/README.md  (Generated documentation - overview and usage guide) [9KB]\n\nTask:\n- Treat this prompt as a refactoring brief: identify the highest-priority changes and prepare concrete edits.\n- Use the file set to decide whether the first pass should focus on correctness, duplication, complexity reduction, or architecture cleanup.\n- If you can safely implement the refactor, do it; otherwise give an exact file-by-file change plan and test plan.\n- Use analysis.toon.yaml to locate high-CC functions and god modules that should be split first.\n- Keep module boundaries intact and update imports/exports according to map.toon.yaml.\n- Use evolution.toon.yaml as the execution backlog and work from the top-ranked items.\n- Keep project.toon.yaml aligned with the refactored architecture.\n\nPriority Order:\nP1 — Split or simplify the highest-CC / god modules identified in analysis.toon.yaml.\nP1 — Preserve module boundaries and update imports/exports according to map.toon.yaml.\nP2 — Keep the compact project overview in project.toon.yaml aligned with the refactor.\nP2 — Execute the highest-impact items from evolution.toon.yaml in order of benefit/risk.\n\nFocus Areas for Analysis:\n1. **Code Health Analysis** - Review complexity metrics, god modules, coupling issues from analysis.toon.yaml\n2. **Structural Map** - Use map.toon.yaml to inspect imports, exports, signatures, and the project header\n3. **Refactoring Priorities** - Examine ranked refactoring actions and risk assessment from evolution.toon.yaml\n4. **Project Overview** - Review the compact project overview from project.toon.yaml\n\nAnalysis Strategy:\n- Start with analysis.toon.yaml for health metrics, then map.toon.yaml for structure and signatures\n- Review evolution.toon.yaml for action priorities and next steps\n- Compare the compact project overview in project.toon.yaml with the main analysis files\n\nConstraints:\n- Prefer minimal, incremental changes.\n- Maintain full backward compatibility.\n- Base recommendations on concrete metrics from the provided files.\n- If uncertain, ask clarifying questions.\n", "is_subdir": false}, {"name": "analysis.toon.yaml", "rel_path": "analysis.toon.yaml", "path": "analysis.toon.yaml", "size": "3.0KB", "icon": "⚙️", "type": "yaml", "type_name": "YAML", "content": "# code2llm | 32f 5547L | python:31,shell:1 | 2026-04-13\n# CC̄=4.4 | critical:0/279 | dups:0 | cycles:0\n\nHEALTH[1]:\n  🟡 CC    main CC=25 (limit:15)\n\nREFACTOR[1]:\n  1. split 1 high-CC methods  (CC&gt;15)\n\nPIPELINES[219]:\n  [1] Src [main]: main → scan_project → create_scan_filter\n      PURITY: 100% pure\n  [2] Src [main]: main → scan_project → create_scan_filter\n      PURITY: 100% pure\n  [3] Src [main]: main → scan_organization → scan_project → create_scan_filter\n      PURITY: 100% pure\n  [4] Src [main]: main → scan_organization → scan_project → create_scan_filter\n      PURITY: 100% pure\n  [5] Src [main]: main → _analyze_import_graph → _print_section_header\n      PURITY: 100% pure\n\nLAYERS:\n  todocs/                         CC̄=4.4    ←in:0  →out:0\n  │ !! cli                        503L  0C   18m  CC=7      ←0\n  │ comparison                 482L  1C   23m  CC=14     ←0\n  │ article_sections           460L  0C   18m  CC=12     ←2\n  │ core                       407L  5C   11m  CC=11     ←5\n  │ toon_parser                343L  1C   17m  CC=11     ←0\n  │ api_surface                290L  1C   13m  CC=13     ←0\n  │ code_metrics               265L  1C   15m  CC=10     ←0\n  │ import_graph               237L  1C   13m  CC=9      ←0\n  │ structure                  234L  1C   12m  CC=7      ←0\n  │ metadata                   211L  1C    9m  CC=10     ←0\n  │ status_report_gen          204L  1C   14m  CC=11     ←0\n  │ docker_parser              174L  1C    6m  CC=13     ←0\n  │ html                       164L  1C    5m  CC=12     ←0\n  │ makefile_parser            153L  1C    9m  CC=10     ←0\n  │ readme_parser              153L  1C    9m  CC=8      ←0\n  │ __init__                   150L  1C    6m  CC=8      ←1\n  │ table_formatter            145L  1C    7m  CC=8      ←0\n  │ article                    145L  1C    5m  CC=13     ←0\n  │ project_card_gen           135L  1C   11m  CC=5      ←0\n  │ dependencies               133L  1C   10m  CC=8      ←0\n  │ org_index_gen              118L  1C    9m  CC=6      ←0\n  │ json                       104L  1C    6m  CC=14     ←0\n  │ changelog_parser           103L  1C    5m  CC=9      ←0\n  │ maturity                   103L  1C    2m  CC=14     ←0\n  │ markdown                    81L  1C    2m  CC=8      ←0\n  │ __init__                    10L  0C    0m  CC=0.0    ←0\n  │ __init__                     1L  0C    0m  CC=0.0    ←0\n  │ __init__                     1L  0C    0m  CC=0.0    ←0\n  │ __init__                     1L  0C    0m  CC=0.0    ←0\n  │ __init__                     1L  0C    0m  CC=0.0    ←0\n  │ __init__                     1L  0C    0m  CC=0.0    ←0\n  │\n  ./                              CC̄=0.0    ←in:0  →out:0\n  │ project.sh                  35L  0C    0m  CC=0.0    ←0\n  │\n\nCOUPLING: no cross-package imports detected\n\nEXTERNAL:\n  validation: run `vallm batch .` → validation.toon\n  duplication: run `redup scan .` → duplication.toon\n", "is_subdir": false}, {"name": "duplication.toon.yaml", "rel_path": "duplication.toon.yaml", "path": "duplication.toon.yaml", "size": "3.8KB", "icon": "⚙️", "type": "yaml", "type_name": "YAML", "content": "# redup/duplication | 7 groups | 41f 6388L | 2026-04-13\n\nSUMMARY:\n  files_scanned: 41\n  total_lines:   6388\n  dup_groups:    7\n  dup_fragments: 23\n  saved_lines:   87\n  scan_ms:       4790\n\nDUPLICATES[7] (ranked by impact):\n  [79f7deb8ba6b4623]   EXAC  __init__  L=4 N=7 saved=24 sim=1.00\n      todocs/generators/article.py:33-36  (__init__)\n      todocs/generators/comparison.py:16-19  (__init__)\n      todocs/generators/org_index_gen.py:16-19  (__init__)\n      todocs/generators/project_card_gen.py:16-19  (__init__)\n      todocs/generators/status_report_gen.py:32-35  (__init__)\n      todocs/outputs/html.py:17-20  (__init__)\n      todocs/outputs/json.py:17-20  (__init__)\n  [b8be7dadb09b7aec]   EXAC  _should_skip  L=5 N=4 saved=15 sim=1.00\n      todocs/analyzers/api_surface.py:43-47  (_should_skip)\n      todocs/analyzers/code_metrics.py:41-45  (_should_skip)\n      todocs/analyzers/import_graph.py:24-28  (_should_skip)\n      todocs/analyzers/structure.py:97-101  (_should_skip)\n  [b4541c910e42c23b]   STRU  health  L=14 N=2 saved=14 sim=1.00\n      todocs/cli.py:322-335  (health)\n      todocs/cli.py:383-396  (status)\n  [0268d57159098ba6]   STRU  _footer  L=6 N=3 saved=12 sim=1.00\n      todocs/generators/comparison.py:477-482  (_footer)\n      todocs/generators/org_index_gen.py:113-118  (_footer)\n      todocs/generators/status_report_gen.py:199-204  (_footer)\n  [94efd6d0e3c09b5b]   STRU  _frontmatter  L=11 N=2 saved=11 sim=1.00\n      todocs/generators/org_index_gen.py:41-51  (_frontmatter)\n      todocs/generators/status_report_gen.py:61-71  (_frontmatter)\n  [2e47812ae45bc5f6]   EXAC  __init__  L=3 N=3 saved=6 sim=1.00\n      todocs/analyzers/api_surface.py:19-21  (__init__)\n      todocs/analyzers/import_graph.py:20-22  (__init__)\n      todocs/analyzers/structure.py:93-95  (__init__)\n  [71f2e414249618ab]   EXAC  generate  L=5 N=2 saved=5 sim=1.00\n      todocs/generators/org_index_gen.py:21-25  (generate)\n      todocs/generators/status_report_gen.py:37-41  (generate)\n\nREFACTOR[7] (ranked by priority):\n  [1] ○ extract_function   → todocs/utils/__init__.py\n      WHY: 7 occurrences of 4-line block across 7 files — saves 24 lines\n      FILES: todocs/generators/article.py, todocs/generators/comparison.py, todocs/generators/org_index_gen.py, todocs/generators/project_card_gen.py, todocs/generators/status_report_gen.py +2 more\n  [2] ○ extract_function   → todocs/analyzers/utils/_should_skip.py\n      WHY: 4 occurrences of 5-line block across 4 files — saves 15 lines\n      FILES: todocs/analyzers/api_surface.py, todocs/analyzers/code_metrics.py, todocs/analyzers/import_graph.py, todocs/analyzers/structure.py\n  [3] ○ extract_function   → todocs/utils/health.py\n      WHY: 2 occurrences of 14-line block across 1 files — saves 14 lines\n      FILES: todocs/cli.py\n  [4] ○ extract_function   → todocs/generators/utils/_footer.py\n      WHY: 3 occurrences of 6-line block across 3 files — saves 12 lines\n      FILES: todocs/generators/comparison.py, todocs/generators/org_index_gen.py, todocs/generators/status_report_gen.py\n  [5] ○ extract_function   → todocs/generators/utils/_frontmatter.py\n      WHY: 2 occurrences of 11-line block across 2 files — saves 11 lines\n      FILES: todocs/generators/org_index_gen.py, todocs/generators/status_report_gen.py\n  [6] ○ extract_function   → todocs/analyzers/utils/__init__.py\n      WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines\n      FILES: todocs/analyzers/api_surface.py, todocs/analyzers/import_graph.py, todocs/analyzers/structure.py\n  [7] ○ extract_function   → todocs/generators/utils/generate.py\n      WHY: 2 occurrences of 5-line block across 2 files — saves 5 lines\n      FILES: todocs/generators/org_index_gen.py, todocs/generators/status_report_gen.py\n\nMETRICS-TARGET:\n  dup_groups:  7 → 0\n  saved_lines: 87 lines recoverable\n", "is_subdir": false}, {"name": "evolution.toon.yaml", "rel_path": "evolution.toon.yaml", "path": "evolution.toon.yaml", "size": "1.5KB", "icon": "⚙️", "type": "yaml", "type_name": "YAML", "content": "# code2llm/evolution | 255 func | 25f | 2026-04-13\n\nNEXT[1] (ranked by impact):\n  [1] !! SPLIT           todocs/cli.py\n      WHY: 503L, 0 classes, max CC=7\n      EFFORT: ~4h  IMPACT: 3521\n\n\nRISKS[1]:\n  ⚠ Splitting todocs/cli.py may break 18 import paths\n\nMETRICS-TARGET:\n  CC̄:          4.4 → ≤3.1\n  max-CC:      14 → ≤7\n  god-modules: 1 → 0\n  high-CC(≥15): 0 → ≤0\n  hub-types:   0 → ≤0\n\nPATTERNS (language parser shared logic):\n  _extract_declarations() in base.py — unified extraction for:\n    - TypeScript: interfaces, types, classes, functions, arrow funcs\n    - PHP: namespaces, traits, classes, functions, includes\n    - Ruby: modules, classes, methods, requires\n    - C++: classes, structs, functions, #includes\n    - C#: classes, interfaces, methods, usings\n    - Java: classes, interfaces, methods, imports\n    - Go: packages, functions, structs\n    - Rust: modules, functions, traits, use statements\n\n  Shared regex patterns per language:\n    - import: language-specific import/require/using patterns\n    - class: class/struct/trait declarations with inheritance\n    - function: function/method signatures with visibility\n    - brace_tracking: for C-family languages ({ })\n    - end_keyword_tracking: for Ruby (module/class/def...end)\n\n  Benefits:\n    - Consistent extraction logic across all languages\n    - Reduced code duplication (~70% reduction in parser LOC)\n    - Easier maintenance: fix once, apply everywhere\n    - Standardized FunctionInfo/ClassInfo models\n\nHISTORY:\n  prev CC̄=4.4 → now CC̄=4.4\n", "is_subdir": false}, {"name": "map.toon.yaml", "rel_path": "map.toon.yaml", "path": "map.toon.yaml", "size": "11.8KB", "icon": "⚙️", "type": "yaml", "type_name": "YAML", "content": "# todocs | 32f 5547L | shell:1,python:31 | 2026-04-13\n# stats: 255 func | 0 cls | 32 mod | CC̄=4.4 | critical:0 | cycles:0\n# alerts[5]: fan-out DockerParser._parse_dockerfile=16; fan-out MarkdownOutput.write_all=16; fan-out export_cmd=16; fan-out scan_organization=16; fan-out ArticleGenerator._render_article=15\n# hotspots[5]: export_cmd fan=16; DockerParser._parse_dockerfile fan=16; MarkdownOutput.write_all fan=16; scan_organization fan=16; ArticleGenerator._render_article fan=15\n# evolution: CC̄ 4.4→4.4 (flat 0.0)\n# Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods\nM[32]:\n  project.sh,35\n  todocs/__init__.py,10\n  todocs/analyzers/__init__.py,1\n  todocs/analyzers/api_surface.py,290\n  todocs/analyzers/code_metrics.py,265\n  todocs/analyzers/dependencies.py,133\n  todocs/analyzers/import_graph.py,237\n  todocs/analyzers/maturity.py,103\n  todocs/analyzers/structure.py,234\n  todocs/cli.py,503\n  todocs/core.py,407\n  todocs/extractors/__init__.py,1\n  todocs/extractors/changelog_parser.py,103\n  todocs/extractors/docker_parser.py,174\n  todocs/extractors/makefile_parser.py,153\n  todocs/extractors/metadata.py,211\n  todocs/extractors/readme_parser.py,153\n  todocs/extractors/toon_parser.py,343\n  todocs/formatters/__init__.py,1\n  todocs/formatters/table_formatter.py,145\n  todocs/generators/__init__.py,1\n  todocs/generators/article.py,145\n  todocs/generators/article_sections.py,460\n  todocs/generators/comparison.py,482\n  todocs/generators/org_index_gen.py,118\n  todocs/generators/project_card_gen.py,135\n  todocs/generators/status_report_gen.py,204\n  todocs/outputs/__init__.py,1\n  todocs/outputs/html.py,164\n  todocs/outputs/json.py,104\n  todocs/outputs/markdown.py,81\n  todocs/utils/__init__.py,150\nD:\n  todocs/outputs/json.py:\n    e: JSONOutput\n    JSONOutput: __init__(2),write(2),render(1),_meta(1),_summary(1),_project_entry(0)  # Write project profiles as structured JSON for APIs and dashb...\n  todocs/generators/comparison.py:\n    e: ComparisonGenerator\n    ComparisonGenerator: __init__(2),generate_comparison(3),generate_category_articles(2),generate_health_report(2),_render_comparison(2),_size_comparison(1),_maturity_leaderboard(1),_complexity_comparison(1),_tech_stack_overview(1),_dependency_overlap(1),_render_category(2),_render_health_report(1),_health_executive_summary(1),_health_grade_distribution(1),_missing_features(0),_health_projects_needing_attention(1),_health_top_performers(1),generate_readme_list(3),_render_readme_list(2),_readme_summary_table(1),_project_features(0),_readme_project_section(1),_footer(0)  # Generate comparative analysis articles across projects...\n  todocs/analyzers/maturity.py:\n    e: MaturityScorer\n    MaturityScorer: __init__(2),score(0)  # Compute a maturity score (0-100) for a project...\n  todocs/extractors/docker_parser.py:\n    e: DockerParser\n    DockerParser: __init__(1),parse(0),_find_dockerfiles(0),_find_compose_files(0),_parse_dockerfile(1),_parse_compose(1)  # Extract Docker infrastructure from Dockerfile and docker-com...\n  todocs/generators/article.py:\n    e: ArticleGenerator\n    ArticleGenerator: __init__(2),generate(2),generate_index(2),_render_article(1),_render_index(1)  # Generate markdown articles for WordPress from analyzed proje...\n  todocs/analyzers/api_surface.py:\n    e: APISurfaceAnalyzer\n    APISurfaceAnalyzer: __init__(2),analyze(0),_should_skip(1),_detect_entry_points(0),_detect_cli_commands(0),_decorator_name(1),_scan_public_symbols(0),_collect_target_files(0),_extract_from_file(3),_extract_class(4),_extract_function(4),_extract_all(1),_detect_rest_endpoints(0)  # Detect public API surface of a project...\n  todocs/outputs/html.py:\n    e: HTMLOutput\n    HTMLOutput: __init__(2),write(2),render(1),_render_row(1),_render_card(1)  # Write project profiles as a standalone HTML report...\n  todocs/generators/article_sections.py:\n    e: render_frontmatter,render_header,render_overview,render_tech_stack,render_architecture,render_metrics,render_maturity,render_dependencies,_render_entry_points,_render_cli_commands,_render_rest_endpoints,_render_public_classes,render_api_surface,render_build_targets,render_docker,render_changelog,render_usage,render_footer\n    render_frontmatter(p;org_name;generated_at)\n    render_header(p;org_url)\n    render_overview(p;org_name)\n    render_tech_stack(p)\n    render_architecture(p)\n    render_metrics(p)\n    render_maturity(p)\n    render_dependencies(p)\n    _render_entry_points(entry_pts)\n    _render_cli_commands(cli_cmds)\n    _render_rest_endpoints(endpoints)\n    _render_public_classes(pub_classes)\n    render_api_surface(p)\n    render_build_targets(p)\n    render_docker(p)\n    render_changelog(p)\n    render_usage(p)\n    render_footer(generated_at)\n  todocs/extractors/toon_parser.py:\n    e: ToonParser\n    ToonParser: __init__(1),find_toon_files(0),parse_all(0),parse_map(1),_parse_map_header(1),_parse_modules_section(1),_parse_details_section(1),_parse_class_line(2),_parse_function_line(2),parse_analysis(1),_parse_analysis_header(1),_parse_health_section(1),_parse_refactor_section(1),_parse_layers_section(1),parse_flow(1),parse_functions(1),_read(1)  # Parse .toon files into structured data...\n  todocs/generators/status_report_gen.py:\n    e: StatusReportGenerator\n    StatusReportGenerator: __init__(2),generate(2),render(1),_frontmatter(1),_header(1),_kpi_dashboard(1),_grade_breakdown(1),_language_distribution(1),_truncated_names(1),_quality_gaps(1),_largest_projects(1),_recent_activity(1),_recommendations(1),_footer(0)  # Generate a comprehensive organization status report...\n  todocs/core.py:\n    e: TechStack,CodeStats,ProjectMetadata,MaturityProfile,ProjectProfile,_run_extraction_phase,_run_analysis_phase,_run_scoring_phase,scan_project,_discover_projects,scan_organization,generate_articles,_categorize,_generate_summary\n    TechStack:  # Detected technology stack...\n    CodeStats:  # Aggregated code statistics...\n    ProjectMetadata:  # Extracted project metadata...\n    MaturityProfile:  # Project maturity assessment...\n    ProjectProfile: to_dict(0),to_json(1)  # Complete project profile for article generation...\n    _run_extraction_phase(project_path;profile)\n    _run_analysis_phase(project_path;profile;scan_filter)\n    _run_scoring_phase(project_path;profile)\n    scan_project(project_path;max_depth)\n    _discover_projects(root_path;exclude)\n    scan_organization(root_path;exclude;max_depth;progress_callback)\n    generate_articles(profiles;output_dir;org_name;org_url;include_comparison;include_categories;include_health)\n    _categorize(profile)\n    _generate_summary(profile)\n  todocs/extractors/makefile_parser.py:\n    e: MakefileParser\n    MakefileParser: __init__(1),parse(0),_parse_makefile(1),_collect_phony_targets(1),_parse_target_line(4),_extract_help_text(3),_collect_commands(2),_parse_taskfile(1),get_target_names(0)  # Extract targets and structure from Makefile or Taskfile.yml...\n  todocs/analyzers/code_metrics.py:\n    e: CodeMetricsAnalyzer\n    CodeMetricsAnalyzer: __init__(2),_should_skip(1),_is_test(1),_scan(0),_count_lines(1),analyze(0),_collect_complexity_data(0),_collect_radon_metrics(5),_collect_ast_fallback(2),_ast_complexity(1),_extract_module_docstring(0),_extract_imports(0),_parse_module_ast(1),_extract_module_info(1),get_key_modules(1)  # Analyze code metrics: lines, complexity, maintainability...\n  todocs/extractors/metadata.py:\n    e: MetadataExtractor\n    MetadataExtractor: __init__(1),extract(0),_merge(2),_from_pyproject(0),_from_setup_cfg(0),_from_setup_py(0),_extract_setup_kwargs(1),_from_package_json(0),_extract_license(1)  # Extract structured metadata from project config files...\n  todocs/extractors/changelog_parser.py:\n    e: ChangelogParser\n    ChangelogParser: __init__(1),parse(1),_find_changelog(0),_parse_entries(2),_summarize_entry(2)  # Extract structured entries from CHANGELOG.md...\n  todocs/analyzers/import_graph.py:\n    e: ImportGraphAnalyzer\n    ImportGraphAnalyzer: __init__(2),_should_skip(1),_iter_py_files(0),_module_name(1),_collect_modules(0),_build_import_edges(2),build_graph(0),_parse_file_imports(2),_resolve_relative_import(2),_build_fan_metrics(0),_detect_internal_packages(0),_detect_cycles(1),get_hub_modules(1)  # Analyze import relationships between project modules...\n  todocs/extractors/readme_parser.py:\n    e: ReadmeParser\n    ReadmeParser: __init__(1),parse(0),_find_readme(0),_parse_sections(1),_extract_description(1),_extract_preamble(1),_extract_post_h1(1),_extract_heading_sections(1),get_first_paragraph(0)  # Extract structured sections from a README.md file...\n  todocs/outputs/markdown.py:\n    e: MarkdownOutput\n    MarkdownOutput: __init__(2),write_all(7)  # Write project profiles as markdown files (WordPress-ready)...\n  todocs/formatters/table_formatter.py:\n    e: TableFormatter\n    TableFormatter: format_comparison(5),format_matrix(2),format_ranking(5),_default_columns(-1),_default_features(-1),_sort_profiles(2),_render_table(1)  # Generate markdown comparison tables from project profiles...\n  todocs/utils/__init__.py:\n    e: GitignoreParser,create_scan_filter\n    GitignoreParser: __init__(2),_load_gitignore(0),_parse_patterns(1),_match_pattern(3),is_ignored(2)  # Parse and match .gitignore patterns...\n    create_scan_filter(project_path;max_depth;extra_excludes)\n  todocs/analyzers/dependencies.py:\n    e: DependencyAnalyzer\n    DependencyAnalyzer: __init__(1),_load_pyproject(0),_parse_dep_name(1),_deduplicate(0),_deps_from_requirements(1),_deps_from_package_json(1),_pyproject_runtime_deps(1),_pyproject_dev_deps(1),get_runtime_deps(0),get_dev_deps(0)  # Extract project dependencies without executing anything...\n  todocs/cli.py:\n    e: _detect_org_from_git,main,_generate_with_rich,generate,_discover_and_show_progress,_scan_with_progress,_print_project_summary,_generate_articles_with_progress,_generate_without_rich,_write_json_report,inspect,compare,health,readme,status,cards,index,export_cmd\n    _detect_org_from_git(root_dir)\n    main()\n    _generate_with_rich(root;out;exclude;org_name;org_url)\n    generate(root_dir;output_dir;org_name;org_url;exclude;json_report;verbose)\n    _discover_and_show_progress(root;exclude;console)\n    _scan_with_progress(root;exclude;console;project_dirs)\n    _print_project_summary(console;profiles)\n    _generate_articles_with_progress(profiles;out;org_name;org_url;console)\n    _generate_without_rich(root;out;exclude;org_name;org_url)\n    _write_json_report(profiles;json_report;console;has_rich)\n    inspect(project_dir;output;fmt)\n    compare(root_dir;output_path;org_name;exclude)\n    health(root_dir;output_path;org_name;exclude)\n    readme(root_dir;output_path;org_name;exclude;title;verbose)\n    status(root_dir;output_path;org_name;exclude)\n    cards(root_dir;output_dir;org_name;exclude)\n    index(root_dir;output_path;org_name;exclude)\n    export_cmd(root_dir;output_path;fmt;org_name;exclude)\n  todocs/analyzers/structure.py:\n    e: StructureAnalyzer\n    StructureAnalyzer: __init__(2),_should_skip(1),_iter_files(0),analyze(0),detect_tech_stack(0),_detect_languages(0),_detect_build_tools(0),_detect_test_frameworks(0),_detect_ci_cd(0),_detect_containers(0),_detect_frameworks(0),_read_deps_text(0)  # Analyze project directory structure...\n  todocs/generators/org_index_gen.py:\n    e: OrgIndexGenerator\n    OrgIndexGenerator: __init__(2),generate(2),render(1),_frontmatter(1),_header(1),_quick_stats(1),_category_sections(1),_alphabetical_index(1),_footer(0)  # Generate an index.md catalog page for all projects in an org...\n  todocs/generators/project_card_gen.py:\n    e: ProjectCardGenerator\n    ProjectCardGenerator: __init__(2),generate(2),generate_all(2),render_card(1),_frontmatter(1),_badge_line(1),_description(1),_stats_table(1),_features_line(0),_deps_line(0),_footer(0)  # Generate a compact project card suitable for WordPress embed...\n  project.sh:\n  todocs/__init__.py:\n  todocs/extractors/__init__.py:\n  todocs/formatters/__init__.py:\n  todocs/outputs/__init__.py:\n  todocs/generators/__init__.py:\n  todocs/analyzers/__init__.py:\n", "is_subdir": false}, {"name": "project.toon.yaml", "rel_path": "project.toon.yaml", "path": "project.toon.yaml", "size": "2.6KB", "icon": "⚙️", "type": "yaml", "type_name": "YAML", "content": "# todocs | 255 func | 25f | 8065L | python | 2026-04-13\n\nHEALTH:\n  CC̄=4.4  critical=24 (limit:10)  dup=0  cycles=0\n\nALERTS[20]:\n  !!  high_fan_out     export_cmd = 16 (limit:10)\n  !!  high_fan_out     DockerParser._parse_dockerfile = 16 (limit:10)\n  !!  high_fan_out     MarkdownOutput.write_all = 16 (limit:10)\n  !!  high_fan_out     scan_organization = 16 (limit:10)\n  !!  high_fan_out     ArticleGenerator._render_article = 15 (limit:10)\n  !   high_fan_out     readme = 14 (limit:10)\n  !   high_fan_out     DockerParser._parse_compose = 14 (limit:10)\n  !   high_fan_out     _run_extraction_phase = 14 (limit:10)\n  !   high_fan_out     inspect = 13 (limit:10)\n  !   high_fan_out     compare = 13 (limit:10)\n\nMODULES[32] (top by size):\n  M[todocs/cli.py] 503L C:0 F:18 CC↑7 D:0 (python)\n  M[todocs/generators/comparison.py] 482L C:1 F:23 CC↑14 D:0 (python)\n  M[todocs/generators/article_sections.py] 460L C:0 F:18 CC↑12 D:2 (python)\n  M[todocs/core.py] 407L C:5 F:11 CC↑11 D:5 (python)\n  M[todocs/extractors/toon_parser.py] 343L C:1 F:17 CC↑11 D:0 (python)\n  M[todocs/analyzers/api_surface.py] 290L C:1 F:13 CC↑13 D:0 (python)\n  M[todocs/analyzers/code_metrics.py] 265L C:1 F:15 CC↑10 D:0 (python)\n  M[todocs/analyzers/import_graph.py] 237L C:1 F:13 CC↑9 D:0 (python)\n  M[todocs/analyzers/structure.py] 234L C:1 F:12 CC↑7 D:0 (python)\n  M[todocs/extractors/metadata.py] 211L C:1 F:9 CC↑10 D:0 (python)\n  M[todocs/generators/status_report_gen.py] 204L C:1 F:14 CC↑11 D:0 (python)\n  M[todocs/extractors/docker_parser.py] 174L C:1 F:6 CC↑13 D:0 (python)\n  M[todocs/outputs/html.py] 164L C:1 F:5 CC↑12 D:0 (python)\n  M[todocs/extractors/makefile_parser.py] 153L C:1 F:9 CC↑10 D:0 (python)\n  M[todocs/extractors/readme_parser.py] 153L C:1 F:9 CC↑8 D:0 (python)\n  LANGS: python:31/shell:1\n\nHOTSPOTS[10]:\n  ★ export_cmd fan=16  // Export with 16 outputs\n  ★ DockerParser._parse_dockerfile fan=16  // Extract FROM images, EXPOSE ports, ENTRYPOINT from Dockerfile.\n  ★ MarkdownOutput.write_all fan=16  // Write all markdown outputs. Returns list of written paths.\n  ★ scan_organization fan=16  // Scan all projects under root_path and return profiles.\n\nArgs:\n    root_path: Roo\n  ★ ArticleGenerator._render_article fan=15  // Render complete article by combining all sections.\n\nREFACTOR[4]:\n  [1] H/H Split god module todocs/cli.py (503L, 0 classes)\n  [2] M/M Reduce export_cmd fan-out (currently 16)\n  [3] M/M Reduce DockerParser._parse_dockerfile fan-out (currently 16)\n  [4] M/M Reduce MarkdownOutput.write_all fan-out (currently 16)\n\nEVOLUTION:\n  2026-04-13 CC̄=4.4 crit=24 8065L // Automated analysis\n", "is_subdir": false}, {"name": "validation.toon.yaml", "rel_path": "validation.toon.yaml", "path": "validation.toon.yaml", "size": "2.2KB", "icon": "⚙️", "type": "yaml", "type_name": "YAML", "content": "# vallm batch | 89f | 48✓ 3⚠ 9✗ | 2026-04-13\n\nSUMMARY:\n  scanned: 89  passed: 48 (53.9%)  warnings: 3  errors: 9  unsupported: 32\n\nWARNINGS[3]{path,score}:\n  tests/test_integration.py,0.96\n    issues[2]{rule,severity,message,line}:\n      complexity.cyclomatic,warning,test_full_pipeline_python has cyclomatic complexity 38 (max: 15),164\n      complexity.cyclomatic,warning,test_organization_scan has cyclomatic complexity 16 (max: 15),245\n  examples/scan_single.py,0.97\n    issues[2]{rule,severity,message,line}:\n      complexity.cyclomatic,warning,main has cyclomatic complexity 25 (max: 15),19\n      complexity.lizard_cc,warning,main: CC=16 exceeds limit 15,19\n  todocs/generators/article_sections.py,0.98\n    issues[1]{rule,severity,message,line}:\n      complexity.maintainability,warning,Low maintainability index: 14.4 (threshold: 20),\n\nERRORS[9]{path,score}:\n  todocs/project/analysis.yaml,0.00\n    issues[1]{rule,severity,message,line}:\n      syntax.tree_sitter,error,tree-sitter found 1 parse error(s) in yaml,\n  tests/conftest.py,0.57\n    issues[1]{rule,severity,message,line}:\n      python.import.resolvable,error,Module 'pytest' not found,3\n  tests/test_analyzers.py,0.89\n    issues[1]{rule,severity,message,line}:\n      python.import.resolvable,error,Module 'pytest' not found,3\n  tests/test_extractors.py,0.91\n    issues[1]{rule,severity,message,line}:\n      python.import.resolvable,error,Module 'pytest' not found,3\n  tests/test_new_cli.py,0.91\n    issues[1]{rule,severity,message,line}:\n      python.import.resolvable,error,Module 'pytest' not found,4\n  tests/test_new_generators.py,0.93\n    issues[1]{rule,severity,message,line}:\n      python.import.resolvable,error,Module 'pytest' not found,3\n  tests/test_cli_e2e.py,0.94\n    issues[1]{rule,severity,message,line}:\n      python.import.resolvable,error,Module 'pytest' not found,11\n  tests/test_formatters_outputs.py,0.95\n    issues[1]{rule,severity,message,line}:\n      python.import.resolvable,error,Module 'pytest' not found,4\n  tests/test_todocs.py,0.95\n    issues[1]{rule,severity,message,line}:\n      python.import.resolvable,error,Module 'pytest' not found,5\n\nUNSUPPORTED[3]{bucket,count}:\n  *.md,18\n  *.txt,2\n  other,12\n", "is_subdir": false}];
+        let currentFile = null;
+
+        function renderFileList(filter = '') {
+            const list = document.getElementById('fileList');
+            const filtered = files.filter(f => 
+                f.name.toLowerCase().includes(filter.toLowerCase()) ||
+                f.path.toLowerCase().includes(filter.toLowerCase())
+            );
+            
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="empty-state">No files found</div>';
+                return;
+            }
+            
+            // Group by type
+            const groups = {};
+            for (const file of filtered) {
+                const type = file.type_name;
+                if (!groups[type]) groups[type] = [];
+                groups[type].push(file);
+            }
+            
+            let html = '';
+            for (const [typeName, groupFiles] of Object.entries(groups)) {
+                html += `
+                    <div class="file-group">
+                        <div class="file-group-title">${typeName} Files (${groupFiles.length})</div>
+                        ${groupFiles.map(f => `
+                            <div class="file-item ${currentFile?.name === f.name ? 'active' : ''}" 
+                                 onclick="selectFile('${f.name}')">
+                                <span class="file-icon">${f.icon}</span>
+                                <div class="file-info">
+                                    <div class="file-name">${f.name}</div>
+                                    <div class="file-meta">${f.path}</div>
+                                </div>
+                                <span class="file-size">${f.size}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            list.innerHTML = html;
+        }
+
+        function selectFile(name) {
+            const file = files.find(f => f.name === name);
+            if (!file) return;
+            
+            currentFile = file;
+            
+            document.getElementById('contentIcon').textContent = file.icon;
+            document.getElementById('contentTitle').textContent = file.name;
+            
+            // Actions
+            const actions = document.getElementById('contentActions');
+            actions.innerHTML = `
+                <a href="${file.rel_path}" download class="btn">⬇ Download</a>
+                <a href="${file.rel_path}" target="_blank" class="btn btn-primary">↗ Open Raw</a>
+            `;
+            
+            // Content
+            const body = document.getElementById('contentBody');
+            if (file.type === 'markdown') {
+                // Render markdown as HTML using marked.js
+                body.innerHTML = `<div class="markdown-content">${marked.parse(file.content)}</div>`;
+            } else if (file.type === 'html') {
+                // For HTML files, show in iframe for safety
+                body.innerHTML = `<iframe src="${file.rel_path}" style="width:100%;height:100%;border:none;border-radius:0.5rem;"></iframe>`;
+            } else if (file.type === 'image') {
+                // For images, display the actual image
+                body.innerHTML = `<div class="image-preview"><img src="${file.rel_path}" alt="${file.name}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:0.5rem;"></div>`;
+            } else if (file.type === 'mermaid') {
+                // Render mermaid diagram
+                const diagramId = 'mermaid-diagram-' + Date.now();
+                body.innerHTML = `<div class="mermaid-content"><pre class="mermaid" id="${diagramId}">${file.content}</pre></div>`;
+                // Initialize mermaid on the new element
+                setTimeout(() => {
+                    mermaid.init(undefined, document.getElementById(diagramId));
+                }, 0);
+            } else if (file.type === 'json') {
+                try {
+                    const json = JSON.parse(file.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
+                    const formatted = JSON.stringify(json, null, 2);
+                    body.innerHTML = `<pre><code class="language-json">${formatted.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`;
+                    hljs.highlightElement(body.querySelector('code'));
+                } catch {
+                    body.innerHTML = `<pre>${file.content}</pre>`;
+                }
+            } else if (file.type === 'yaml') {
+                // YAML with syntax highlighting
+                body.innerHTML = `<pre><code class="language-yaml">${file.content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`;
+                hljs.highlightElement(body.querySelector('code'));
+            } else if (file.type === 'toon') {
+                // TOON with simple highlighting (use ini as closest match for key: value format)
+                body.innerHTML = `<pre><code class="language-ini">${file.content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`;
+                hljs.highlightElement(body.querySelector('code'));
+            } else if (file.type === 'code') {
+                // Code files with auto-highlighting
+                body.innerHTML = `<pre><code>${file.content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`;
+                hljs.highlightElement(body.querySelector('code'));
+            } else {
+                body.innerHTML = `<pre>${file.content}</pre>`;
+            }
+            
+            renderFileList(document.getElementById('search').value);
+        }
+
+        function filterFiles(query) {
+            renderFileList(query);
+        }
+
+        function renderStats() {
+            const stats = {};
+            for (const f of files) {
+                stats[f.type_name] = (stats[f.type_name] || 0) + 1;
+            }
+            
+            const grid = document.getElementById('statsGrid');
+            grid.innerHTML = Object.entries(stats)
+                .sort((a, b) => b[1] - a[1])
+                .map(([type, count]) => `
+                    <div class="stat-card">
+                        <div class="stat-value">${count}</div>
+                        <div class="stat-label">${type}</div>
+                    </div>
+                `).join('');
+        }
+
+        // Initialize
+        renderStats();
+        renderFileList();
+        
+        // Select first file if available
+        if (files.length > 0) {
+            selectFile(files[0].name);
+        }
+    </script>
+</body>
+</html>

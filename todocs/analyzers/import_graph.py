@@ -45,24 +45,13 @@ class ImportGraphAnalyzer:
             parts[-1] = parts[-1].replace(".py", "")
         return ".".join(parts)
 
-    def build_graph(self) -> Dict[str, Any]:
-        """Build the import dependency graph.
+    def _collect_modules(self) -> Dict[str, Dict[str, Any]]:
+        """Collect all Python modules with their metadata.
 
         Returns:
-            {
-                "nodes": [{"name": "module.name", "lines": N, "is_test": bool}],
-                "edges": [{"from": "a", "to": "b", "count": N}],
-                "internal_packages": ["pkg1", "pkg2"],
-                "external_imports": {"package": count},
-                "cycles": [["a", "b", "a"]],
-                "fan_in": {"module": N},   # how many modules import this
-                "fan_out": {"module": N},  # how many modules this imports
-            }
+            Dict mapping module name to module info dict.
         """
-        internal_pkgs = self._detect_internal_packages()
         modules: Dict[str, Dict[str, Any]] = {}
-        edges: Dict[Tuple[str, str], int] = defaultdict(int)
-        external_counts: Dict[str, int] = defaultdict(int)
 
         for pyf in self._iter_py_files():
             mod_name = self._module_name(pyf)
@@ -80,9 +69,34 @@ class ImportGraphAnalyzer:
                 "lines": lines,
                 "is_test": "test" in rel_str.lower(),
                 "path": rel_str,
+                "code": code,  # Store temporarily for import parsing
             }
 
-            imported = self._parse_file_imports(pyf, code)
+        return modules
+
+    def _build_import_edges(
+        self,
+        modules: Dict[str, Dict[str, Any]],
+        internal_pkgs: Set[str]
+    ) -> Tuple[Dict[Tuple[str, str], int], Dict[str, int]]:
+        """Build import edges from collected modules.
+
+        Args:
+            modules: Dict of module name to module info (with 'code' key).
+            internal_pkgs: Set of internal package names.
+
+        Returns:
+            Tuple of (edges dict, external_counts dict).
+        """
+        edges: Dict[Tuple[str, str], int] = defaultdict(int)
+        external_counts: Dict[str, int] = defaultdict(int)
+
+        for mod_name, mod_info in modules.items():
+            code = mod_info.pop("code", "")  # Remove code after parsing
+            imported = self._parse_file_imports(
+                self.root / mod_info["path"], code
+            )
+
             for imp in imported:
                 top_pkg = imp.split(".")[0]
                 if top_pkg in internal_pkgs:
@@ -90,6 +104,25 @@ class ImportGraphAnalyzer:
                 else:
                     external_counts[top_pkg] += 1
 
+        return edges, external_counts
+
+    def build_graph(self) -> Dict[str, Any]:
+        """Build the import dependency graph.
+
+        Returns:
+            {
+                "nodes": [{"name": "module.name", "lines": N, "is_test": bool}],
+                "edges": [{"from": "a", "to": "b", "count": N}],
+                "internal_packages": ["pkg1", "pkg2"],
+                "external_imports": {"package": count},
+                "cycles": [["a", "b", "a"]],
+                "fan_in": {"module": N},   # how many modules import this
+                "fan_out": {"module": N},  # how many modules this imports
+            }
+        """
+        internal_pkgs = self._detect_internal_packages()
+        modules = self._collect_modules()
+        edges, external_counts = self._build_import_edges(modules, internal_pkgs)
         edge_list, fan_in, fan_out = self._build_fan_metrics(edges)
         cycles = self._detect_cycles(edges)
 

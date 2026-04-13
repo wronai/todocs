@@ -1,16 +1,16 @@
 flowchart TD
-    examples_article_sections_demo["examples.article_sections_demo<br/>1 funcs"]
-    examples_organization_health_report["examples.organization_health_report<br/>6 funcs"]
-    examples_scan_org["examples.scan_org<br/>1 funcs"]
-    examples_scan_single["examples.scan_single<br/>1 funcs"]
-    todocs_cli["todocs.cli<br/>17 funcs"]
-    todocs_core["todocs.core<br/>8 funcs"]
-    todocs_generators["todocs.generators<br/>79 funcs"]
-    todocs_utils["todocs.utils<br/>6 funcs"]
-    examples_article_sections_demo ==>|22| todocs_generators
-    todocs_cli ==>|14| todocs_core
-    examples_scan_org -->|2| todocs_core
-    examples_article_sections_demo -->|1| todocs_core
-    examples_organization_health_report -->|1| todocs_core
-    examples_scan_single -->|1| todocs_core
-    todocs_core -->|1| todocs_utils
+    examples__article_sections_demo["examples.article_sections_demo<br/>1 funcs"]
+    examples__organization_health_report["examples.organization_health_report<br/>6 funcs"]
+    examples__scan_org["examples.scan_org<br/>1 funcs"]
+    examples__scan_single["examples.scan_single<br/>1 funcs"]
+    todocs__cli["todocs.cli<br/>18 funcs"]
+    todocs__core["todocs.core<br/>11 funcs"]
+    todocs__generators["todocs.generators<br/>80 funcs"]
+    todocs__utils["todocs.utils<br/>6 funcs"]
+    examples__article_sections_demo ==>|22| todocs__generators
+    todocs__cli ==>|14| todocs__core
+    examples__scan_org -->|2| todocs__core
+    examples__article_sections_demo -->|1| todocs__core
+    examples__scan_single -->|1| todocs__core
+    examples__organization_health_report -->|1| todocs__core
+    todocs__core -->|1| todocs__utils

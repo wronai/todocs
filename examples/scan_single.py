@@ -11,6 +11,10 @@ from pathlib import Path
 
 from todocs.core import scan_project
 
+CONSTANT_5 = 5
+CONSTANT_60 = 60
+
+
 
 def main():
     if len(sys.argv) < 2:
@@ -35,9 +39,9 @@ def main():
         stats = profile.code_stats
         mat = profile.maturity
 
-        print(f"\n{'='*60}")
+        print(f"\n{'='*CONSTANT_60}")
         print(f"  {meta.name or profile.name}  v{meta.version or '?'}")
-        print(f"{'='*60}")
+        print(f"{'='*CONSTANT_60}")
         print(f"  Description : {meta.description or '(none)'}")
         print(f"  Language    : {profile.tech_stack.primary_language}")
         print(f"  Category    : {profile.category}")
@@ -62,13 +66,13 @@ def main():
 
         if profile.key_modules:
             print(f"\n  Top Modules:")
-            for mod in profile.key_modules[:5]:
+            for mod in profile.key_modules[:CONSTANT_5]:
                 print(f"    {mod['path']:40s} {mod['lines']:>5}L  "
                       f"{len(mod.get('classes',[]))}C {len(mod.get('functions',[]))}F")
 
         if profile.makefile_targets:
             print(f"\n  Build Targets ({len(profile.makefile_targets)}):")
-            for t in profile.makefile_targets[:5]:
+            for t in profile.makefile_targets[:CONSTANT_5]:
                 desc = f" — {t['description']}" if t.get('description') else ""
                 print(f"    make {t['name']}{desc}")
 
@@ -78,11 +82,11 @@ def main():
             endpoints = api.get("rest_endpoints", [])
             if cli:
                 print(f"\n  CLI Commands ({len(cli)}):")
-                for cmd in cli[:5]:
+                for cmd in cli[:CONSTANT_5]:
                     print(f"    {cmd['name']}")
             if endpoints:
                 print(f"\n  REST Endpoints ({len(endpoints)}):")
-                for ep in endpoints[:5]:
+                for ep in endpoints[:CONSTANT_5]:
                     print(f"    {ep['method']} {ep['path']}")
 
         print(f"\n  Summary: {profile.summary}")

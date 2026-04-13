@@ -1,7 +1,6 @@
 """Shared test fixtures for todocs."""
 
 import pytest
-from pathlib import Path
 
 
 @pytest.fixture

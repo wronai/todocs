@@ -1,13 +1,16 @@
 """Tests for comparison generator, CLI, and integration tests."""
 
 import json
-import pytest
-from pathlib import Path
 from click.testing import CliRunner
 
 from todocs.core import scan_project, scan_organization, generate_articles
 from todocs.generators.comparison import ComparisonGenerator
 from todocs.cli import main
+
+CONSTANT_3 = 3
+PORT_4 = 4
+CONSTANT_6 = 6
+CONSTANT_50 = 50
 
 
 # ── ComparisonGenerator ─────────────────────────────────────
@@ -120,7 +123,7 @@ class TestCLI:
         assert out.is_dir()
         # Index + per-project articles + comparison + categories + health
         files = list(out.glob("*.md"))
-        assert len(files) >= 4  # at least index + 3 projects
+        assert len(files) >= PORT_4  # at least index + 3 projects
 
     def test_generate_with_json_report(self, multi_org, tmp_path):
         out = tmp_path / "articles"
@@ -231,7 +234,7 @@ class TestIntegration:
         profile = scan_project(empty_project)
 
         assert profile.name == "empty-proj"
-        assert profile.maturity.score < 50  # Low maturity for empty project
+        assert profile.maturity.score < CONSTANT_50  # Low maturity for empty project
         assert profile.code_stats.source_files == 0
 
         out = tmp_path / "articles"
@@ -243,7 +246,7 @@ class TestIntegration:
         """End-to-end: scan org with mixed Python/JS projects."""
         profiles = scan_organization(multi_org)
 
-        assert len(profiles) == 3
+        assert len(profiles) == CONSTANT_3
 
         names = {p.name for p in profiles}
         assert "tool-alpha" in names
@@ -260,7 +263,7 @@ class TestIntegration:
 
         # Should have: index + 3 projects + comparison + health + category articles
         md_files = list(out.glob("*.md"))
-        assert len(md_files) >= 6
+        assert len(md_files) >= CONSTANT_6
 
         # Index should list all projects
         index = (out / "_index.md").read_text()
@@ -315,7 +318,7 @@ class TestIntegration:
 
         # Extract frontmatter between --- markers
         parts = content.split("---")
-        assert len(parts) >= 3, "Should have YAML frontmatter"
+        assert len(parts) >= CONSTANT_3, "Should have YAML frontmatter"
 
         frontmatter = parts[1].strip()
         data = yaml.safe_load(frontmatter)

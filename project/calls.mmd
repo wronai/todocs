@@ -1,78 +1,85 @@
 flowchart LR
-    subgraph examples_api_surface_deep
-        examples__api_surface_deep__analyze_rest_endpoints["analyze_rest_endpoints"]
+    subgraph examples__api_surface_deep
         examples__api_surface_deep__analyze_public_symbols["analyze_public_symbols"]
-        examples__api_surface_deep__analyze_entry_points["analyze_entry_points"]
         examples__api_surface_deep__print_section["print_section"]
+        examples__api_surface_deep__main["main"]
+        examples__api_surface_deep__analyze_rest_endpoints["analyze_rest_endpoints"]
         examples__api_surface_deep__analyze_symbol_sources["analyze_symbol_sources"]
         examples__api_surface_deep__analyze_cli_commands["analyze_cli_commands"]
-        examples__api_surface_deep__main["main"]
+        examples__api_surface_deep__analyze_entry_points["analyze_entry_points"]
     end
-    subgraph examples_article_sections_demo
+    subgraph examples__article_sections_demo
         examples__article_sections_demo__main["main"]
     end
-    subgraph examples_custom_analysis
-        examples__custom_analysis___analyze_api_surface["_analyze_api_surface"]
-        examples__custom_analysis___analyze_toon_files["_analyze_toon_files"]
-        examples__custom_analysis___print_section_header["_print_section_header"]
-        examples__custom_analysis___analyze_code_metrics["_analyze_code_metrics"]
-        examples__custom_analysis___analyze_docker["_analyze_docker"]
+    subgraph examples__custom_analysis
         examples__custom_analysis___analyze_makefile["_analyze_makefile"]
         examples__custom_analysis__main["main"]
+        examples__custom_analysis___print_section_header["_print_section_header"]
+        examples__custom_analysis___analyze_code_metrics["_analyze_code_metrics"]
+        examples__custom_analysis___analyze_api_surface["_analyze_api_surface"]
+        examples__custom_analysis___analyze_toon_files["_analyze_toon_files"]
         examples__custom_analysis___analyze_import_graph["_analyze_import_graph"]
+        examples__custom_analysis___analyze_docker["_analyze_docker"]
     end
-    subgraph examples_organization_health_report
+    subgraph examples__organization_health_report
+        examples__organization_health_report__print_health_summary["print_health_summary"]
         examples__organization_health_report__main["main"]
-        examples__print_health_summary["print_health_summary"]
-        examples__analyze_maturity_distribution["analyze_maturity_distribution"]
+        examples__organization_health_report__analyze_maturity_distribution["analyze_maturity_distribution"]
     end
-    subgraph examples_scan_org
+    subgraph examples__scan_org
         examples__scan_org__main["main"]
     end
-    subgraph examples_scan_single
+    subgraph examples__scan_single
         examples__scan_single__main["main"]
     end
-    subgraph todocs_cli
-        todocs__cli___discover_and_show_progress["_discover_and_show_progress"]
+    subgraph todocs__cli
         todocs__cli__index["index"]
         todocs__cli___generate_without_rich["_generate_without_rich"]
-        todocs__cli__cards["cards"]
-        todocs__cli___scan_with_progress["_scan_with_progress"]
-        todocs__cli__inspect["inspect"]
-        todocs__cli__readme["readme"]
-        todocs__cli__health["health"]
-        todocs__cli___generate_articles_with_progress["_generate_articles_with_progre"]
-        todocs__cli__export_cmd["export_cmd"]
         todocs__cli__compare["compare"]
+        todocs__cli__inspect["inspect"]
+        todocs__cli__export_cmd["export_cmd"]
+        todocs__cli___discover_and_show_progress["_discover_and_show_progress"]
+        todocs__cli___scan_with_progress["_scan_with_progress"]
+        todocs__cli___print_project_summary["_print_project_summary"]
         todocs__cli__status["status"]
+        todocs__cli__cards["cards"]
+        todocs__cli___generate_articles_with_progress["_generate_articles_with_progre"]
+        todocs__cli___generate_with_rich["_generate_with_rich"]
+        todocs__cli__health["health"]
+        todocs__cli__readme["readme"]
     end
-    subgraph todocs_core
-        todocs__core__scan_project["scan_project"]
-        todocs__core__generate_articles["generate_articles"]
-        todocs__core___discover_projects["_discover_projects"]
+    subgraph todocs__core
+        todocs__core___run_analysis_phase["_run_analysis_phase"]
         todocs__core__scan_organization["scan_organization"]
+        todocs__core__scan_project["scan_project"]
+        todocs__core___discover_projects["_discover_projects"]
+        todocs__core___categorize["_categorize"]
+        todocs__core___generate_summary["_generate_summary"]
+        todocs__core___run_extraction_phase["_run_extraction_phase"]
+        todocs__core__generate_articles["generate_articles"]
+        todocs__core___run_scoring_phase["_run_scoring_phase"]
     end
-    subgraph todocs_generators
-        todocs__render_header["render_header"]
-        todocs__render_frontmatter["render_frontmatter"]
-        todocs__render_tech_stack["render_tech_stack"]
-        todocs__render_architecture["render_architecture"]
-        todocs__render_dependencies["render_dependencies"]
-        todocs__render_api_surface["render_api_surface"]
-        todocs__render_maturity["render_maturity"]
-        todocs___render_article["_render_article"]
-        todocs__render_overview["render_overview"]
-        todocs__render_metrics["render_metrics"]
+    subgraph todocs__generators
+        todocs__generators__article_sections__render_metrics["render_metrics"]
+        todocs__generators__article_sections__render_overview["render_overview"]
+        todocs__generators__article_sections__render_dependencies["render_dependencies"]
+        todocs__generators__article_sections__render_tech_stack["render_tech_stack"]
+        todocs__generators__article_sections__render_architecture["render_architecture"]
+        todocs__generators__article_sections__render_frontmatter["render_frontmatter"]
+        todocs__generators__article_sections__render_maturity["render_maturity"]
+        todocs__generators__article_sections__render_api_surface["render_api_surface"]
+        todocs__generators__article__ArticleGenerator___render_article["_render_article"]
+        todocs__generators__article_sections__render_header["render_header"]
     end
-    subgraph todocs_utils
+    subgraph todocs__utils
         todocs__utils__create_scan_filter["create_scan_filter"]
     end
     examples__article_sections_demo__main --> todocs__core__scan_project
-    examples__print_health_summary --> examples__analyze_maturity_distribution
-    examples__organization_health_report__main --> todocs__core__scan_organization
+    examples__scan_single__main --> todocs__core__scan_project
     examples__scan_org__main --> todocs__core__scan_organization
     examples__scan_org__main --> todocs__core__generate_articles
-    examples__scan_single__main --> todocs__core__scan_project
+    examples__organization_health_report__print_health_summary --> examples__organization_health_report__analyze_maturity_distribution
+    examples__organization_health_report__main --> todocs__core__scan_organization
     examples__custom_analysis___analyze_import_graph --> examples__custom_analysis___print_section_header
     examples__custom_analysis___analyze_api_surface --> examples__custom_analysis___print_section_header
     examples__custom_analysis___analyze_toon_files --> examples__custom_analysis___print_section_header
@@ -91,6 +98,10 @@ flowchart LR
     examples__api_surface_deep__analyze_rest_endpoints --> examples__api_surface_deep__print_section
     examples__api_surface_deep__analyze_symbol_sources --> examples__api_surface_deep__print_section
     examples__api_surface_deep__main --> examples__api_surface_deep__analyze_entry_points
+    todocs__cli___generate_with_rich --> todocs__cli___discover_and_show_progress
+    todocs__cli___generate_with_rich --> todocs__cli___print_project_summary
+    todocs__cli___generate_with_rich --> todocs__cli___scan_with_progress
+    todocs__cli___generate_with_rich --> todocs__cli___generate_articles_with_progress
     todocs__cli___discover_and_show_progress --> todocs__core___discover_projects
     todocs__cli___scan_with_progress --> todocs__core__scan_organization
     todocs__cli___generate_articles_with_progress --> todocs__core__generate_articles
@@ -104,13 +115,18 @@ flowchart LR
     todocs__cli__cards --> todocs__core__scan_organization
     todocs__cli__index --> todocs__core__scan_organization
     todocs__cli__export_cmd --> todocs__core__scan_organization
-    todocs___render_article --> todocs__render_frontmatter
-    todocs___render_article --> todocs__render_header
-    todocs___render_article --> todocs__render_overview
-    todocs___render_article --> todocs__render_tech_stack
-    todocs___render_article --> todocs__render_architecture
-    todocs___render_article --> todocs__render_metrics
-    todocs___render_article --> todocs__render_maturity
-    todocs___render_article --> todocs__render_dependencies
-    todocs___render_article --> todocs__render_api_surface
+    todocs__generators__article__ArticleGenerator___render_article --> todocs__generators__article_sections__render_frontmatter
+    todocs__generators__article__ArticleGenerator___render_article --> todocs__generators__article_sections__render_header
+    todocs__generators__article__ArticleGenerator___render_article --> todocs__generators__article_sections__render_overview
+    todocs__generators__article__ArticleGenerator___render_article --> todocs__generators__article_sections__render_tech_stack
+    todocs__generators__article__ArticleGenerator___render_article --> todocs__generators__article_sections__render_architecture
+    todocs__generators__article__ArticleGenerator___render_article --> todocs__generators__article_sections__render_metrics
+    todocs__generators__article__ArticleGenerator___render_article --> todocs__generators__article_sections__render_maturity
+    todocs__generators__article__ArticleGenerator___render_article --> todocs__generators__article_sections__render_dependencies
+    todocs__generators__article__ArticleGenerator___render_article --> todocs__generators__article_sections__render_api_surface
+    todocs__core___run_scoring_phase --> todocs__core___categorize
+    todocs__core___run_scoring_phase --> todocs__core___generate_summary
     todocs__core__scan_project --> todocs__utils__create_scan_filter
+    todocs__core__scan_project --> todocs__core___run_extraction_phase
+    todocs__core__scan_project --> todocs__core___run_analysis_phase
+    todocs__core__scan_project --> todocs__core___run_scoring_phase

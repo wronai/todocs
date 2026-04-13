@@ -1,0 +1,53 @@
+# todocs | 255 func | 25f | 8065L | python | 2026-04-13
+
+HEALTH:
+  CC̄=4.4  critical=24 (limit:10)  dup=0  cycles=0
+
+ALERTS[20]:
+  !!  high_fan_out     export_cmd = 16 (limit:10)
+  !!  high_fan_out     DockerParser._parse_dockerfile = 16 (limit:10)
+  !!  high_fan_out     MarkdownOutput.write_all = 16 (limit:10)
+  !!  high_fan_out     scan_organization = 16 (limit:10)
+  !!  high_fan_out     ArticleGenerator._render_article = 15 (limit:10)
+  !   high_fan_out     readme = 14 (limit:10)
+  !   high_fan_out     DockerParser._parse_compose = 14 (limit:10)
+  !   high_fan_out     _run_extraction_phase = 14 (limit:10)
+  !   high_fan_out     inspect = 13 (limit:10)
+  !   high_fan_out     compare = 13 (limit:10)
+
+MODULES[32] (top by size):
+  M[todocs/cli.py] 503L C:0 F:18 CC↑7 D:0 (python)
+  M[todocs/generators/comparison.py] 482L C:1 F:23 CC↑14 D:0 (python)
+  M[todocs/generators/article_sections.py] 460L C:0 F:18 CC↑12 D:2 (python)
+  M[todocs/core.py] 407L C:5 F:11 CC↑11 D:5 (python)
+  M[todocs/extractors/toon_parser.py] 343L C:1 F:17 CC↑11 D:0 (python)
+  M[todocs/analyzers/api_surface.py] 290L C:1 F:13 CC↑13 D:0 (python)
+  M[todocs/analyzers/code_metrics.py] 265L C:1 F:15 CC↑10 D:0 (python)
+  M[todocs/analyzers/import_graph.py] 237L C:1 F:13 CC↑9 D:0 (python)
+  M[todocs/analyzers/structure.py] 234L C:1 F:12 CC↑7 D:0 (python)
+  M[todocs/extractors/metadata.py] 211L C:1 F:9 CC↑10 D:0 (python)
+  M[todocs/generators/status_report_gen.py] 204L C:1 F:14 CC↑11 D:0 (python)
+  M[todocs/extractors/docker_parser.py] 174L C:1 F:6 CC↑13 D:0 (python)
+  M[todocs/outputs/html.py] 164L C:1 F:5 CC↑12 D:0 (python)
+  M[todocs/extractors/makefile_parser.py] 153L C:1 F:9 CC↑10 D:0 (python)
+  M[todocs/extractors/readme_parser.py] 153L C:1 F:9 CC↑8 D:0 (python)
+  LANGS: python:31/shell:1
+
+HOTSPOTS[10]:
+  ★ export_cmd fan=16  // Export with 16 outputs
+  ★ DockerParser._parse_dockerfile fan=16  // Extract FROM images, EXPOSE ports, ENTRYPOINT from Dockerfile.
+  ★ MarkdownOutput.write_all fan=16  // Write all markdown outputs. Returns list of written paths.
+  ★ scan_organization fan=16  // Scan all projects under root_path and return profiles.
+
+Args:
+    root_path: Roo
+  ★ ArticleGenerator._render_article fan=15  // Render complete article by combining all sections.
+
+REFACTOR[0]:
+  [✓] DONE Split god module todocs/cli.py → cli/ package (5 modules)
+  [✓] DONE scan_project fan-out (33→3 phases)
+  [✓] DONE ImportGraphAnalyzer.build_graph fan-out (21→3 methods)
+  [✓] DONE cli.py generate CC reduction (extracted _generate_with_rich)
+
+EVOLUTION:
+  2026-04-13 CC̄=4.4 crit=24 8065L // Automated analysis

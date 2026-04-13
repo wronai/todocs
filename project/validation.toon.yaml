@@ -1,0 +1,51 @@
+# vallm batch | 89f | 48✓ 3⚠ 9✗ | 2026-04-13
+
+SUMMARY:
+  scanned: 89  passed: 48 (53.9%)  warnings: 3  errors: 9  unsupported: 32
+
+WARNINGS[3]{path,score}:
+  tests/test_integration.py,0.96
+    issues[2]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,test_full_pipeline_python has cyclomatic complexity 38 (max: 15),164
+      complexity.cyclomatic,warning,test_organization_scan has cyclomatic complexity 16 (max: 15),245
+  examples/scan_single.py,0.97
+    issues[2]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,main has cyclomatic complexity 25 (max: 15),19
+      complexity.lizard_cc,warning,main: CC=16 exceeds limit 15,19
+  todocs/generators/article_sections.py,0.98
+    issues[1]{rule,severity,message,line}:
+      complexity.maintainability,warning,Low maintainability index: 14.4 (threshold: 20),
+
+ERRORS[9]{path,score}:
+  todocs/project/analysis.yaml,0.00
+    issues[1]{rule,severity,message,line}:
+      syntax.tree_sitter,error,tree-sitter found 1 parse error(s) in yaml,
+  tests/conftest.py,0.57
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,3
+  tests/test_analyzers.py,0.89
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,3
+  tests/test_extractors.py,0.91
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,3
+  tests/test_new_cli.py,0.91
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,4
+  tests/test_new_generators.py,0.93
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,3
+  tests/test_cli_e2e.py,0.94
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,11
+  tests/test_formatters_outputs.py,0.95
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,4
+  tests/test_todocs.py,0.95
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'pytest' not found,5
+
+UNSUPPORTED[3]{bucket,count}:
+  *.md,18
+  *.txt,2
+  other,12

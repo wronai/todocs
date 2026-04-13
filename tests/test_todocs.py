@@ -1,18 +1,16 @@
 """Tests for todocs core functionality."""
 
 import json
-from pathlib import Path
 
 import pytest
 
-from todocs.core import scan_project, scan_organization, generate_articles, ProjectProfile
+from todocs.core import scan_project, generate_articles
 from todocs.extractors.metadata import MetadataExtractor
 from todocs.extractors.readme_parser import ReadmeParser
 from todocs.extractors.changelog_parser import ChangelogParser
 from todocs.analyzers.structure import StructureAnalyzer
 from todocs.analyzers.code_metrics import CodeMetricsAnalyzer
 from todocs.analyzers.dependencies import DependencyAnalyzer
-from todocs.analyzers.maturity import MaturityScorer
 
 
 @pytest.fixture

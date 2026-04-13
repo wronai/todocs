@@ -6,7 +6,6 @@ they work end-to-end with real project structures.
 
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
