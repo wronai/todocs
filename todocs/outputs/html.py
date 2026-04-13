@@ -3,21 +3,17 @@
 from __future__ import annotations
 
 import html
-from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, List
+
+from todocs.generators.base import BaseGenerator
 
 if TYPE_CHECKING:
     from todocs.core import ProjectProfile
 
 
-class HTMLOutput:
+class HTMLOutput(BaseGenerator):
     """Write project profiles as a standalone HTML report."""
-
-    def __init__(self, org_name: str = "WronAI", org_url: str = "https://github.com/wronai"):
-        self.org_name = org_name
-        self.org_url = org_url
-        self.generated_at = datetime.now().strftime("%Y-%m-%d")
 
     def write(self, profiles: List["ProjectProfile"], output_path: Path) -> None:
         """Write a single HTML report covering all profiles."""

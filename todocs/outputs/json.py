@@ -3,21 +3,17 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List
+
+from todocs.generators.base import BaseGenerator
 
 if TYPE_CHECKING:
     from todocs.core import ProjectProfile
 
 
-class JSONOutput:
+class JSONOutput(BaseGenerator):
     """Write project profiles as structured JSON for APIs and dashboards."""
-
-    def __init__(self, org_name: str = "WronAI", org_url: str = "https://github.com/wronai"):
-        self.org_name = org_name
-        self.org_url = org_url
-        self.generated_at = datetime.now().strftime("%Y-%m-%d")
 
     def write(self, profiles: List["ProjectProfile"], output_path: Path) -> None:
         """Write the JSON report to a file."""

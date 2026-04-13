@@ -2,21 +2,17 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, List
+
+from .base import BaseGenerator
 
 if TYPE_CHECKING:
     from todocs.core import ProjectProfile
 
 
-class ProjectCardGenerator:
+class ProjectCardGenerator(BaseGenerator):
     """Generate a compact project card suitable for WordPress embedding."""
-
-    def __init__(self, org_name: str = "WronAI", org_url: str = "https://github.com/wronai"):
-        self.org_name = org_name
-        self.org_url = org_url
-        self.generated_at = datetime.now().strftime("%Y-%m-%d")
 
     def generate(self, profile: "ProjectProfile", output_path: Path) -> None:
         """Generate a single project card and write to file."""

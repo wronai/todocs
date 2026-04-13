@@ -7,6 +7,8 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List
 
+from .utils import should_skip
+
 _SKIP_DIRS = {
     "venv", ".venv", "env", "node_modules", "__pycache__", ".git",
     ".tox", ".mypy_cache", ".pytest_cache", "dist", "build", ".eggs",
@@ -41,10 +43,7 @@ class APISurfaceAnalyzer:
         return result
 
     def _should_skip(self, path: Path) -> bool:
-        for part in path.parts:
-            if part in _SKIP_DIRS or part.endswith(".egg-info"):
-                return True
-        return False
+        return should_skip(path, _SKIP_DIRS)
 
     def _detect_entry_points(self) -> Dict[str, str]:
         """Extract entry points from pyproject.toml."""

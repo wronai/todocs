@@ -8,6 +8,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from .utils import should_skip
+
 try:
     from radon.complexity import cc_visit, cc_rank
     from radon.metrics import mi_visit
@@ -39,10 +41,7 @@ class CodeMetricsAnalyzer:
         self._scanned = False
 
     def _should_skip(self, path: Path) -> bool:
-        for part in path.parts:
-            if part in _SKIP_DIRS or part.endswith(".egg-info"):
-                return True
-        return False
+        return should_skip(path, _SKIP_DIRS)
 
     def _is_test(self, path: Path) -> bool:
         rel = str(path.relative_to(self.root))
