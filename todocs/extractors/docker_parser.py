@@ -75,48 +75,72 @@ class DockerParser:
 
     def _parse_dockerfile(self, path: Path) -> Dict[str, Any]:
         """Extract FROM images, EXPOSE ports, ENTRYPOINT from Dockerfile."""
-        try:
-            text = path.read_text(errors="replace")
-        except Exception:
+        text = self._read_dockerfile(path)
+        if text is None:
             return {}
 
+        result = self._extract_from_images(text)
+        result["ports"] = self._extract_exposed_ports(text)
+        result["entrypoint"] = self._extract_entrypoint(text)
+        result["cmd"] = self._extract_cmd(text)
+        result["dockerfile"] = path.name
+
+        return result
+
+    def _read_dockerfile(self, path: Path) -> str | None:
+        """Read Dockerfile content, returning None on error."""
+        try:
+            return path.read_text(errors="replace")
+        except Exception:
+            return None
+
+    def _extract_from_images(self, text: str) -> Dict[str, List[str]]:
+        """Extract base images from FROM instructions."""
         images = []
-        ports = []
-        entrypoint = ""
-        cmd = ""
-
-        for line in text.splitlines():
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-
+        for line in self._iter_instructions(text):
             from_m = re.match(r"FROM\s+(\S+)", line, re.IGNORECASE)
             if from_m:
-                img = from_m.group(1)
-                # Strip --platform and AS alias
-                img = re.sub(r"--platform=\S+\s+", "", img)
-                images.append(img.split(" AS ")[0].split(" as ")[0].strip())
+                img = self._clean_image_name(from_m.group(1))
+                images.append(img)
+        return {"base_images": images}
 
+    def _clean_image_name(self, raw: str) -> str:
+        """Strip --platform flags and AS aliases from image name."""
+        cleaned = re.sub(r"--platform=\S+\s+", "", raw)
+        return cleaned.split(" AS ")[0].split(" as ")[0].strip()
+
+    def _extract_exposed_ports(self, text: str) -> List[str]:
+        """Extract exposed ports from EXPOSE instructions."""
+        ports = []
+        for line in self._iter_instructions(text):
             expose_m = re.match(r"EXPOSE\s+(.+)", line, re.IGNORECASE)
             if expose_m:
                 for port in expose_m.group(1).split():
-                    ports.append(port.split("/")[0])  # strip /tcp /udp
+                    ports.append(port.split("/")[0])
+        return ports
 
+    def _extract_entrypoint(self, text: str) -> str:
+        """Extract ENTRYPOINT command."""
+        for line in self._iter_instructions(text):
             entry_m = re.match(r"ENTRYPOINT\s+(.+)", line, re.IGNORECASE)
             if entry_m:
-                entrypoint = entry_m.group(1).strip()
+                return entry_m.group(1).strip()
+        return ""
 
+    def _extract_cmd(self, text: str) -> str:
+        """Extract CMD command."""
+        for line in self._iter_instructions(text):
             cmd_m = re.match(r"CMD\s+(.+)", line, re.IGNORECASE)
             if cmd_m:
-                cmd = cmd_m.group(1).strip()
+                return cmd_m.group(1).strip()
+        return ""
 
-        return {
-            "base_images": images,
-            "ports": ports,
-            "entrypoint": entrypoint,
-            "cmd": cmd,
-            "dockerfile": path.name,
-        }
+    def _iter_instructions(self, text: str):
+        """Yield non-empty, non-comment lines from Dockerfile."""
+        for line in text.splitlines():
+            line = line.strip()
+            if line and not line.startswith("#"):
+                yield line
 
     def _parse_compose(self, path: Path) -> Dict[str, Any]:
         """Extract services, ports, volumes from docker-compose.yml."""

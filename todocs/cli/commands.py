@@ -242,6 +242,20 @@ def index(root_dir: str, output_path: str, org_name: str, exclude: tuple):
     click.echo(f"Index written to {output_path} ({len(profiles)} projects)")
 
 
+def _write_html_export(profiles, output_path: Path, org_name: str) -> None:
+    """Write profiles as HTML report."""
+    from todocs.outputs.html import HTMLOutput
+    writer = HTMLOutput(org_name=org_name)
+    writer.write(profiles, output_path)
+
+
+def _write_json_export(profiles, output_path: Path, org_name: str) -> None:
+    """Write profiles as JSON report."""
+    from todocs.outputs.json import JSONOutput
+    writer = JSONOutput(org_name=org_name)
+    writer.write(profiles, output_path)
+
+
 @click.command(name="export")
 @click.argument("root_dir", type=click.Path(exists=True, file_okay=False))
 @click.option("-o", "--output", "output_path", required=True,
@@ -269,14 +283,7 @@ def export_cmd(root_dir: str, output_path: str, fmt: str, org_name: str, exclude
         raise SystemExit(1)
 
     out = Path(output_path)
-
-    if fmt == "html":
-        from todocs.outputs.html import HTMLOutput
-        writer = HTMLOutput(org_name=org_name)
-        writer.write(profiles, out)
-    elif fmt == "json":
-        from todocs.outputs.json import JSONOutput
-        writer = JSONOutput(org_name=org_name)
-        writer.write(profiles, out)
+    writer_fn = _write_html_export if fmt == "html" else _write_json_export
+    writer_fn(profiles, out, org_name)
 
     click.echo(f"{fmt.upper()} report written to {output_path} ({len(profiles)} projects)")
