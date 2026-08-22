@@ -15,7 +15,11 @@ from .utils import should_skip
 _LANG_EXTENSIONS = {
     ".py": "python",
     ".js": "javascript",
+    ".mjs": "javascript",
+    ".cjs": "javascript",
     ".ts": "typescript",
+    ".mts": "typescript",
+    ".cts": "typescript",
     ".jsx": "javascript",
     ".tsx": "typescript",
     ".rs": "rust",
@@ -115,18 +119,20 @@ class StructureAnalyzer:
         dirs = set()
         files_by_type: Dict[str, int] = Counter()
         total_files = 0
+        has_tests = False
 
         for p in self._iter_files():
             total_files += 1
             ext = p.suffix.lower()
             files_by_type[ext] += 1
             rel = p.relative_to(self.root)
+            if any(part in {"test", "tests", "spec"} for part in rel.parts[:-1]):
+                has_tests = True
             if len(rel.parts) > 1:
                 dirs.add(rel.parts[0])
 
         top_dirs = sorted(dirs)
         has_src = any(d in top_dirs for d in ["src", self.root.name])
-        has_tests = "tests" in top_dirs or "test" in top_dirs
         has_docs = "docs" in top_dirs or "doc" in top_dirs
         has_examples = "examples" in top_dirs or "example" in top_dirs
 

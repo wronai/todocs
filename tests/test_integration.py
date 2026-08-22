@@ -100,6 +100,47 @@ class TestCLI:
         assert data["name"] == "sample-project"
         assert data["metadata"]["version"] == "1.2.3"
 
+    def test_inspect_max_depth_reaches_nested_tests(self, tmp_path):
+        project = tmp_path / "nested-project"
+        nested_tests = project / "services" / "control" / "tests"
+        nested_tests.mkdir(parents=True)
+        (project / "README.md").write_text("# Nested project\n")
+        (project / "pyproject.toml").write_text(
+            '[project]\nname="nested-project"\nversion="0.1.0"\n'
+        )
+        (nested_tests / "test_nested.py").write_text(
+            "def test_nested():\n    assert True\n"
+        )
+        (nested_tests / "intent-contract.test.mjs").write_text(
+            'import test from "node:test";\n'
+            'test("intent contract", () => {});\n'
+        )
+
+        runner = CliRunner()
+        shallow = runner.invoke(main, ["inspect", str(project), "--format", "json"])
+        deep = runner.invoke(
+            main,
+            ["inspect", str(project), "--format", "json", "--max-depth", "4"],
+        )
+
+        assert shallow.exit_code == 0, shallow.output
+        assert deep.exit_code == 0, deep.output
+        shallow_profile = json.loads(shallow.output)
+        assert shallow_profile["code_stats"]["test_files"] == 0
+        assert shallow_profile["maturity"]["has_tests"] is False
+        deep_profile = json.loads(deep.output)
+        assert deep_profile["code_stats"]["test_files"] == 2
+        assert deep_profile["tech_stack"]["languages"]["javascript"] == 1
+        assert deep_profile["structure"]["has_tests"] is True
+        assert deep_profile["maturity"]["has_tests"] is True
+
+    def test_inspect_rejects_out_of_range_max_depth(self, sample_project):
+        runner = CliRunner()
+        result = runner.invoke(main, ["inspect", str(sample_project), "--max-depth", "0"])
+
+        assert result.exit_code == 2
+        assert "0 is not in the range 1<=x<=64" in result.output
+
     def test_inspect_markdown(self, sample_project):
         runner = CliRunner()
         result = runner.invoke(main, ["inspect", str(sample_project), "--format", "markdown"])
@@ -196,7 +237,7 @@ class TestIntegration:
 
         # Generate article and verify
         out = tmp_path / "articles"
-        paths = generate_articles([profile], out)
+        generate_articles([profile], out)
         article = (out / "sample-project.md").read_text()
 
         # Verify frontmatter
@@ -226,7 +267,7 @@ class TestIntegration:
         assert "jest" in profile.dev_dependencies
 
         out = tmp_path / "articles"
-        paths = generate_articles([profile], out)
+        generate_articles([profile], out)
         assert (out / "js-app.md").exists()
 
     def test_full_pipeline_empty(self, empty_project, tmp_path):
@@ -238,7 +279,7 @@ class TestIntegration:
         assert profile.code_stats.source_files == 0
 
         out = tmp_path / "articles"
-        paths = generate_articles([profile], out)
+        generate_articles([profile], out)
         article = (out / "empty-proj.md").read_text()
         assert "## Maturity Assessment" in article
 
@@ -259,7 +300,7 @@ class TestIntegration:
 
         # Generate all articles
         out = tmp_path / "articles"
-        paths = generate_articles(profiles, out)
+        generate_articles(profiles, out)
 
         # Should have: index + 3 projects + comparison + health + category articles
         md_files = list(out.glob("*.md"))
