@@ -217,4 +217,3 @@ mkdocs.yml
 # Environment / secrets
 .env
 .code2llm_cache/
-.github/
