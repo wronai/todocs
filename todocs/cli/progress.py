@@ -3,18 +3,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from .utils import HAS_RICH, CONSTANT_40, CONSTANT_70
 
 if HAS_RICH:
-    from rich.console import Console
     from rich.table import Table
     from rich.progress import Progress, SpinnerColumn, TextColumn
-
-if TYPE_CHECKING:
-    from rich.console import Console
-
 
 def discover_and_show_progress(root: Path, exclude: tuple, console) -> list:
     """Discover projects and show progress. Returns list of project directories."""
@@ -30,7 +24,7 @@ def discover_and_show_progress(root: Path, exclude: tuple, console) -> list:
     return project_dirs
 
 
-def scan_with_progress(root: Path, exclude: tuple, console, project_dirs: list) -> list:
+def scan_with_progress(root: Path, exclude: tuple, console, project_dirs: list, max_depth: int = 3) -> list:
     """Scan projects with real-time progress feedback."""
     from todocs.core import scan_organization
 
@@ -47,6 +41,7 @@ def scan_with_progress(root: Path, exclude: tuple, console, project_dirs: list) 
         profiles = scan_organization(
             root,
             exclude=list(exclude),
+            max_depth=max_depth,
             progress_callback=on_project_scanned
         )
         progress.update(task, completed=len(project_dirs))
@@ -105,7 +100,8 @@ def generate_with_rich(
     out: Path,
     exclude: tuple,
     org_name: str,
-    org_url: str
+    org_url: str,
+    max_depth: int = 3,
 ) -> list:
     """Generate articles with Rich progress UI."""
     from rich.console import Console
@@ -119,7 +115,7 @@ def generate_with_rich(
     # Scan projects
     if project_dirs:
         console.print()
-        profiles = scan_with_progress(root, exclude, console, project_dirs)
+        profiles = scan_with_progress(root, exclude, console, project_dirs, max_depth)
     else:
         profiles = []
 
@@ -136,7 +132,14 @@ def generate_with_rich(
     return profiles
 
 
-def generate_without_rich(root: Path, out: Path, exclude: tuple, org_name: str, org_url: str) -> list:
+def generate_without_rich(
+    root: Path,
+    out: Path,
+    exclude: tuple,
+    org_name: str,
+    org_url: str,
+    max_depth: int = 3,
+) -> list:
     """Generate articles without Rich library (plain output)."""
     from todocs.core import _discover_projects, scan_project, generate_articles
 
@@ -154,7 +157,7 @@ def generate_without_rich(root: Path, out: Path, exclude: tuple, org_name: str, 
     for i, proj_dir in enumerate(project_dirs, 1):
         print(f"  [{i}/{len(project_dirs)}] Analyzing {proj_dir.name}...", end=" ")
         try:
-            profile = scan_project(proj_dir)
+            profile = scan_project(proj_dir, max_depth=max_depth)
             profiles.append(profile)
             print(f"✓ ({profile.maturity.grade}, {profile.code_stats.source_lines:,} SLOC)")
         except Exception as e:

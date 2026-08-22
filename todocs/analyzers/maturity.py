@@ -28,7 +28,9 @@ class MaturityScorer:
         p = self.profile
         root = self.root
 
-        has_tests = (root / "tests").is_dir() or (root / "test").is_dir()
+        # Metrics already use the configured depth and ignore rules, so this
+        # remains accurate for monorepos with nested test suites.
+        has_tests = p.code_stats.test_files > 0
         has_ci = (root / ".github" / "workflows").is_dir() or (root / ".gitlab-ci.yml").exists()
         has_docs = (root / "docs").is_dir()
         has_changelog = (root / "CHANGELOG.md").exists() or (root / "changelog.md").exists()

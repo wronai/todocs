@@ -17,6 +17,15 @@ if HAS_RICH:
     from rich.console import Console
 
 
+MAX_DEPTH_OPTION = click.option(
+    "--max-depth",
+    type=click.IntRange(min=1, max=64),
+    default=3,
+    show_default=True,
+    help="Maximum path depth scanned inside each project",
+)
+
+
 @click.command()
 @click.argument("root_dir", type=click.Path(exists=True, file_okay=False))
 @click.option("-o", "--output", "output_dir", default="articles",
@@ -27,6 +36,7 @@ if HAS_RICH:
 @click.option("--json-report", type=click.Path(), default=None,
               help="Also write a JSON report of all profiles")
 @click.option("-v", "--verbose", is_flag=True, help="Verbose output")
+@MAX_DEPTH_OPTION
 def generate(
     root_dir: str,
     output_dir: str,
@@ -35,6 +45,7 @@ def generate(
     exclude: tuple,
     json_report: Optional[str],
     verbose: bool,
+    max_depth: int,
 ):
     """Scan projects and generate WordPress markdown articles.
 
@@ -44,11 +55,11 @@ def generate(
     out = Path(output_dir)
 
     if HAS_RICH:
-        profiles = generate_with_rich(root, out, exclude, org_name, org_url)
+        profiles = generate_with_rich(root, out, exclude, org_name, org_url, max_depth)
         console = Console()
     else:
         # Plain output without Rich
-        profiles = generate_without_rich(root, out, exclude, org_name, org_url)
+        profiles = generate_without_rich(root, out, exclude, org_name, org_url, max_depth)
         console = None
 
     # Optional JSON report
@@ -61,7 +72,8 @@ def generate(
               help="Output file (default: stdout)")
 @click.option("--format", "fmt", type=click.Choice(["markdown", "json"]), default="markdown",
               help="Output format")
-def inspect(project_dir: str, output: Optional[str], fmt: str):
+@MAX_DEPTH_OPTION
+def inspect(project_dir: str, output: Optional[str], fmt: str, max_depth: int):
     """Inspect a single project and show its profile.
 
     PROJECT_DIR is the path to the project directory.
@@ -69,7 +81,7 @@ def inspect(project_dir: str, output: Optional[str], fmt: str):
     from todocs.core import scan_project
 
     path = Path(project_dir).resolve()
-    profile = scan_project(path)
+    profile = scan_project(path, max_depth=max_depth)
 
     if fmt == "json":
         text = profile.to_json()
@@ -91,7 +103,8 @@ def inspect(project_dir: str, output: Optional[str], fmt: str):
               help="Output file path")
 @click.option("--org-name", default="WronAI", help="Organization name")
 @click.option("--exclude", multiple=True, help="Directory names to exclude")
-def compare(root_dir: str, output_path: str, org_name: str, exclude: tuple):
+@MAX_DEPTH_OPTION
+def compare(root_dir: str, output_path: str, org_name: str, exclude: tuple, max_depth: int):
     """Generate cross-project comparison report.
 
     ROOT_DIR is the directory containing project subdirectories.
@@ -100,7 +113,7 @@ def compare(root_dir: str, output_path: str, org_name: str, exclude: tuple):
     from todocs.generators.comparison import ComparisonGenerator
 
     root = Path(root_dir).resolve()
-    profiles = scan_organization(root, exclude=list(exclude))
+    profiles = scan_organization(root, exclude=list(exclude), max_depth=max_depth)
 
     if len(profiles) < 2:
         click.echo("Need at least 2 projects for comparison.", err=True)
@@ -117,7 +130,8 @@ def compare(root_dir: str, output_path: str, org_name: str, exclude: tuple):
               help="Output file path")
 @click.option("--org-name", default="WronAI", help="Organization name")
 @click.option("--exclude", multiple=True, help="Directory names to exclude")
-def health(root_dir: str, output_path: str, org_name: str, exclude: tuple):
+@MAX_DEPTH_OPTION
+def health(root_dir: str, output_path: str, org_name: str, exclude: tuple, max_depth: int):
     """Generate organization health report.
 
     ROOT_DIR is the directory containing project subdirectories.
@@ -126,7 +140,7 @@ def health(root_dir: str, output_path: str, org_name: str, exclude: tuple):
     from todocs.generators.comparison import ComparisonGenerator
 
     root = Path(root_dir).resolve()
-    profiles = scan_organization(root, exclude=list(exclude))
+    profiles = scan_organization(root, exclude=list(exclude), max_depth=max_depth)
 
     gen = ComparisonGenerator(org_name=org_name)
     gen.generate_health_report(profiles, Path(output_path))
@@ -141,7 +155,8 @@ def health(root_dir: str, output_path: str, org_name: str, exclude: tuple):
 @click.option("--exclude", multiple=True, help="Directory names to exclude")
 @click.option("--title", default="Project Portfolio", help="README title")
 @click.option("-v", "--verbose", is_flag=True, help="Verbose output")
-def readme(root_dir: str, output_path: str, org_name: str, exclude: tuple, title: str, verbose: bool):
+@MAX_DEPTH_OPTION
+def readme(root_dir: str, output_path: str, org_name: str, exclude: tuple, title: str, verbose: bool, max_depth: int):
     """Generate a single README.md with project list and 5-line descriptions.
 
     ROOT_DIR is the directory containing project subdirectories.
@@ -153,7 +168,7 @@ def readme(root_dir: str, output_path: str, org_name: str, exclude: tuple, title
     from todocs.generators.comparison import ComparisonGenerator
 
     root = Path(root_dir).resolve()
-    profiles = scan_organization(root, exclude=list(exclude))
+    profiles = scan_organization(root, exclude=list(exclude), max_depth=max_depth)
 
     if not profiles:
         click.echo("No projects found.", err=True)
@@ -178,7 +193,8 @@ def readme(root_dir: str, output_path: str, org_name: str, exclude: tuple, title
               help="Output file path")
 @click.option("--org-name", default="WronAI", help="Organization name")
 @click.option("--exclude", multiple=True, help="Directory names to exclude")
-def status(root_dir: str, output_path: str, org_name: str, exclude: tuple):
+@MAX_DEPTH_OPTION
+def status(root_dir: str, output_path: str, org_name: str, exclude: tuple, max_depth: int):
     """Generate organization status report with KPIs and recommendations.
 
     ROOT_DIR is the directory containing project subdirectories.
@@ -187,7 +203,7 @@ def status(root_dir: str, output_path: str, org_name: str, exclude: tuple):
     from todocs.generators.status_report_gen import StatusReportGenerator
 
     root = Path(root_dir).resolve()
-    profiles = scan_organization(root, exclude=list(exclude))
+    profiles = scan_organization(root, exclude=list(exclude), max_depth=max_depth)
 
     gen = StatusReportGenerator(org_name=org_name)
     gen.generate(profiles, Path(output_path))
@@ -200,7 +216,8 @@ def status(root_dir: str, output_path: str, org_name: str, exclude: tuple):
               help="Output directory for card files")
 @click.option("--org-name", default="WronAI", help="Organization name")
 @click.option("--exclude", multiple=True, help="Directory names to exclude")
-def cards(root_dir: str, output_dir: str, org_name: str, exclude: tuple):
+@MAX_DEPTH_OPTION
+def cards(root_dir: str, output_dir: str, org_name: str, exclude: tuple, max_depth: int):
     """Generate project cards (compact single-project summaries).
 
     ROOT_DIR is the directory containing project subdirectories.
@@ -209,7 +226,7 @@ def cards(root_dir: str, output_dir: str, org_name: str, exclude: tuple):
     from todocs.generators.project_card_gen import ProjectCardGenerator
 
     root = Path(root_dir).resolve()
-    profiles = scan_organization(root, exclude=list(exclude))
+    profiles = scan_organization(root, exclude=list(exclude), max_depth=max_depth)
 
     gen = ProjectCardGenerator(org_name=org_name)
     paths = gen.generate_all(profiles, Path(output_dir))
@@ -222,7 +239,8 @@ def cards(root_dir: str, output_dir: str, org_name: str, exclude: tuple):
               help="Output file path")
 @click.option("--org-name", default="WronAI", help="Organization name")
 @click.option("--exclude", multiple=True, help="Directory names to exclude")
-def index(root_dir: str, output_path: str, org_name: str, exclude: tuple):
+@MAX_DEPTH_OPTION
+def index(root_dir: str, output_path: str, org_name: str, exclude: tuple, max_depth: int):
     """Generate organization project index / catalog page.
 
     ROOT_DIR is the directory containing project subdirectories.
@@ -231,7 +249,7 @@ def index(root_dir: str, output_path: str, org_name: str, exclude: tuple):
     from todocs.generators.org_index_gen import OrgIndexGenerator
 
     root = Path(root_dir).resolve()
-    profiles = scan_organization(root, exclude=list(exclude))
+    profiles = scan_organization(root, exclude=list(exclude), max_depth=max_depth)
 
     if not profiles:
         click.echo("No projects found.", err=True)
@@ -264,7 +282,8 @@ def _write_json_export(profiles, output_path: Path, org_name: str) -> None:
               help="Export format")
 @click.option("--org-name", default="WronAI", help="Organization name")
 @click.option("--exclude", multiple=True, help="Directory names to exclude")
-def export_cmd(root_dir: str, output_path: str, fmt: str, org_name: str, exclude: tuple):
+@MAX_DEPTH_OPTION
+def export_cmd(root_dir: str, output_path: str, fmt: str, org_name: str, exclude: tuple, max_depth: int):
     """Export organization report in HTML or JSON format.
 
     ROOT_DIR is the directory containing project subdirectories.
@@ -276,7 +295,7 @@ def export_cmd(root_dir: str, output_path: str, fmt: str, org_name: str, exclude
     from todocs.core import scan_organization
 
     root = Path(root_dir).resolve()
-    profiles = scan_organization(root, exclude=list(exclude))
+    profiles = scan_organization(root, exclude=list(exclude), max_depth=max_depth)
 
     if not profiles:
         click.echo("No projects found.", err=True)

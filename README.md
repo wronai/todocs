@@ -139,9 +139,11 @@ Regardless of depth, these are always excluded:
 
 #### CLI Depth Control
 
-Coming in v0.2.0: `--max-depth` CLI flag
+Every scanning command supports `--max-depth` (default: `3`, accepted range:
+`1..64`):
 ```bash
 todocs generate /path/to/org --max-depth 5
+todocs inspect /path/to/project --max-depth 6 --format json
 ```
 
 ## Output Structure

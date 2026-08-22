@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 import ast
-import os
-from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from .utils import should_skip
 
@@ -24,7 +22,22 @@ _SKIP_DIRS = {
     ".eggs", "htmlcov", "site", ".idea", ".vscode",
 }
 
-_SOURCE_EXTENSIONS = {".py", ".js", ".ts", ".rs", ".go", ".php", ".java", ".c", ".cpp", ".rb"}
+_SOURCE_EXTENSIONS = {
+    ".py",
+    ".js",
+    ".mjs",
+    ".cjs",
+    ".ts",
+    ".mts",
+    ".cts",
+    ".rs",
+    ".go",
+    ".php",
+    ".java",
+    ".c",
+    ".cpp",
+    ".rb",
+}
 _TEST_PATTERNS = {"test_", "_test.py", "tests/", "test/", "spec/"}
 
 
