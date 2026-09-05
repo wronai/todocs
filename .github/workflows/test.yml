@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
@@ -27,6 +29,24 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: pyproject.toml
+
+      - name: Check out immutable documentation standard
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: wellmanifest/docs
+          ref: fdb0fcaa7c606dc2503cabb71eff64d5f86ee659 # v0.1.0
+          path: .docs-standard
+          token: ${{ secrets.ORG_SYNC_PAT }}
+          persist-credentials: false
+      - name: Validate documentation placement
+        shell: bash
+        env:
+          DOCS_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          args=(--root . --standard-revision fdb0fcaa7c606dc2503cabb71eff64d5f86ee659)
+          if [[ -n "$DOCS_BASE" ]]; then args+=(--base "$DOCS_BASE"); fi
+          python .docs-standard/docs/standard/check.py "${args[@]}"
 
       - name: Install package and test dependencies
         run: python -m pip install -e . pytest
