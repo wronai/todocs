@@ -1,0 +1,23 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-002",
+  "summary": "Adopt documentation placement instructions and validation",
+  "workstream": "integration",
+  "allowedPaths": [
+    "AGENTS.md",
+    "README.md",
+    "docs/README.md",
+    ".governance/docs.json",
+    ".github/workflows/test.yml",
+    "project/ticket-002/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "stacks": [
+    "python"
+  ]
+}

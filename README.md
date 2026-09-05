@@ -326,3 +326,7 @@ Licensed under Apache-2.0.
 ## Author
 
 Tom Sapletta
+
+## Documentation ownership
+
+Follow [repository agent instructions](AGENTS.md) and maintain the [documentation index](docs/README.md).
