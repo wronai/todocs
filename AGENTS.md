@@ -3,7 +3,7 @@
 <!-- wellmanifest:docs-placement:start -->
 ## Documentation placement
 
-Before research or writing, identify the owning repository, document kind and canonical path using [wellmanifest/docs 0.1.0](https://github.com/wellmanifest/docs/blob/fdb0fcaa7c606dc2503cabb71eff64d5f86ee659/docs/standard/POLICY.md). Resolve existing documents through the artifact registry when available; update the canonical document instead of creating duplicates.
+Before research or writing, identify the owning repository, document kind and canonical path using [wellmanifest/docs 0.1.1](https://github.com/wellmanifest/docs/blob/ebe7501063ef4f3e63ded610c2d3183010ca636e/docs/standard/POLICY.md). Resolve existing documents through the artifact registry when available; update the canonical document instead of creating duplicates.
 
 - Durable information: `docs/information/<id>.md`.
 - Analysis and final reports: `docs/analysis/<id>.md`.
