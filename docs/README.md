@@ -346,3 +346,5 @@ pytest
 ## Documentation ownership
 
 Follow [repository instructions](../AGENTS.md). New reports belong in `analysis/`, durable information in `information/`, refactoring plans in `refactoring/`, and decisions in `decisions/`; index delivered documents here. Cross-repository results belong in `subactor/docs`; raw logs and recovery archives remain private. Existing generated documentation retains its historical format.
+
+- [Aktualizacja i kontrola zależności wewnętrznych](information/internal-dependencies.md)
